@@ -9,6 +9,27 @@ const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"
 const IMPERIAL_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
 const METRIC_UNITS = ["mL/cc", "liter"];
 
+// Function to pluralize unit names based on amount
+const pluralizeUnit = (unit: string, amount: number): string => {
+  if (amount <= 1) return unit;
+  
+  const pluralMap: { [key: string]: string } = {
+    "teaspoon": "teaspoons",
+    "tablespoon": "tablespoons", 
+    "cup": "cups",
+    "pint": "pints",
+    "quart": "quarts",
+    "gallon": "gallons",
+    "liter": "liters",
+    "ounce": "ounces",
+    "pound": "pounds",
+    "gram": "grams",
+    "kilogram": "kilograms"
+  };
+  
+  return pluralMap[unit] || unit;
+};
+
 // Conversion ratios to mL (base unit) - fallback values
 const CONVERSIONS_TO_ML: { [key: string]: number } = {
   "teaspoon": 4.92892,
@@ -114,7 +135,7 @@ export function ConversionDisplay() {
               data-testid="input-unit-button" 
               className="flex-1 kitchen-key--unit"
             >
-              {inputUnit}
+              {pluralizeUnit(inputUnit, parseFloat(inputAmount))}
             </ClickableButton>
           </div>
         </div>
@@ -169,7 +190,7 @@ export function ConversionDisplay() {
               data-testid="output-unit-button"
               className="flex-1 min-w-0 kitchen-key--unit"
             >
-              {outputUnit}
+              {pluralizeUnit(outputUnit, result)}
             </ClickableButton>
           </div>
         </div>
