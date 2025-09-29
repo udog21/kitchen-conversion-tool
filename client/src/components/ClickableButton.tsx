@@ -17,6 +17,8 @@ export function ClickableButton({
   "data-testid": dataTestId,
   variant = "normal"
 }: ClickableButtonProps) {
+  const gapOffset = Math.random() * 0.8 + 0.1; // Random gap position for variety
+
   return (
     <button
       onClick={onClick}
@@ -39,14 +41,14 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with 2 reflection gaps */}
+        {/* Inner label box with 3 reflection gaps - randomized position */}
         <rect 
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            // Create 2 gaps: each gap is 4% of perimeter, with solid segments between
-            strokeDasharray: "0.46 0.04 0.46 0.04",
-            strokeDashoffset: "0.1" // Start position to place gaps optimally
+            // Create 3 gaps: each gap is 2.5% of perimeter (40% smaller than before)
+            strokeDasharray: "0.308 0.025 0.308 0.025 0.308 0.025",
+            strokeDashoffset: gapOffset.toString()
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
