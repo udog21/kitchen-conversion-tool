@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { UnitWheel } from "./UnitWheel";
 import { FractionWheel } from "./FractionWheel";
 import { DecimalKeypad } from "./DecimalKeypad";
@@ -9,7 +10,7 @@ const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"
 const IMPERIAL_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
 const METRIC_UNITS = ["mL/cc", "liter"];
 
-// Conversion ratios to mL (base unit)
+// Conversion ratios to mL (base unit) - fallback values
 const CONVERSIONS_TO_ML: { [key: string]: number } = {
   "teaspoon": 4.92892,
   "tablespoon": 14.7868,
@@ -46,8 +47,14 @@ function formatResult(value: number): string {
 export function ConversionDisplay() {
   const [inputAmount, setInputAmount] = useState("1");
   const [inputUnit, setInputUnit] = useState("cup");
-  const [outputUnit, setOutputUnit] = useState("tablespoons");
+  const [outputUnit, setOutputUnit] = useState("tablespoon");
   const [showKeypad, setShowKeypad] = useState(false);
+
+  // Fetch conversion ratios from API
+  const { data: conversionRatios, isLoading } = useQuery({
+    queryKey: ['/api/conversions'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   const isInputMetric = METRIC_UNITS.includes(inputUnit);
   const isOutputMetric = METRIC_UNITS.includes(outputUnit);
@@ -57,12 +64,27 @@ export function ConversionDisplay() {
     if (isInputMetric && IMPERIAL_UNITS.includes(outputUnit)) {
       setOutputUnit("mL/cc");
     } else if (!isInputMetric && METRIC_UNITS.includes(outputUnit)) {
-      setOutputUnit("tablespoons");
+      setOutputUnit("tablespoon");
     }
   }, [inputUnit, outputUnit, isInputMetric]);
 
   const calculateConversion = (): number => {
     const inputValue = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
+    
+    // Try to use API data first, fallback to hardcoded values
+    let conversionRatio = 1;
+    
+    if (conversionRatios && Array.isArray(conversionRatios)) {
+      const ratio = conversionRatios.find((r: any) => 
+        r.fromUnit === inputUnit && r.toUnit === outputUnit
+      );
+      if (ratio) {
+        conversionRatio = parseFloat(ratio.ratio);
+        return inputValue * conversionRatio;
+      }
+    }
+    
+    // Fallback calculation using hardcoded ratios
     const inputInMl = inputValue * CONVERSIONS_TO_ML[inputUnit];
     return inputInMl / CONVERSIONS_TO_ML[outputUnit];
   };
@@ -129,9 +151,13 @@ export function ConversionDisplay() {
         </div>
 
         <div className="mt-4 text-sm text-muted-foreground">
-          {isInputMetric 
-            ? "Enter decimal amount, select metric unit to convert to imperial" 
-            : "Use fraction wheel for imperial amounts to convert to metric"}
+          {isLoading ? (
+            "Loading conversion data..."
+          ) : (
+            isInputMetric 
+              ? "Enter decimal amount, select metric unit to convert to imperial" 
+              : "Use fraction wheel for imperial amounts to convert to metric"
+          )}
         </div>
       </div>
 
