@@ -35,7 +35,7 @@ export function ClickableButton({
       >
         {/* Outer shell */}
         <rect 
-          className="fill-transparent stroke-current" 
+          className="fill-transparent stroke-blue-600" 
           style={{ strokeWidth: "3px" }}
           x="5" y="5" width="90" height="50" rx="8" ry="8"
           vectorEffect="non-scaling-stroke"
@@ -43,7 +43,7 @@ export function ClickableButton({
         
         {/* Inner label box with exactly 3 small reflection gaps */}
         <rect 
-          className="fill-transparent stroke-current" 
+          className="fill-transparent stroke-blue-600" 
           style={{ 
             strokeWidth: "2px",
             // Simple pattern: 3 small gaps (1.5% each) with solid segments
@@ -57,7 +57,7 @@ export function ClickableButton({
         
         {/* Text */}
         <text 
-          className="fill-current font-semibold text-base" 
+          className="fill-blue-600 font-semibold text-base" 
           x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"

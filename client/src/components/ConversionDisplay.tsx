@@ -103,7 +103,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowAmountPicker(true)}
               data-testid="input-amount-button"
-              className="flex-1 text-lg sm:text-xl font-mono font-bold text-conversion-accent"
+              className="flex-1 text-lg sm:text-xl font-mono font-bold"
             >
               {inputAmount}
             </ClickableButton>
@@ -134,9 +134,9 @@ export function ConversionDisplay() {
                 viewBox="0 0 100 60" 
                 className="w-full h-full min-h-10"
               >
-                {/* Outer shell - lighter stroke for non-interactive appearance */}
+                {/* Outer shell - black stroke for non-interactive appearance */}
                 <rect 
-                  className="fill-transparent stroke-muted-foreground/40" 
+                  className="fill-transparent stroke-black" 
                   style={{ strokeWidth: "2px" }}
                   x="5" y="5" width="90" height="50" rx="8" ry="8"
                   vectorEffect="non-scaling-stroke"
@@ -144,7 +144,7 @@ export function ConversionDisplay() {
                 
                 {/* Inner display area - no reflection gap since it's not interactive */}
                 <rect 
-                  className="fill-muted/20 stroke-muted-foreground/30" 
+                  className="fill-transparent stroke-black" 
                   style={{ strokeWidth: "1px" }}
                   x="12" y="12" width="76" height="36" rx="6" ry="6"
                   vectorEffect="non-scaling-stroke"
@@ -152,7 +152,7 @@ export function ConversionDisplay() {
                 
                 {/* Text */}
                 <text 
-                  className="fill-current font-semibold text-conversion-accent" 
+                  className="fill-black font-semibold" 
                   x="50" y="30" 
                   textAnchor="middle" 
                   dominantBaseline="middle"
