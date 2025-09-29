@@ -30,7 +30,7 @@ export default function Home() {
         <ThemeToggle />
       </header>
 
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Top Ad Banner */}
         <div className="p-4 flex justify-center">
           <AdBanner type="horizontal" />
