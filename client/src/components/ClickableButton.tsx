@@ -6,6 +6,7 @@ interface ClickableButtonProps {
   pressed?: boolean;
   className?: string;
   "data-testid"?: string;
+  variant?: "normal" | "modal";
 }
 
 export function ClickableButton({ 
@@ -13,8 +14,16 @@ export function ClickableButton({
   onClick, 
   pressed = false, 
   className, 
-  "data-testid": dataTestId 
+  "data-testid": dataTestId,
+  variant = "normal"
 }: ClickableButtonProps) {
+  const getVariantClasses = () => {
+    if (variant === "modal") {
+      return pressed ? "kitchen-key--modal-selected" : "kitchen-key--modal-unselected";
+    }
+    return pressed ? "kitchen-key--down" : "kitchen-key--up";
+  };
+
   return (
     <button
       onClick={onClick}
@@ -22,7 +31,7 @@ export function ClickableButton({
       className={cn(
         "kitchen-key",
         "min-h-12 px-4 py-3",
-        pressed ? "kitchen-key--down" : "kitchen-key--up",
+        getVariantClasses(),
         className
       )}
     >

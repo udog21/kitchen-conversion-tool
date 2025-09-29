@@ -343,44 +343,78 @@
     inset: -1px;
   }
 
-  /* Kitchen Button simplified styling */
+  /* Kitchen Button keyboard key styling */
   .kitchen-key {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 8px;
     background: hsl(var(--background));
-    border: 2px solid hsl(var(--foreground));
     outline: none;
     transition: all 0.2s ease;
     cursor: pointer;
+    padding-bottom: 8px; /* Space for thickness indicator */
   }
 
-  /* Unclicked state - just the outer border */
-  .kitchen-key--up {
-    /* No additional styling needed, just the base border */
-  }
-
-  /* Clicked state - add inner border */
-  .kitchen-key--down {
-    position: relative;
-  }
-
-  .kitchen-key--down::after {
+  /* Main key face with reflection gaps */
+  .kitchen-key::before {
     content: "";
     position: absolute;
-    inset: 4px;
-    border: 1px solid hsl(var(--foreground) / 0.6);
+    inset: 0 0 6px 0; /* Leave space at bottom for thickness */
+    border: 3px solid hsl(var(--foreground));
     border-radius: 8px;
+    background: hsl(var(--background));
+    /* Create reflection gaps using multiple box-shadows */
+    box-shadow: 
+      /* Top-left reflection gap */
+      6px 0 0 -3px hsl(var(--background)),
+      /* Top-right reflection gap */
+      -6px 0 0 -3px hsl(var(--background)),
+      /* Bottom reflection gap */
+      0 -6px 0 -3px hsl(var(--background));
     pointer-events: none;
+  }
+
+  /* Thickness indicator at bottom */
+  .kitchen-key::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 3px;
+    right: 3px;
+    height: 6px;
+    background: hsl(var(--foreground));
+    border-radius: 0 0 5px 5px;
+    pointer-events: none;
+  }
+
+  /* Unclicked state - normal thickness */
+  .kitchen-key--up::after {
+    height: 6px;
+  }
+
+  /* Clicked state - reduced thickness */
+  .kitchen-key--down::after {
+    height: 3px;
+  }
+
+  /* Modal buttons - unselected have double thickness */
+  .kitchen-key--modal-unselected::after {
+    height: 12px;
+  }
+
+  /* Modal buttons - selected have normal thickness */
+  .kitchen-key--modal-selected::after {
+    height: 6px;
   }
 
   .kitchen-key__label {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     font-weight: 600;
     user-select: none;
+    font-size: 1rem;
   }
 
   /* Standard width for unit buttons to fit longest unit name */

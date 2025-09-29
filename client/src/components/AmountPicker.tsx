@@ -103,6 +103,7 @@ export function AmountPicker({
               onClick={() => handleOptionSelect(option)}
               data-testid={`amount-option-${option.replace(/[^a-zA-Z0-9]/g, '-')}`}
               className="aspect-square"
+              variant="modal"
             >
               {option}
             </ClickableButton>
@@ -114,6 +115,7 @@ export function AmountPicker({
             onClick={handleCustomAmount}
             data-testid="amount-custom"
             className="col-span-3 bg-conversion-accent text-background hover:bg-conversion-accent/90"
+            variant="modal"
           >
             Enter Custom Amount
           </ClickableButton>

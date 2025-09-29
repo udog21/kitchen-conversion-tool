@@ -48,6 +48,7 @@ export function UnitPicker({
                     pressed={currentUnit === unit}
                     onClick={() => handleUnitSelect(unit)}
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
+                    variant="modal"
                   >
                     {unit}
                   </ClickableButton>
@@ -66,6 +67,7 @@ export function UnitPicker({
                     pressed={currentUnit === unit}
                     onClick={() => handleUnitSelect(unit)}
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
+                    variant="modal"
                   >
                     {unit}
                   </ClickableButton>
