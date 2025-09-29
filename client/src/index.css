@@ -345,7 +345,7 @@
 
   /* Standard width for unit buttons to fit longest unit name */
   .kitchen-key--unit {
-    min-width: 160px;
-    width: 160px;
+    min-width: 180px;
+    width: 180px;
   }
 }
