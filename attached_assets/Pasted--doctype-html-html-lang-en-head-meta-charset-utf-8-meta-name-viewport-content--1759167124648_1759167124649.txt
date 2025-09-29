@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Keyboard Key Icons — Unclicked & Clicked</title>
+<style>
+  :root {
+    --key-size: 96px;          /* change size here (e.g., 64px, 120px) */
+    --radius: 18px;
+    --stroke: #191b1f;
+    --bg: #e7e7ea;
+    --face: #f3f3f5;
+    --shadow: rgba(0,0,0,.28);
+    --inner-shadow: rgba(0,0,0,.18);
+    --highlight: rgba(255,255,255,.9);
+    --page: #f6f6f7;
+    --gap: 28px;
+    --focus: 2px solid #3b82f6;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --stroke: #0a0b0d;
+      --bg: #2a2c31;
+      --face: #32353b;
+      --shadow: rgba(0,0,0,.55);
+      --inner-shadow: rgba(0,0,0,.48);
+      --highlight: rgba(255,255,255,.08);
+      --page: #0f1115;
+    }
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--page);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color: #15171a;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6e7eb; }
+  }
+
+  .wrap {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 40px 24px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    flex-wrap: wrap;
+  }
+
+  /* Key base */
+  .key {
+    width: var(--key-size);
+    height: var(--key-size);
+    border-radius: calc(var(--radius) + 6px);
+    position: relative;
+    display: grid;
+    place-items: center;
+    isolation: isolate;
+    /* outer shell shadow & stroke */
+    background:
+      /* bevel highlight */
+      radial-gradient(120% 120% at 30% 20%, var(--highlight) 0 28%, transparent 40%) border-box,
+      /* shell fill */
+      linear-gradient(180deg, var(--bg), var(--bg)) padding-box;
+    box-shadow:
+      0 8px 18px -6px var(--shadow),
+      0 2px 0 0 var(--stroke) inset;
+    outline: none;
+  }
+
+  /* Inner face (the part that looks pressed/raised) */
+  .key::before {
+    content: "";
+    position: absolute;
+    inset: 10%;
+    border-radius: var(--radius);
+    background:
+      linear-gradient(180deg, #ffffff33, #00000011) border-box,
+      linear-gradient(180deg, var(--face), var(--face)) padding-box;
+    box-shadow:
+      /* crisp inner edge (stroke-like) */
+      0 0 0 1.2px #00000020 inset,
+      /* soft inner shadow around rim */
+      0 10px 18px -10px var(--inner-shadow) inset;
+    transition: transform .14s ease, box-shadow .14s ease, inset .14s ease;
+  }
+
+  /* Unclicked (raised) */
+  .key--up::before {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1.2px #00000020 inset,
+      0 14px 22px -10px var(--inner-shadow) inset;
+  }
+
+  /* Clicked (depressed) */
+  .key--down::before {
+    inset: 13% 10% 7% 10%; /* slightly deeper bottom edge */
+    transform: translateY(2px);
+    box-shadow:
+      0 0 0 1.2px #00000030 inset,
+      0 6px 10px -6px var(--inner-shadow) inset;
+  }
+
+  /* Optional label slot */
+  .key__label {
+    position: relative;
+    z-index: 1;
+    font-size: calc(var(--key-size) * .28);
+    font-weight: 600;
+    color: #2b2f36;
+    opacity: .85;
+    user-select: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    .key__label { color: #e9eaf0; opacity: .9; }
+  }
+
+  /* Demo controls */
+  .controls {
+    margin-top: 26px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    appearance: none;
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #ececf1;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  @media (prefers-color-scheme: dark) {
+    .btn { background: #1b1e24; color: #e6e7eb; }
+  }
+  .btn:focus-visible { outline: var(--focus); }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <section aria-labelledby="title">
+      <h1 id="title" style="position:absolute;left:-9999px;">Keyboard Key Icons: Unclicked & Clicked</h1>
+
+      <div class="row" role="group" aria-label="Key icon states">
+        <!-- Unclicked (raised) -->
+        <figure class="key key--up" aria-label="Unclicked key (raised)" title="Unclicked (raised)">
+          <!-- optional label text; remove if you want blank keys -->
+          <!-- <div class="key__label">A</div> -->
+        </figure>
+
+        <!-- Clicked (depressed) -->
+        <figure class="key key--down" aria-label="Clicked key (depressed)" title="Clicked (depressed)">
+          <!-- <div class="key__label">A</div> -->
+        </figure>
+      </div>
+
+      <!-- Demo controls: toggle & resize -->
+      <div class="controls">
+        <button class="btn" id="toggle">Toggle states</button>
+        <button class="btn" id="sm">Small</button>
+        <button class="btn" id="md">Medium</button>
+        <button class="btn" id="lg">Large</button>
+      </div>
+    </section>
+  </main>
+
+<script>
+  // Simple demo: swap states & adjust size via CSS variables
+  const [left, right] = document.querySelectorAll('.key');
+  const toggle = document.getElementById('toggle');
+
+  toggle.addEventListener('click', () => {
+    left.classList.toggle('key--up');
+    left.classList.toggle('key--down');
+    right.classList.toggle('key--up');
+    right.classList.toggle('key--down');
+  });
+
+  const sizes = {
+    sm: '72px',
+    md: '96px',
+    lg: '128px'
+  };
+  document.getElementById('sm').onclick = () => document.documentElement.style.setProperty('--key-size', sizes.sm);
+  document.getElementById('md').onclick = () => document.documentElement.style.setProperty('--key-size', sizes.md);
+  document.getElementById('lg').onclick = () => document.documentElement.style.setProperty('--key-size', sizes.lg);
+</script>
+</body>
+</html>

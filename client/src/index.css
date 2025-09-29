@@ -121,6 +121,14 @@
   /* Fallback for older browsers */
   --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  /* Kitchen button styling variables */
+  --key-stroke: #191b1f;
+  --key-bg: #e7e7ea;
+  --key-face: #f3f3f5;
+  --key-shadow: rgba(0,0,0,.28);
+  --key-inner-shadow: rgba(0,0,0,.18);
+  --key-highlight: rgba(255,255,255,.9);
 }
 
 .dark {
@@ -205,6 +213,13 @@
   --shadow-xl: 0px 2px 0px 0px hsl(220 15% 2% / 0.00), 0px 8px 10px -1px hsl(220 15% 2% / 0.00);
   --shadow-2xl: 0px 2px 0px 0px hsl(220 15% 2% / 0.00);
 
+  /* Kitchen button styling variables - dark mode */
+  --key-stroke: #0a0b0d;
+  --key-bg: #2a2c31;
+  --key-face: #32353b;
+  --key-shadow: rgba(0,0,0,.55);
+  --key-inner-shadow: rgba(0,0,0,.48);
+  --key-highlight: rgba(255,255,255,.08);
 }
 
 @layer base {
@@ -326,5 +341,75 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+
+  /* Kitchen Button 3D styling */
+  .kitchen-key {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    isolation: isolate;
+    /* outer shell shadow & stroke */
+    background:
+      /* bevel highlight */
+      radial-gradient(120% 120% at 30% 20%, var(--key-highlight) 0 28%, transparent 40%) border-box,
+      /* shell fill */
+      linear-gradient(180deg, var(--key-bg), var(--key-bg)) padding-box;
+    box-shadow:
+      0 8px 18px -6px var(--key-shadow),
+      0 2px 0 0 var(--key-stroke) inset;
+    outline: none;
+    border: none;
+    transition: all 0.14s ease;
+  }
+
+  /* Inner face (the part that looks pressed/raised) */
+  .kitchen-key::before {
+    content: "";
+    position: absolute;
+    inset: 10%;
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, #ffffff33, #00000011) border-box,
+      linear-gradient(180deg, var(--key-face), var(--key-face)) padding-box;
+    box-shadow:
+      /* crisp inner edge (stroke-like) */
+      0 0 0 1.2px #00000020 inset,
+      /* soft inner shadow around rim */
+      0 10px 18px -10px var(--key-inner-shadow) inset;
+    transition: transform .14s ease, box-shadow .14s ease, inset .14s ease;
+  }
+
+  /* Unclicked (raised) */
+  .kitchen-key--up::before {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1.2px #00000020 inset,
+      0 14px 22px -10px var(--key-inner-shadow) inset;
+  }
+
+  /* Clicked (depressed) */
+  .kitchen-key--down::before {
+    inset: 13% 10% 7% 10%; /* slightly deeper bottom edge */
+    transform: translateY(2px);
+    box-shadow:
+      0 0 0 1.2px #00000030 inset,
+      0 6px 10px -6px var(--key-inner-shadow) inset;
+  }
+
+  .kitchen-key__label {
+    position: relative;
+    z-index: 1;
+    font-weight: 600;
+    opacity: .85;
+    user-select: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .kitchen-key__label { 
+      opacity: .9; 
+    }
   }
 }
