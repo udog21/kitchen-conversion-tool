@@ -145,7 +145,7 @@ export function ConversionDisplay() {
                 {/* Inner display area - Persian green, no reflection gap since it's not interactive */}
                 <rect 
                   className="fill-transparent" 
-                  style={{ strokeWidth: "1px", stroke: "#2A9D8F" }}
+                  style={{ strokeWidth: "2px", stroke: "#2A9D8F" }}
                   x="12" y="12" width="76" height="36" rx="6" ry="6"
                   vectorEffect="non-scaling-stroke"
                 />

@@ -36,7 +36,7 @@ export function ClickableButton({
         {/* Outer shell - Sandy brown borders */}
         <rect 
           className="fill-transparent" 
-          style={{ strokeWidth: "3px", stroke: "#F4A261" }}
+          style={{ strokeWidth: "2px", stroke: "#F4A261" }}
           x="5" y="5" width="90" height="50" rx="8" ry="8"
           vectorEffect="non-scaling-stroke"
         />
