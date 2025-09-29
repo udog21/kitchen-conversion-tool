@@ -17,8 +17,6 @@ export function ClickableButton({
   "data-testid": dataTestId,
   variant = "normal"
 }: ClickableButtonProps) {
-  const gapOffset = Math.random() * 0.8 + 0.1; // Random gap position for variety
-
   return (
     <button
       onClick={onClick}
@@ -32,10 +30,6 @@ export function ClickableButton({
       <svg 
         viewBox="0 0 100 60" 
         className="w-full h-full min-h-10"
-        style={{
-          "--gap-size": "0.06", // Reduced by 50% from 0.12
-          "--gap-offset": gapOffset.toString()
-        } as React.CSSProperties}
       >
         {/* Outer shell */}
         <rect 
@@ -45,13 +39,14 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with reflection gap - equal margins on all sides */}
+        {/* Inner label box with 2 reflection gaps */}
         <rect 
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            strokeDasharray: `calc(1 - var(--gap-size)) var(--gap-size)`,
-            strokeDashoffset: `var(--gap-offset)`
+            // Create 2 gaps: each gap is 4% of perimeter, with solid segments between
+            strokeDasharray: "0.46 0.04 0.46 0.04",
+            strokeDashoffset: "0.1" // Start position to place gaps optimally
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
