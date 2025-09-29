@@ -126,9 +126,13 @@ export function ConversionDisplay() {
         <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
           <div className="flex flex-row gap-2">
             {/* Output Amount Display */}
-            <div className="flex-1 min-w-0 text-lg sm:text-xl font-bold text-conversion-accent font-mono py-3 px-2 sm:px-4 bg-muted/30 rounded-lg border border-muted flex items-center justify-center" data-testid="output-amount">
+            <ClickableButton
+              onClick={() => {}} // No action needed for output
+              data-testid="output-amount"
+              className="flex-1 text-lg sm:text-xl font-mono font-bold text-conversion-accent cursor-default"
+            >
               {formatResult(result)}
-            </div>
+            </ClickableButton>
             
             {/* Output Unit Button */}
             <ClickableButton

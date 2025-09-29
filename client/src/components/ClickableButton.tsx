@@ -30,8 +30,8 @@ export function ClickableButton({
       style={{ width: "auto", minHeight: "48px" }}
     >
       <svg 
-        viewBox="0 0 100 100" 
-        className="w-full h-full min-h-12"
+        viewBox="0 0 100 60" 
+        className="w-full h-full min-h-10"
         style={{
           "--gap-size": "0.06", // Reduced by 50% from 0.12
           "--gap-offset": gapOffset.toString()
@@ -41,7 +41,7 @@ export function ClickableButton({
         <rect 
           className="fill-transparent stroke-current" 
           style={{ strokeWidth: "3px" }}
-          x="5" y="5" width="90" height="70" rx="8" ry="8"
+          x="5" y="5" width="90" height="50" rx="8" ry="8"
           vectorEffect="non-scaling-stroke"
         />
         
@@ -53,7 +53,7 @@ export function ClickableButton({
             strokeDasharray: `calc(1 - var(--gap-size)) var(--gap-size)`,
             strokeDashoffset: `var(--gap-offset)`
           }}
-          x="12" y="12" width="76" height="56" rx="6" ry="6"
+          x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
           vectorEffect="non-scaling-stroke"
         />
@@ -61,7 +61,7 @@ export function ClickableButton({
         {/* Text */}
         <text 
           className="fill-current font-semibold text-base" 
-          x="50" y="40" 
+          x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"
           style={{ fontSize: "12px" }}
