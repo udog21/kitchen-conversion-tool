@@ -41,12 +41,12 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with exactly 3 small reflection gaps - Burnt sienna */}
+        {/* Inner label box with exactly 3 small reflection gaps - Sandy brown (same as outer) */}
         <rect 
           className="fill-transparent" 
           style={{ 
             strokeWidth: "2px",
-            stroke: "#E76F51",
+            stroke: "#F4A261",
             // Simple pattern: 3 small gaps (1.5% each) with solid segments
             strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
             strokeDashoffset: randomOffset.toString()
