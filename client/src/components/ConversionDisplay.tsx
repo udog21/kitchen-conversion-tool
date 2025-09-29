@@ -124,7 +124,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowAmountPicker(true)}
               data-testid="input-amount-button"
-              className="flex-1 text-lg sm:text-xl font-mono font-bold kitchen-key--unit"
+              className="flex-1 text-lg sm:text-xl font-mono font-bold"
             >
               {inputAmount}
             </ClickableButton>
@@ -133,7 +133,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowInputUnitPicker(true)}
               data-testid="input-unit-button" 
-              className="flex-1 kitchen-key--unit"
+              className="flex-1"
             >
               {pluralizeUnit(inputUnit, parseFloat(inputAmount))}
             </ClickableButton>
@@ -148,7 +148,7 @@ export function ConversionDisplay() {
           <div className="flex flex-row gap-2">
             {/* Output Amount Display */}
             <div 
-              className="flex-1 min-h-10 kitchen-key--unit" 
+              className="flex-1 min-h-10" 
               data-testid="output-amount"
             >
               <svg 
@@ -188,7 +188,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowOutputUnitPicker(true)}
               data-testid="output-unit-button"
-              className="flex-1 kitchen-key--unit"
+              className="flex-1"
             >
               {pluralizeUnit(outputUnit, result)}
             </ClickableButton>
