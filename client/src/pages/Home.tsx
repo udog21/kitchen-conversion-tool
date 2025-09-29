@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ConversionTabs, TabType } from "@/components/ConversionTabs";
 import { ConversionDisplay } from "@/components/ConversionDisplay";
 import { VolumeWeightDisplay } from "@/components/VolumeWeightDisplay";
+import { SubstitutionsDisplay } from "@/components/SubstitutionsDisplay";
 import { AdBanner } from "@/components/AdBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -15,12 +16,7 @@ export default function Home() {
       case "volume-weight":
         return <VolumeWeightDisplay />;
       case "substitutions":
-        return (
-          <div className="text-center py-12 text-muted-foreground">
-            <h3 className="text-lg font-medium mb-2">Ingredient Substitutions</h3>
-            <p>Coming soon! Find ingredient substitutions and conversion ratios.</p>
-          </div>
-        );
+        return <SubstitutionsDisplay />;
       default:
         return null;
     }

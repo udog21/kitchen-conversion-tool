@@ -57,6 +57,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Substitutions endpoints
+  app.get("/api/substitutions", async (req, res) => {
+    try {
+      const substitutions = await storage.getAllSubstitutions();
+      res.json(substitutions);
+    } catch (error) {
+      console.error("Error fetching substitutions:", error);
+      res.status(500).json({ error: "Failed to fetch substitutions" });
+    }
+  });
+
+  app.get("/api/substitutions/:ingredient", async (req, res) => {
+    try {
+      const { ingredient } = req.params;
+      const substitutions = await storage.getSubstitutionsFor(decodeURIComponent(ingredient));
+      res.json(substitutions);
+    } catch (error) {
+      console.error("Error fetching substitutions:", error);
+      res.status(500).json({ error: "Failed to fetch substitutions" });
+    }
+  });
+
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });

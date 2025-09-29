@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, users, conversionRatios, ingredients } from "@shared/schema";
+import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type Substitution, type InsertSubstitution, users, conversionRatios, ingredients, substitutions } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
@@ -19,19 +19,26 @@ export interface IStorage {
   getAllIngredients(): Promise<Ingredient[]>;
   createIngredient(ingredient: InsertIngredient): Promise<Ingredient>;
   seedIngredients(): Promise<void>;
+  getSubstitutionsFor(originalIngredient: string): Promise<Substitution[]>;
+  getAllSubstitutions(): Promise<Substitution[]>;
+  createSubstitution(substitution: InsertSubstitution): Promise<Substitution>;
+  seedSubstitutions(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private conversionRatios: Map<string, ConversionRatio>;
   private ingredients: Map<string, Ingredient>;
+  private substitutions: Map<string, Substitution[]>;
 
   constructor() {
     this.users = new Map();
     this.conversionRatios = new Map();
     this.ingredients = new Map();
+    this.substitutions = new Map();
     this.seedConversionRatios();
     this.seedIngredients();
+    this.seedSubstitutions();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -139,6 +146,73 @@ export class MemStorage implements IStorage {
       await this.createIngredient(ingredient);
     }
   }
+
+  async getSubstitutionsFor(originalIngredient: string): Promise<Substitution[]> {
+    return this.substitutions.get(originalIngredient.toLowerCase()) || [];
+  }
+
+  async getAllSubstitutions(): Promise<Substitution[]> {
+    const allSubstitutions: Substitution[] = [];
+    for (const substitutionList of Array.from(this.substitutions.values())) {
+      allSubstitutions.push(...substitutionList);
+    }
+    return allSubstitutions;
+  }
+
+  async createSubstitution(insertSubstitution: InsertSubstitution): Promise<Substitution> {
+    const id = randomUUID();
+    const substitution: Substitution = { 
+      ...insertSubstitution, 
+      id, 
+      notes: insertSubstitution.notes ?? null 
+    };
+    const key = insertSubstitution.originalIngredient.toLowerCase();
+    
+    if (!this.substitutions.has(key)) {
+      this.substitutions.set(key, []);
+    }
+    this.substitutions.get(key)!.push(substitution);
+    return substitution;
+  }
+
+  async seedSubstitutions(): Promise<void> {
+    // Common cooking substitutions
+    const commonSubstitutions = [
+      // Baking substitutions
+      { originalIngredient: "Butter", substituteIngredient: "Vegetable oil", ratio: "3/4 amount", notes: "Reduce liquid slightly", category: "Baking" },
+      { originalIngredient: "Butter", substituteIngredient: "Applesauce", ratio: "1/2 amount", notes: "For healthier baking", category: "Baking" },
+      { originalIngredient: "Sugar (granulated)", substituteIngredient: "Brown sugar", ratio: "1:1", notes: "May affect color and flavor", category: "Baking" },
+      { originalIngredient: "Sugar (granulated)", substituteIngredient: "Honey", ratio: "3/4 amount", notes: "Reduce liquid by 1/4 cup", category: "Baking" },
+      { originalIngredient: "All-purpose flour", substituteIngredient: "Cake flour", ratio: "1 cup + 2 tbsp", notes: "For lighter texture", category: "Baking" },
+      { originalIngredient: "Cake flour", substituteIngredient: "All-purpose flour", ratio: "1 cup - 2 tbsp", notes: "Add 2 tbsp cornstarch", category: "Baking" },
+      { originalIngredient: "Baking powder", substituteIngredient: "Baking soda + cream of tartar", ratio: "1/4 tsp soda + 1/2 tsp cream of tartar", notes: "For 1 tsp baking powder", category: "Baking" },
+      
+      // Dairy substitutions
+      { originalIngredient: "Milk (whole)", substituteIngredient: "Buttermilk", ratio: "1:1", notes: "Add 1/4 tsp baking soda", category: "Dairy" },
+      { originalIngredient: "Heavy cream", substituteIngredient: "Milk + butter", ratio: "3/4 cup milk + 1/4 cup butter", notes: "Mix well", category: "Dairy" },
+      { originalIngredient: "Sour cream", substituteIngredient: "Greek yogurt", ratio: "1:1", notes: "Plain yogurt works best", category: "Dairy" },
+      { originalIngredient: "Cream cheese", substituteIngredient: "Greek yogurt", ratio: "1:1", notes: "Strain yogurt for thickness", category: "Dairy" },
+      
+      // Egg substitutions
+      { originalIngredient: "Eggs", substituteIngredient: "Applesauce", ratio: "1/4 cup per egg", notes: "For binding in baking", category: "Baking" },
+      { originalIngredient: "Eggs", substituteIngredient: "Flax eggs", ratio: "1 tbsp ground flax + 3 tbsp water", notes: "Let sit 5 minutes per egg", category: "Baking" },
+      { originalIngredient: "Eggs", substituteIngredient: "Chia eggs", ratio: "1 tbsp chia seeds + 3 tbsp water", notes: "Let sit 15 minutes per egg", category: "Baking" },
+      
+      // Sweetener substitutions
+      { originalIngredient: "Honey", substituteIngredient: "Maple syrup", ratio: "1:1", notes: "Similar consistency", category: "Sweeteners" },
+      { originalIngredient: "Maple syrup", substituteIngredient: "Honey", ratio: "1:1", notes: "Flavor will be different", category: "Sweeteners" },
+      { originalIngredient: "Brown sugar (packed)", substituteIngredient: "Sugar + molasses", ratio: "1 cup sugar + 1-2 tbsp molasses", notes: "Mix thoroughly", category: "Sweeteners" },
+      
+      // Spice and flavor substitutions
+      { originalIngredient: "Vanilla extract", substituteIngredient: "Almond extract", ratio: "1/2 amount", notes: "Stronger flavor", category: "Flavorings" },
+      { originalIngredient: "Lemon juice", substituteIngredient: "White vinegar", ratio: "1:1", notes: "For acidity in baking", category: "Acids" },
+      { originalIngredient: "Buttermilk", substituteIngredient: "Milk + lemon juice", ratio: "1 cup milk + 1 tbsp lemon juice", notes: "Let sit 5 minutes", category: "Dairy" },
+    ];
+
+    for (const substitution of commonSubstitutions) {
+      await this.createSubstitution(substitution);
+    }
+  }
 }
 
 // Database storage implementation
@@ -155,6 +229,7 @@ export class DatabaseStorage implements IStorage {
     if (!this.initialized) {
       await this.seedConversionRatios();
       await this.seedIngredients();
+      await this.seedSubstitutions();
       this.initialized = true;
     }
   }
@@ -294,6 +369,72 @@ export class DatabaseStorage implements IStorage {
     for (let i = 0; i < commonIngredients.length; i += batchSize) {
       const batch = commonIngredients.slice(i, i + batchSize);
       await this.db.insert(ingredients).values(batch);
+    }
+  }
+
+  async getSubstitutionsFor(originalIngredient: string): Promise<Substitution[]> {
+    await this.ensureInitialized();
+    return await this.db
+      .select()
+      .from(substitutions)
+      .where(eq(substitutions.originalIngredient, originalIngredient));
+  }
+
+  async getAllSubstitutions(): Promise<Substitution[]> {
+    await this.ensureInitialized();
+    return await this.db.select().from(substitutions);
+  }
+
+  async createSubstitution(substitution: InsertSubstitution): Promise<Substitution> {
+    const result = await this.db.insert(substitutions).values(substitution).returning();
+    return result[0];
+  }
+
+  async seedSubstitutions(): Promise<void> {
+    // Check if substitutions already exist
+    const existing = await this.db.select().from(substitutions).limit(1);
+    if (existing.length > 0) {
+      return; // Already seeded
+    }
+
+    // Common cooking substitutions
+    const commonSubstitutions: InsertSubstitution[] = [
+      // Baking substitutions
+      { originalIngredient: "Butter", substituteIngredient: "Vegetable oil", ratio: "3/4 amount", notes: "Reduce liquid slightly", category: "Baking" },
+      { originalIngredient: "Butter", substituteIngredient: "Applesauce", ratio: "1/2 amount", notes: "For healthier baking", category: "Baking" },
+      { originalIngredient: "Sugar (granulated)", substituteIngredient: "Brown sugar", ratio: "1:1", notes: "May affect color and flavor", category: "Baking" },
+      { originalIngredient: "Sugar (granulated)", substituteIngredient: "Honey", ratio: "3/4 amount", notes: "Reduce liquid by 1/4 cup", category: "Baking" },
+      { originalIngredient: "All-purpose flour", substituteIngredient: "Cake flour", ratio: "1 cup + 2 tbsp", notes: "For lighter texture", category: "Baking" },
+      { originalIngredient: "Cake flour", substituteIngredient: "All-purpose flour", ratio: "1 cup - 2 tbsp", notes: "Add 2 tbsp cornstarch", category: "Baking" },
+      { originalIngredient: "Baking powder", substituteIngredient: "Baking soda + cream of tartar", ratio: "1/4 tsp soda + 1/2 tsp cream of tartar", notes: "For 1 tsp baking powder", category: "Baking" },
+      
+      // Dairy substitutions
+      { originalIngredient: "Milk (whole)", substituteIngredient: "Buttermilk", ratio: "1:1", notes: "Add 1/4 tsp baking soda", category: "Dairy" },
+      { originalIngredient: "Heavy cream", substituteIngredient: "Milk + butter", ratio: "3/4 cup milk + 1/4 cup butter", notes: "Mix well", category: "Dairy" },
+      { originalIngredient: "Sour cream", substituteIngredient: "Greek yogurt", ratio: "1:1", notes: "Plain yogurt works best", category: "Dairy" },
+      { originalIngredient: "Cream cheese", substituteIngredient: "Greek yogurt", ratio: "1:1", notes: "Strain yogurt for thickness", category: "Dairy" },
+      
+      // Egg substitutions
+      { originalIngredient: "Eggs", substituteIngredient: "Applesauce", ratio: "1/4 cup per egg", notes: "For binding in baking", category: "Baking" },
+      { originalIngredient: "Eggs", substituteIngredient: "Flax eggs", ratio: "1 tbsp ground flax + 3 tbsp water", notes: "Let sit 5 minutes per egg", category: "Baking" },
+      { originalIngredient: "Eggs", substituteIngredient: "Chia eggs", ratio: "1 tbsp chia seeds + 3 tbsp water", notes: "Let sit 15 minutes per egg", category: "Baking" },
+      
+      // Sweetener substitutions
+      { originalIngredient: "Honey", substituteIngredient: "Maple syrup", ratio: "1:1", notes: "Similar consistency", category: "Sweeteners" },
+      { originalIngredient: "Maple syrup", substituteIngredient: "Honey", ratio: "1:1", notes: "Flavor will be different", category: "Sweeteners" },
+      { originalIngredient: "Brown sugar (packed)", substituteIngredient: "Sugar + molasses", ratio: "1 cup sugar + 1-2 tbsp molasses", notes: "Mix thoroughly", category: "Sweeteners" },
+      
+      // Spice and flavor substitutions
+      { originalIngredient: "Vanilla extract", substituteIngredient: "Almond extract", ratio: "1/2 amount", notes: "Stronger flavor", category: "Flavorings" },
+      { originalIngredient: "Lemon juice", substituteIngredient: "White vinegar", ratio: "1:1", notes: "For acidity in baking", category: "Acids" },
+      { originalIngredient: "Buttermilk", substituteIngredient: "Milk + lemon juice", ratio: "1 cup milk + 1 tbsp lemon juice", notes: "Let sit 5 minutes", category: "Dairy" },
+    ];
+
+    // Insert all substitutions in batches
+    const batchSize = 10;
+    for (let i = 0; i < commonSubstitutions.length; i += batchSize) {
+      const batch = commonSubstitutions.slice(i, i + batchSize);
+      await this.db.insert(substitutions).values(batch);
     }
   }
 }
