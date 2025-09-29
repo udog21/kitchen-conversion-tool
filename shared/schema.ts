@@ -16,6 +16,13 @@ export const conversionRatios = pgTable("conversion_ratios", {
   ratio: decimal("ratio", { precision: 10, scale: 6 }).notNull(),
 });
 
+export const ingredients = pgTable("ingredients", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull().unique(),
+  density: decimal("density", { precision: 8, scale: 4 }).notNull(), // grams per mL
+  category: text("category").notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -25,7 +32,13 @@ export const insertConversionRatioSchema = createInsertSchema(conversionRatios).
   id: true,
 });
 
+export const insertIngredientSchema = createInsertSchema(ingredients).omit({
+  id: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type ConversionRatio = typeof conversionRatios.$inferSelect;
 export type InsertConversionRatio = z.infer<typeof insertConversionRatioSchema>;
+export type Ingredient = typeof ingredients.$inferSelect;
+export type InsertIngredient = z.infer<typeof insertIngredientSchema>;

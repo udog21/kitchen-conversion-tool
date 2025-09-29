@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, users, conversionRatios } from "@shared/schema";
+import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, users, conversionRatios, ingredients } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
@@ -15,16 +15,23 @@ export interface IStorage {
   getAllConversionRatios(): Promise<ConversionRatio[]>;
   createConversionRatio(ratio: InsertConversionRatio): Promise<ConversionRatio>;
   seedConversionRatios(): Promise<void>;
+  getIngredient(name: string): Promise<Ingredient | undefined>;
+  getAllIngredients(): Promise<Ingredient[]>;
+  createIngredient(ingredient: InsertIngredient): Promise<Ingredient>;
+  seedIngredients(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private conversionRatios: Map<string, ConversionRatio>;
+  private ingredients: Map<string, Ingredient>;
 
   constructor() {
     this.users = new Map();
     this.conversionRatios = new Map();
+    this.ingredients = new Map();
     this.seedConversionRatios();
+    this.seedIngredients();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -92,6 +99,46 @@ export class MemStorage implements IStorage {
       }
     }
   }
+
+  async getIngredient(name: string): Promise<Ingredient | undefined> {
+    return this.ingredients.get(name.toLowerCase());
+  }
+
+  async getAllIngredients(): Promise<Ingredient[]> {
+    return Array.from(this.ingredients.values());
+  }
+
+  async createIngredient(insertIngredient: InsertIngredient): Promise<Ingredient> {
+    const id = randomUUID();
+    const ingredient: Ingredient = { ...insertIngredient, id };
+    this.ingredients.set(ingredient.name.toLowerCase(), ingredient);
+    return ingredient;
+  }
+
+  async seedIngredients(): Promise<void> {
+    // Common ingredients with their densities (grams per mL)
+    const commonIngredients = [
+      { name: "Water", density: "1.0000", category: "Liquids" },
+      { name: "All-purpose flour", density: "0.5000", category: "Dry Goods" },
+      { name: "Sugar (granulated)", density: "0.8000", category: "Sweeteners" },
+      { name: "Brown sugar (packed)", density: "0.9000", category: "Sweeteners" },
+      { name: "Butter", density: "0.9110", category: "Fats" },
+      { name: "Vegetable oil", density: "0.9200", category: "Fats" },
+      { name: "Milk (whole)", density: "1.0300", category: "Liquids" },
+      { name: "Heavy cream", density: "0.9940", category: "Liquids" },
+      { name: "Honey", density: "1.4200", category: "Sweeteners" },
+      { name: "Maple syrup", density: "1.3200", category: "Sweeteners" },
+      { name: "Salt (table)", density: "2.1600", category: "Seasonings" },
+      { name: "Baking powder", density: "0.9000", category: "Leavening" },
+      { name: "Baking soda", density: "2.2000", category: "Leavening" },
+      { name: "Cocoa powder", density: "0.4000", category: "Dry Goods" },
+      { name: "Rice (uncooked)", density: "0.7500", category: "Grains" },
+    ];
+
+    for (const ingredient of commonIngredients) {
+      await this.createIngredient(ingredient);
+    }
+  }
 }
 
 // Database storage implementation
@@ -107,6 +154,7 @@ export class DatabaseStorage implements IStorage {
   private async ensureInitialized() {
     if (!this.initialized) {
       await this.seedConversionRatios();
+      await this.seedIngredients();
       this.initialized = true;
     }
   }
@@ -192,6 +240,60 @@ export class DatabaseStorage implements IStorage {
     for (let i = 0; i < ratiosToInsert.length; i += batchSize) {
       const batch = ratiosToInsert.slice(i, i + batchSize);
       await this.db.insert(conversionRatios).values(batch);
+    }
+  }
+
+  async getIngredient(name: string): Promise<Ingredient | undefined> {
+    await this.ensureInitialized();
+    const result = await this.db
+      .select()
+      .from(ingredients)
+      .where(eq(ingredients.name, name))
+      .limit(1);
+    return result[0];
+  }
+
+  async getAllIngredients(): Promise<Ingredient[]> {
+    await this.ensureInitialized();
+    return await this.db.select().from(ingredients);
+  }
+
+  async createIngredient(ingredient: InsertIngredient): Promise<Ingredient> {
+    const result = await this.db.insert(ingredients).values(ingredient).returning();
+    return result[0];
+  }
+
+  async seedIngredients(): Promise<void> {
+    // Check if ingredients already exist
+    const existing = await this.db.select().from(ingredients).limit(1);
+    if (existing.length > 0) {
+      return; // Already seeded
+    }
+
+    // Common ingredients with their densities (grams per mL)
+    const commonIngredients: InsertIngredient[] = [
+      { name: "Water", density: "1.0000", category: "Liquids" },
+      { name: "All-purpose flour", density: "0.5000", category: "Dry Goods" },
+      { name: "Sugar (granulated)", density: "0.8000", category: "Sweeteners" },
+      { name: "Brown sugar (packed)", density: "0.9000", category: "Sweeteners" },
+      { name: "Butter", density: "0.9110", category: "Fats" },
+      { name: "Vegetable oil", density: "0.9200", category: "Fats" },
+      { name: "Milk (whole)", density: "1.0300", category: "Liquids" },
+      { name: "Heavy cream", density: "0.9940", category: "Liquids" },
+      { name: "Honey", density: "1.4200", category: "Sweeteners" },
+      { name: "Maple syrup", density: "1.3200", category: "Sweeteners" },
+      { name: "Salt (table)", density: "2.1600", category: "Seasonings" },
+      { name: "Baking powder", density: "0.9000", category: "Leavening" },
+      { name: "Baking soda", density: "2.2000", category: "Leavening" },
+      { name: "Cocoa powder", density: "0.4000", category: "Dry Goods" },
+      { name: "Rice (uncooked)", density: "0.7500", category: "Grains" },
+    ];
+
+    // Insert all ingredients in batches
+    const batchSize = 10;
+    for (let i = 0; i < commonIngredients.length; i += batchSize) {
+      const batch = commonIngredients.slice(i, i + batchSize);
+      await this.db.insert(ingredients).values(batch);
     }
   }
 }

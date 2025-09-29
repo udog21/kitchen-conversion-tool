@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ConversionTabs, TabType } from "@/components/ConversionTabs";
 import { ConversionDisplay } from "@/components/ConversionDisplay";
+import { VolumeWeightDisplay } from "@/components/VolumeWeightDisplay";
 import { AdBanner } from "@/components/AdBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -12,12 +13,7 @@ export default function Home() {
       case "imperial-metric":
         return <ConversionDisplay />;
       case "volume-weight":
-        return (
-          <div className="text-center py-12 text-muted-foreground">
-            <h3 className="text-lg font-medium mb-2">Volume ↔ Weight</h3>
-            <p>Coming soon! Convert between volume and weight measurements for different ingredients.</p>
-          </div>
-        );
+        return <VolumeWeightDisplay />;
       case "substitutions":
         return (
           <div className="text-center py-12 text-muted-foreground">
