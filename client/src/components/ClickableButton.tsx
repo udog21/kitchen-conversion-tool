@@ -41,14 +41,15 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with 3 reflection gaps - randomized position */}
+        {/* Inner label box with 3 evenly spaced reflection gaps */}
         <rect 
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            // Create exactly 3 gaps by using a single complete pattern
-            strokeDasharray: "0.31 0.02 0.31 0.02 0.31 0.02 1000", // Large number prevents pattern repeat
-            strokeDashoffset: gapOffset.toString()
+            // 3 evenly spaced gaps: each gap is 2%, solid segments are 31.33% each
+            // Pattern: solid(31.33%) gap(2%) solid(31.33%) gap(2%) solid(31.33%) gap(2%) = 100%
+            strokeDasharray: "0.3133 0.02 0.3133 0.02 0.3133 0.02",
+            strokeDashoffset: gapOffset.toString() // Randomize starting position only
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
