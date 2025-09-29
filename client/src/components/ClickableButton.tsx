@@ -17,7 +17,38 @@ export function ClickableButton({
   "data-testid": dataTestId,
   variant = "normal"
 }: ClickableButtonProps) {
-  const gapOffset = Math.random() * 0.8 + 0.1; // Random gap position for variety
+  // Calculate exactly 3 evenly spaced gaps with random starting position
+  const randomStart = Math.random();
+  const gapWidth = 0.02; // 2% gap width
+  
+  // Generate 3 gap positions evenly spaced around perimeter
+  const gaps = [
+    { start: (randomStart) % 1, width: gapWidth },
+    { start: (randomStart + 1/3) % 1, width: gapWidth },
+    { start: (randomStart + 2/3) % 1, width: gapWidth }
+  ].sort((a, b) => a.start - b.start);
+  
+  // Build non-repeating dasharray pattern
+  const dashArray: number[] = [];
+  let currentPos = 0;
+  
+  for (const gap of gaps) {
+    // Add solid segment before gap
+    const solidLength = gap.start - currentPos;
+    if (solidLength > 0) {
+      dashArray.push(solidLength);
+      dashArray.push(gap.width);
+      currentPos = gap.start + gap.width;
+    }
+  }
+  
+  // Add final solid segment to complete the perimeter
+  const finalSolid = 1 - currentPos;
+  if (finalSolid > 0) {
+    dashArray.push(finalSolid);
+  }
+  
+  const strokeDasharray = dashArray.join(' ');
 
   return (
     <button
@@ -41,15 +72,12 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with 3 evenly spaced reflection gaps */}
+        {/* Inner label box with exactly 3 reflection gaps */}
         <rect 
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            // 3 evenly spaced gaps: each gap is 2%, solid segments are 31.33% each
-            // Pattern: solid(31.33%) gap(2%) solid(31.33%) gap(2%) solid(31.33%) gap(2%) = 100%
-            strokeDasharray: "0.3133 0.02 0.3133 0.02 0.3133 0.02",
-            strokeDashoffset: gapOffset.toString() // Randomize starting position only
+            strokeDasharray: strokeDasharray
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
