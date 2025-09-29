@@ -126,13 +126,42 @@ export function ConversionDisplay() {
         <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
           <div className="flex flex-row gap-2">
             {/* Output Amount Display */}
-            <ClickableButton
-              onClick={() => {}} // No action needed for output
+            <div 
+              className="flex-1 min-h-10" 
               data-testid="output-amount"
-              className="flex-1 text-lg sm:text-xl font-mono font-bold text-conversion-accent cursor-default"
             >
-              {formatResult(result)}
-            </ClickableButton>
+              <svg 
+                viewBox="0 0 100 60" 
+                className="w-full h-full min-h-10"
+              >
+                {/* Outer shell - lighter stroke for non-interactive appearance */}
+                <rect 
+                  className="fill-transparent stroke-muted-foreground/40" 
+                  style={{ strokeWidth: "2px" }}
+                  x="5" y="5" width="90" height="50" rx="8" ry="8"
+                  vectorEffect="non-scaling-stroke"
+                />
+                
+                {/* Inner display area - no reflection gap since it's not interactive */}
+                <rect 
+                  className="fill-muted/20 stroke-muted-foreground/30" 
+                  style={{ strokeWidth: "1px" }}
+                  x="12" y="12" width="76" height="36" rx="6" ry="6"
+                  vectorEffect="non-scaling-stroke"
+                />
+                
+                {/* Text */}
+                <text 
+                  className="fill-current font-semibold text-conversion-accent" 
+                  x="50" y="30" 
+                  textAnchor="middle" 
+                  dominantBaseline="middle"
+                  style={{ fontSize: "12px" }}
+                >
+                  {formatResult(result)}
+                </text>
+              </svg>
+            </div>
             
             {/* Output Unit Button */}
             <ClickableButton
