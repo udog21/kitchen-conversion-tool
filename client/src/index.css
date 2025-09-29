@@ -343,73 +343,43 @@
     inset: -1px;
   }
 
-  /* Kitchen Button 3D styling */
+  /* Kitchen Button simplified styling */
   .kitchen-key {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 12px;
-    isolation: isolate;
-    /* outer shell shadow & stroke */
-    background:
-      /* bevel highlight */
-      radial-gradient(120% 120% at 30% 20%, var(--key-highlight) 0 28%, transparent 40%) border-box,
-      /* shell fill */
-      linear-gradient(180deg, var(--key-bg), var(--key-bg)) padding-box;
-    box-shadow:
-      0 8px 18px -6px var(--key-shadow),
-      0 2px 0 0 var(--key-stroke) inset;
+    background: hsl(var(--background));
+    border: 2px solid hsl(var(--foreground));
     outline: none;
-    border: none;
-    transition: all 0.14s ease;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
 
-  /* Inner face (the part that looks pressed/raised) */
-  .kitchen-key::before {
+  /* Unclicked state - just the outer border */
+  .kitchen-key--up {
+    /* No additional styling needed, just the base border */
+  }
+
+  /* Clicked state - add inner border */
+  .kitchen-key--down {
+    position: relative;
+  }
+
+  .kitchen-key--down::after {
     content: "";
     position: absolute;
-    inset: 10%;
+    inset: 4px;
+    border: 1px solid hsl(var(--foreground) / 0.6);
     border-radius: 8px;
-    background:
-      linear-gradient(180deg, #ffffff33, #00000011) border-box,
-      linear-gradient(180deg, var(--key-face), var(--key-face)) padding-box;
-    box-shadow:
-      /* crisp inner edge (stroke-like) */
-      0 0 0 1.2px #00000020 inset,
-      /* soft inner shadow around rim */
-      0 10px 18px -10px var(--key-inner-shadow) inset;
-    transition: transform .14s ease, box-shadow .14s ease, inset .14s ease;
-  }
-
-  /* Unclicked (raised) */
-  .kitchen-key--up::before {
-    transform: translateY(-2px);
-    box-shadow:
-      0 0 0 1.2px #00000020 inset,
-      0 14px 22px -10px var(--key-inner-shadow) inset;
-  }
-
-  /* Clicked (depressed) */
-  .kitchen-key--down::before {
-    inset: 13% 10% 7% 10%; /* slightly deeper bottom edge */
-    transform: translateY(2px);
-    box-shadow:
-      0 0 0 1.2px #00000030 inset,
-      0 6px 10px -6px var(--key-inner-shadow) inset;
+    pointer-events: none;
   }
 
   .kitchen-key__label {
     position: relative;
     z-index: 1;
     font-weight: 600;
-    opacity: .85;
     user-select: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .kitchen-key__label { 
-      opacity: .9; 
-    }
   }
 }
