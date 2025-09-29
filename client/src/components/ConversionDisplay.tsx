@@ -94,26 +94,90 @@ export function ConversionDisplay() {
 
   return (
     <div className="space-y-6">
+      {/* Conversion Display with Separate Cards */}
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
+        {/* Input Card */}
+        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-4">
+            {/* Input Amount Button */}
+            <ClickableButton
+              onClick={() => setShowAmountPicker(true)}
+              data-testid="input-amount-button"
+              className="w-full text-2xl font-mono font-bold text-conversion-accent"
+            >
+              {inputAmount}
+            </ClickableButton>
+            
+            {/* Input Unit Button */}
+            <ClickableButton
+              onClick={() => setShowInputUnitPicker(true)}
+              data-testid="input-unit-button" 
+              className="w-full"
+            >
+              {inputUnit}
+            </ClickableButton>
+          </div>
+        </div>
+        
+        {/* Equals Sign */}
+        <div className="text-3xl text-muted-foreground font-light">=</div>
+        
+        {/* Output Card */}
+        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-4">
+            {/* Output Amount Display */}
+            <div className="text-2xl font-bold text-conversion-accent font-mono py-3 px-4 bg-muted/30 rounded-lg border border-muted" data-testid="output-amount">
+              {formatResult(result)}
+            </div>
+            
+            {/* Output Unit Button */}
+            <ClickableButton
+              onClick={() => setShowOutputUnitPicker(true)}
+              data-testid="output-unit-button"
+              className="w-full"
+            >
+              {outputUnit}
+            </ClickableButton>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
         {isLoading ? (
           "Loading conversion data..."
         ) : (
-          isInputMetric 
-            ? "Enter decimal amount, select metric unit to convert to imperial" 
-            : "Use fraction wheel for imperial amounts to convert to metric"
+          "Tap any button to change values and units"
         )}
       </div>
 
-      {/* Decimal Keypad Modal */}
-      {showKeypad && (
-        <DecimalKeypad
-          value={inputAmount}
-          onChange={setInputAmount}
-          onClose={() => setShowKeypad(false)}
-          maxDecimalPlaces={2}
-        />
-      )}
+      {/* Amount Picker Modal */}
+      <AmountPicker
+        isOpen={showAmountPicker}
+        onClose={() => setShowAmountPicker(false)}
+        currentAmount={inputAmount}
+        onAmountChange={setInputAmount}
+        isMetric={isInputMetric}
+      />
+
+      {/* Input Unit Picker Modal */}
+      <UnitPicker
+        isOpen={showInputUnitPicker}
+        onClose={() => setShowInputUnitPicker(false)}
+        currentUnit={inputUnit}
+        onUnitChange={setInputUnit}
+        units={VOLUME_UNITS}
+        title="Select Input Unit"
+      />
+
+      {/* Output Unit Picker Modal */}
+      <UnitPicker
+        isOpen={showOutputUnitPicker}
+        onClose={() => setShowOutputUnitPicker(false)}
+        currentUnit={outputUnit}
+        onUnitChange={setOutputUnit}
+        units={isInputMetric ? IMPERIAL_UNITS : METRIC_UNITS}
+        title="Select Output Unit"
+      />
     </div>
   );
 }
