@@ -97,13 +97,13 @@ export function ConversionDisplay() {
       {/* Conversion Display with Separate Cards */}
       <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
         {/* Input Card */}
-        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
-          <div className="text-center space-y-4">
+        <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-3 sm:space-y-4">
             {/* Input Amount Button */}
             <ClickableButton
               onClick={() => setShowAmountPicker(true)}
               data-testid="input-amount-button"
-              className="w-full text-2xl font-mono font-bold text-conversion-accent"
+              className="w-full text-lg sm:text-xl font-mono font-bold text-conversion-accent"
             >
               {inputAmount}
             </ClickableButton>
@@ -120,13 +120,13 @@ export function ConversionDisplay() {
         </div>
         
         {/* Equals Sign */}
-        <div className="text-3xl text-muted-foreground font-light">=</div>
+        <div className="text-2xl sm:text-3xl text-muted-foreground font-light">=</div>
         
         {/* Output Card */}
-        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
-          <div className="text-center space-y-4">
+        <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-3 sm:space-y-4">
             {/* Output Amount Display */}
-            <div className="text-2xl font-bold text-conversion-accent font-mono py-3 px-4 bg-muted/30 rounded-lg border border-muted" data-testid="output-amount">
+            <div className="text-lg sm:text-xl font-bold text-conversion-accent font-mono py-3 px-4 bg-muted/30 rounded-lg border border-muted" data-testid="output-amount">
               {formatResult(result)}
             </div>
             

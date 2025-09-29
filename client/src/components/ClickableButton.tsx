@@ -12,29 +12,30 @@ interface ClickableButtonProps {
 export function ClickableButton({ 
   children, 
   onClick, 
-  pressed = true, 
+  pressed = false, 
   className, 
   "data-testid": dataTestId 
 }: ClickableButtonProps) {
   return (
     <Button
-      variant="ghost"
+      variant="outline"
       onClick={onClick}
       data-testid={dataTestId}
       className={cn(
         "h-auto min-h-12 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200",
-        // Pressed (inset) style - matches left side of image
+        // Dark solid border around all buttons
+        "border-2 border-foreground/80 bg-background",
+        // Pressed/selected state with inner border
         pressed && [
-          "bg-muted border-2 border-border",
-          "shadow-inner shadow-muted-foreground/20",
-          "transform scale-[0.98]"
+          "shadow-inner shadow-foreground/30",
+          "border-foreground",
+          "relative",
+          "after:content-[''] after:absolute after:inset-1 after:border after:border-foreground/60 after:rounded-md after:pointer-events-none"
         ],
-        // Unpressed (raised) style - matches right side of image
+        // Normal state
         !pressed && [
-          "bg-background border-2 border-border",
-          "shadow-md shadow-muted-foreground/15",
-          "hover:shadow-lg hover:shadow-muted-foreground/20",
-          "transform scale-100 hover:scale-[1.02]"
+          "hover:bg-muted/50 hover:border-foreground",
+          "active:shadow-inner active:shadow-foreground/20"
         ],
         className
       )}
