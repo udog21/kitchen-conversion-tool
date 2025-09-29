@@ -46,8 +46,8 @@ export function ClickableButton({
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            // Create exactly 3 gaps: 3 gaps of 2% each, 3 solid segments of 31.33% each
-            strokeDasharray: "0.3133 0.02 0.3133 0.02 0.3133 0.02",
+            // Create exactly 3 gaps by using a single complete pattern
+            strokeDasharray: "0.31 0.02 0.31 0.02 0.31 0.02 1000", // Large number prevents pattern repeat
             strokeDashoffset: gapOffset.toString()
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
