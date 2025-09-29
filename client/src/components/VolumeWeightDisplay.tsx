@@ -76,24 +76,20 @@ export function VolumeWeightDisplay() {
     ? METRIC_VOLUME.includes(inputUnit)
     : METRIC_WEIGHT.includes(inputUnit);
 
-  // Auto-select appropriate output unit based on conversion mode and input unit
+  // Set default output unit when conversion mode changes
   useEffect(() => {
     if (conversionMode === "volume-to-weight") {
-      // Volume to Weight
-      if (IMPERIAL_VOLUME.includes(inputUnit) && METRIC_WEIGHT.includes(outputUnit)) {
+      // Volume to Weight - default to ounce but don't force it
+      if (outputUnit === "cup" || outputUnit === "mL/cc") {
         setOutputUnit("ounce");
-      } else if (METRIC_VOLUME.includes(inputUnit) && IMPERIAL_WEIGHT.includes(outputUnit)) {
-        setOutputUnit("gram");
       }
     } else {
-      // Weight to Volume
-      if (IMPERIAL_WEIGHT.includes(inputUnit) && METRIC_VOLUME.includes(outputUnit)) {
+      // Weight to Volume - default to cup but don't force it
+      if (outputUnit === "ounce" || outputUnit === "gram") {
         setOutputUnit("cup");
-      } else if (METRIC_WEIGHT.includes(inputUnit) && IMPERIAL_VOLUME.includes(outputUnit)) {
-        setOutputUnit("mL/cc");
       }
     }
-  }, [inputUnit, outputUnit, conversionMode]);
+  }, [conversionMode]); // Only depend on conversionMode, not inputUnit or outputUnit
 
   const calculateConversion = (): number => {
     if (!selectedIngredient || !ingredients) return 0;
