@@ -93,10 +93,11 @@ export function ConversionDisplay() {
 
   return (
     <div className="space-y-6">
-      {/* Conversion Equation Display */}
-      <div className="text-center bg-card p-6 rounded-lg border border-card-border">
-        <div className="flex items-center justify-center gap-4 text-lg md:text-xl">
-          <div className="flex flex-col items-center gap-2">
+      {/* Conversion Display with Separate Cards */}
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
+        {/* Input Card */}
+        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-4">
             {/* Input Amount */}
             <div className="relative">
               {isInputMetric ? (
@@ -129,12 +130,16 @@ export function ConversionDisplay() {
               />
             </div>
           </div>
-          
-          <div className="text-3xl text-muted-foreground font-light">=</div>
-          
-          <div className="flex flex-col items-center gap-2">
+        </div>
+        
+        {/* Equals Sign */}
+        <div className="text-3xl text-muted-foreground font-light">=</div>
+        
+        {/* Output Card */}
+        <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+          <div className="text-center space-y-4">
             {/* Output Amount */}
-            <div className="text-3xl font-bold text-conversion-accent font-mono" data-testid="output-amount">
+            <div className="text-2xl font-bold text-conversion-accent font-mono pt-8" data-testid="output-amount">
               {formatResult(result)}
             </div>
             
@@ -149,16 +154,16 @@ export function ConversionDisplay() {
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 text-sm text-muted-foreground">
-          {isLoading ? (
-            "Loading conversion data..."
-          ) : (
-            isInputMetric 
-              ? "Enter decimal amount, select metric unit to convert to imperial" 
-              : "Use fraction wheel for imperial amounts to convert to metric"
-          )}
-        </div>
+      <div className="mt-4 text-center text-sm text-muted-foreground">
+        {isLoading ? (
+          "Loading conversion data..."
+        ) : (
+          isInputMetric 
+            ? "Enter decimal amount, select metric unit to convert to imperial" 
+            : "Use fraction wheel for imperial amounts to convert to metric"
+        )}
       </div>
 
       {/* Decimal Keypad Modal */}

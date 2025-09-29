@@ -178,65 +178,72 @@ export function VolumeWeightDisplay() {
         )}
       </div>
 
-      {/* Conversion Display */}
+      {/* Conversion Display with Separate Cards */}
       {selectedIngredient && (
-        <div className="text-center bg-card p-6 rounded-lg border border-card-border">
-          <div className="flex items-center justify-center gap-4 text-lg md:text-xl">
-            <div className="flex flex-col items-center gap-2">
-              {/* Input Amount */}
-              <div className="relative">
-                {isInputMetric ? (
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-2 text-2xl font-mono font-bold text-conversion-accent hover:bg-conversion-accent/10"
-                    onClick={() => setShowKeypad(true)}
-                    data-testid="input-amount-metric"
-                  >
-                    {inputAmount}
-                  </Button>
-                ) : (
-                  <div data-testid="input-amount-fraction" className="px-2">
-                    <FractionWheel 
-                      value={inputAmount} 
-                      onChange={setInputAmount}
-                      dataTestId="input-amount-wheel"
-                    />
-                  </div>
-                )}
-              </div>
-              
-              {/* Input Unit */}
-              <div data-testid="input-unit">
-                <UnitWheel
-                  units={availableInputUnits}
-                  selectedUnit={inputUnit}
-                  onUnitChange={setInputUnit}
-                  dataTestId="input-unit-wheel"
-                />
+        <div>
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
+            {/* Input Card */}
+            <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+              <div className="text-center space-y-4">
+                {/* Input Amount */}
+                <div className="relative">
+                  {isInputMetric ? (
+                    <Button
+                      variant="ghost"
+                      className="h-auto p-2 text-2xl font-mono font-bold text-conversion-accent hover:bg-conversion-accent/10"
+                      onClick={() => setShowKeypad(true)}
+                      data-testid="input-amount-metric"
+                    >
+                      {inputAmount}
+                    </Button>
+                  ) : (
+                    <div data-testid="input-amount-fraction" className="px-2">
+                      <FractionWheel 
+                        value={inputAmount} 
+                        onChange={setInputAmount}
+                        dataTestId="input-amount-wheel"
+                      />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Input Unit */}
+                <div data-testid="input-unit">
+                  <UnitWheel
+                    units={availableInputUnits}
+                    selectedUnit={inputUnit}
+                    onUnitChange={setInputUnit}
+                    dataTestId="input-unit-wheel"
+                  />
+                </div>
               </div>
             </div>
             
+            {/* Equals Sign */}
             <div className="text-3xl text-muted-foreground font-light">=</div>
             
-            <div className="flex flex-col items-center gap-2">
-              {/* Output Amount */}
-              <div className="text-3xl font-bold text-conversion-accent font-mono" data-testid="output-amount">
-                {formatResult(result)}
-              </div>
-              
-              {/* Output Unit */}
-              <div data-testid="output-unit">
-                <UnitWheel
-                  units={availableOutputUnits}
-                  selectedUnit={outputUnit}
-                  onUnitChange={setOutputUnit}
-                  dataTestId="output-unit-wheel"
-                />
+            {/* Output Card */}
+            <div className="bg-card p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
+              <div className="text-center space-y-4">
+                {/* Output Amount */}
+                <div className="text-2xl font-bold text-conversion-accent font-mono pt-8" data-testid="output-amount">
+                  {formatResult(result)}
+                </div>
+                
+                {/* Output Unit */}
+                <div data-testid="output-unit">
+                  <UnitWheel
+                    units={availableOutputUnits}
+                    selectedUnit={outputUnit}
+                    onUnitChange={setOutputUnit}
+                    dataTestId="output-unit-wheel"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 text-sm text-muted-foreground">
+          <div className="mt-4 text-center text-sm text-muted-foreground">
             {conversionMode === "volume-to-weight" 
               ? `Converting volume to weight using ${selectedIngredient.toLowerCase()} density`
               : `Converting weight to volume using ${selectedIngredient.toLowerCase()} density`
