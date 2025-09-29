@@ -51,7 +51,7 @@ export function ClickableButton({
             strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
             strokeDashoffset: randomOffset.toString()
           }}
-          x="9" y="12" width="82" height="36" rx="6" ry="6"
+          x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
           vectorEffect="non-scaling-stroke"
         />
