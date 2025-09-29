@@ -9,6 +9,21 @@ const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"
 const IMPERIAL_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
 const METRIC_UNITS = ["mL/cc", "liter"];
 
+// Function to convert fraction strings to decimal numbers
+function fractionToDecimal(fraction: string): number {
+  if (fraction.includes(" ")) {
+    const [whole, frac] = fraction.split(" ");
+    return parseFloat(whole) + fractionToDecimal(frac);
+  }
+  
+  if (fraction.includes("/")) {
+    const [num, den] = fraction.split("/").map(Number);
+    return num / den;
+  }
+  
+  return parseFloat(fraction);
+}
+
 // Function to pluralize unit names based on amount
 const pluralizeUnit = (unit: string, amount: number): string => {
   if (amount <= 1) return unit;
@@ -41,20 +56,6 @@ const CONVERSIONS_TO_ML: { [key: string]: number } = {
   "mL/cc": 1,
   "liter": 1000,
 };
-
-function fractionToDecimal(fraction: string): number {
-  if (fraction.includes(" ")) {
-    const [whole, frac] = fraction.split(" ");
-    return parseFloat(whole) + fractionToDecimal(frac);
-  }
-  
-  if (fraction.includes("/")) {
-    const [num, den] = fraction.split("/").map(Number);
-    return num / den;
-  }
-  
-  return parseFloat(fraction);
-}
 
 function formatResult(value: number): string {
   if (value < 0.01) return value.toFixed(4);
@@ -135,7 +136,7 @@ export function ConversionDisplay() {
               data-testid="input-unit-button" 
               className="flex-1"
             >
-              {pluralizeUnit(inputUnit, parseFloat(inputAmount))}
+              {pluralizeUnit(inputUnit, fractionToDecimal(inputAmount))}
             </ClickableButton>
           </div>
         </div>
