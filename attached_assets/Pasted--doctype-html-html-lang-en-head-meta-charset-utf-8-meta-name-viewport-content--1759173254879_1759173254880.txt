@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WASD Keys (outline + reflection gap + thickness band)</title>
+<style>
+  :root{
+    --key-size: 120;         /* px */
+    --outer-stroke: 10;      /* px */
+    --inner-stroke: 8;       /* px */
+    --band-stroke: 8;        /* px */
+    --outer-radius: 18;      /* svg units in 100x100 viewBox */
+    --inner-radius: 12;
+    --stroke-color: #000;
+    --fill-color: transparent;
+
+    /* Reflection gap controls (relative to the inner-rect perimeter) */
+    --gap-size: .12;         /* 0..1 (fraction of perimeter missing) */
+    --gap-offset: .00;       /* 0..1 (start position along perimeter) */
+  }
+
+  body{
+    margin:0; min-height:100dvh; display:grid; place-items:center;
+    background:#fff; color:#000; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  }
+
+  .grid{
+    display:grid; gap:24px;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    align-items:end;
+  }
+  .grid .top { grid-column: 2 / span 1; justify-self:center; }
+
+  .key{
+    width: calc(var(--key-size) * 1px);
+    aspect-ratio: 1 / 1;
+    display:block;
+  }
+
+  /* Make strokes stay crisp when scaling */
+  .noscale { vector-effect: non-scaling-stroke; }
+
+  .outer,
+  .inner,
+  .band{
+    fill: var(--fill-color);
+    stroke: var(--stroke-color);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .outer{ stroke-width: calc(var(--outer-stroke) * 1px); }
+  .inner{ stroke-width: calc(var(--inner-stroke) * 1px); }
+  .band { stroke-width: calc(var(--band-stroke) * 1px); }
+
+  /* Single reflective gap on the inner rectangle using dasharray */
+  .inner{
+    /* pathLength=1 on the <rect> lets us use 0..1 proportions */
+    stroke-dasharray: calc(1 - var(--gap-size)) var(--gap-size);
+    stroke-dashoffset: var(--gap-offset);
+  }
+
+  .letter{
+    font-weight: 800;
+    font-size: 48px;
+    dominant-baseline: middle;
+    text-anchor: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid" aria-label="WASD keys">
+  <!-- W (top, with gap near bottom-right) -->
+  <svg class="key top" viewBox="0 0 100 100"
+       style="--gap-size:.11; --gap-offset:.78"
+       role="img" aria-label="W key">
+    <!-- Outer shell -->
+    <rect class="outer noscale" x="8" y="8" width="84" height="84" rx="18" ry="18"/>
+    <!-- Inner label box (with reflective gap) -->
+    <rect class="inner noscale" x="22" y="20" width="56" height="48" rx="12" ry="12" pathLength="1"/>
+    <!-- Thickness band below the label box -->
+    <rect class="band noscale" x="28" y="75" width="44" height="8" rx="4" ry="4"/>
+    <!-- Letter -->
+    <text class="letter" x="50" y="44">W</text>
+  </svg>
+
+  <!-- A (gap near top-left) -->
+  <svg class="key" viewBox="0 0 100 100"
+       style="--gap-size:.12; --gap-offset:.15"
+       role="img" aria-label="A key">
+    <rect class="outer noscale" x="8" y="8" width="84" height="84" rx="18" ry="18"/>
+    <rect class="inner noscale" x="22" y="20" width="56" height="48" rx="12" ry="12" pathLength="1"/>
+    <rect class="band  noscale" x="24" y="78" width="24" height="8" rx="4" ry="4"/>
+    <rect class="band  noscale" x="52" y="78" width="24" height="8" rx="4" ry="4"/>
+    <text class="letter" x="50" y="44">A</text>
+  </svg>
+
+  <!-- S (gap centered bottom) -->
+  <svg class="key" viewBox="0 0 100 100"
+       style="--gap-size:.14; --gap-offset:.50"
+       role="img" aria-label="S key">
+    <rect class="outer noscale" x="8" y="8" width="84" height="84" rx="18" ry="18"/>
+    <rect class="inner noscale" x="22" y="20" width="56" height="48" rx="12" ry="12" pathLength="1"/>
+    <rect class="band  noscale" x="30" y="78" width="40" height="8" rx="4" ry="4"/>
+    <text class="letter" x="50" y="44">S</text>
+  </svg>
+
+  <!-- D (gap near top-right) -->
+  <svg class="key" viewBox="0 0 100 100"
+       style="--gap-size:.12; --gap-offset:.92"
+       role="img" aria-label="D key">
+    <rect class="outer noscale" x="8" y="8" width="84" height="84" rx="18" ry="18"/>
+    <rect class="inner noscale" x="22" y="20" width="56" height="48" rx="12" ry="12" pathLength="1"/>
+    <rect class="band  noscale" x="26" y="78" width="48" height="8" rx="4" ry="4"/>
+    <text class="letter" x="50" y="44">D</text>
+  </svg>
+</div>
+
+</body>
+</html>
