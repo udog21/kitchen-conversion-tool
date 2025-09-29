@@ -33,19 +33,20 @@ export function ClickableButton({
         viewBox="0 0 100 60" 
         className="w-full h-full min-h-10"
       >
-        {/* Outer shell */}
+        {/* Outer shell - Sandy brown borders */}
         <rect 
-          className="fill-transparent stroke-blue-600" 
-          style={{ strokeWidth: "3px" }}
+          className="fill-transparent" 
+          style={{ strokeWidth: "3px", stroke: "#F4A261" }}
           x="5" y="5" width="90" height="50" rx="8" ry="8"
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with exactly 3 small reflection gaps */}
+        {/* Inner label box with exactly 3 small reflection gaps - Burnt sienna */}
         <rect 
-          className="fill-transparent stroke-blue-600" 
+          className="fill-transparent" 
           style={{ 
             strokeWidth: "2px",
+            stroke: "#E76F51",
             // Simple pattern: 3 small gaps (1.5% each) with solid segments
             strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
             strokeDashoffset: randomOffset.toString()
@@ -55,13 +56,13 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Text */}
+        {/* Text - Burnt sienna */}
         <text 
-          className="fill-blue-600 font-semibold text-base" 
+          className="font-semibold text-base" 
+          style={{ fill: "#E76F51", fontSize: "12px" }}
           x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"
-          style={{ fontSize: "12px" }}
         >
           {children}
         </text>
