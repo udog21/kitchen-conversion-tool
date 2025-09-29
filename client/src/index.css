@@ -382,4 +382,10 @@
     font-weight: 600;
     user-select: none;
   }
+
+  /* Standard width for unit buttons to fit longest unit name */
+  .kitchen-key--unit {
+    min-width: 120px;
+    width: 120px;
+  }
 }

@@ -112,7 +112,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowInputUnitPicker(true)}
               data-testid="input-unit-button" 
-              className="flex-1"
+              className="flex-1 kitchen-key--unit"
             >
               {inputUnit}
             </ClickableButton>
@@ -134,7 +134,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowOutputUnitPicker(true)}
               data-testid="output-unit-button"
-              className="flex-1 min-w-0"
+              className="flex-1 min-w-0 kitchen-key--unit"
             >
               {outputUnit}
             </ClickableButton>
