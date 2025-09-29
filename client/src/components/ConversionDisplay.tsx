@@ -98,12 +98,12 @@ export function ConversionDisplay() {
       <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
         {/* Input Card */}
         <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
-          <div className="text-center space-y-3 sm:space-y-4">
+          <div className="flex flex-row gap-2 flex-wrap">
             {/* Input Amount Button */}
             <ClickableButton
               onClick={() => setShowAmountPicker(true)}
               data-testid="input-amount-button"
-              className="w-full text-lg sm:text-xl font-mono font-bold text-conversion-accent"
+              className="flex-1 text-lg sm:text-xl font-mono font-bold text-conversion-accent"
             >
               {inputAmount}
             </ClickableButton>
@@ -112,7 +112,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowInputUnitPicker(true)}
               data-testid="input-unit-button" 
-              className="w-full"
+              className="flex-1"
             >
               {inputUnit}
             </ClickableButton>
@@ -124,9 +124,9 @@ export function ConversionDisplay() {
         
         {/* Output Card */}
         <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[200px]">
-          <div className="text-center space-y-3 sm:space-y-4">
+          <div className="flex flex-row gap-2 flex-wrap">
             {/* Output Amount Display */}
-            <div className="text-lg sm:text-xl font-bold text-conversion-accent font-mono py-3 px-4 bg-muted/30 rounded-lg border border-muted" data-testid="output-amount">
+            <div className="flex-1 text-lg sm:text-xl font-bold text-conversion-accent font-mono py-3 px-4 bg-muted/30 rounded-lg border border-muted flex items-center justify-center" data-testid="output-amount">
               {formatResult(result)}
             </div>
             
@@ -134,7 +134,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowOutputUnitPicker(true)}
               data-testid="output-unit-button"
-              className="w-full"
+              className="flex-1"
             >
               {outputUnit}
             </ClickableButton>
