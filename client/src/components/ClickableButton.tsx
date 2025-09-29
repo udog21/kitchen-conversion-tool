@@ -17,25 +17,7 @@ export function ClickableButton({
   "data-testid": dataTestId,
   variant = "normal"
 }: ClickableButtonProps) {
-  // Generate 3 gaps with random rotation but ensuring all 3 are always visible
-  const randomOffset = Math.random() * (1/3); // Only rotate within first third to keep all gaps visible
-  const gapSize = 0.015; // Small gap size (1.5%)
-  
-  // Calculate 3 evenly spaced gap positions
-  const gap1Start = randomOffset;
-  const gap2Start = (randomOffset + 1/3) % 1;
-  const gap3Start = (randomOffset + 2/3) % 1;
-  
-  // Sort gaps by position
-  const gaps = [gap1Start, gap2Start, gap3Start].sort((a, b) => a - b);
-  
-  // Build dasharray: solid segments between gaps
-  const seg1 = gaps[0]; // From start to first gap
-  const seg2 = gaps[1] - gaps[0] - gapSize; // Between gap 1 and gap 2
-  const seg3 = gaps[2] - gaps[1] - gapSize; // Between gap 2 and gap 3
-  const seg4 = 1 - gaps[2] - gapSize; // From gap 3 to end
-  
-  const strokeDasharray = `${seg1} ${gapSize} ${seg2} ${gapSize} ${seg3} ${gapSize} ${seg4}`;
+  const randomOffset = Math.random() * 0.3; // Random offset to vary gap positions
 
   return (
     <button
@@ -64,7 +46,9 @@ export function ClickableButton({
           className="fill-transparent stroke-current" 
           style={{ 
             strokeWidth: "2px",
-            strokeDasharray: strokeDasharray
+            // Simple pattern: 3 small gaps (1.5% each) with solid segments
+            strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
+            strokeDashoffset: randomOffset.toString()
           }}
           x="12" y="12" width="76" height="36" rx="6" ry="6"
           pathLength="1"
