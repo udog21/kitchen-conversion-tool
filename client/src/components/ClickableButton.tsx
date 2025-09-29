@@ -17,15 +17,6 @@ export function ClickableButton({
   "data-testid": dataTestId,
   variant = "normal"
 }: ClickableButtonProps) {
-  // Calculate band height based on state
-  const getBandHeight = () => {
-    if (variant === "modal") {
-      return pressed ? 8 : 12; // Selected vs unselected in modal
-    }
-    return pressed ? 4 : 8; // Pressed vs normal state
-  };
-
-  const bandHeight = getBandHeight();
   const gapOffset = Math.random() * 0.8 + 0.1; // Random gap position for variety
 
   return (
@@ -42,7 +33,7 @@ export function ClickableButton({
         viewBox="0 0 100 100" 
         className="w-full h-full min-h-12"
         style={{
-          "--gap-size": "0.12",
+          "--gap-size": "0.06", // Reduced by 50% from 0.12
           "--gap-offset": gapOffset.toString()
         } as React.CSSProperties}
       >
@@ -54,7 +45,7 @@ export function ClickableButton({
           vectorEffect="non-scaling-stroke"
         />
         
-        {/* Inner label box with reflection gap */}
+        {/* Inner label box with reflection gap - equal margins on all sides */}
         <rect 
           className="fill-transparent stroke-current" 
           style={{ 
@@ -62,21 +53,15 @@ export function ClickableButton({
             strokeDasharray: `calc(1 - var(--gap-size)) var(--gap-size)`,
             strokeDashoffset: `var(--gap-offset)`
           }}
-          x="12" y="12" width="76" height="48" rx="6" ry="6"
+          x="12" y="12" width="76" height="56" rx="6" ry="6"
           pathLength="1"
           vectorEffect="non-scaling-stroke"
-        />
-        
-        {/* Thickness band underneath */}
-        <rect 
-          className="fill-current" 
-          x="20" y="68" width="60" height={bandHeight} rx="3" ry="3"
         />
         
         {/* Text */}
         <text 
           className="fill-current font-semibold text-base" 
-          x="50" y="38" 
+          x="50" y="40" 
           textAnchor="middle" 
           dominantBaseline="middle"
           style={{ fontSize: "12px" }}
