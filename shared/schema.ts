@@ -14,6 +14,7 @@ export const conversionRatios = pgTable("conversion_ratios", {
   fromUnit: text("from_unit").notNull(),
   toUnit: text("to_unit").notNull(),
   ratio: decimal("ratio", { precision: 10, scale: 6 }).notNull(),
+  system: text("system").notNull(), // US, UK_METRIC, UK_IMPERIAL, AU_NZ, CA, EU
 });
 
 export const ingredients = pgTable("ingredients", {

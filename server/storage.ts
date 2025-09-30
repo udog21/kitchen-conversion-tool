@@ -11,7 +11,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  getConversionRatio(fromUnit: string, toUnit: string): Promise<ConversionRatio | undefined>;
+  getConversionRatio(fromUnit: string, toUnit: string, system?: string): Promise<ConversionRatio | undefined>;
   getAllConversionRatios(): Promise<ConversionRatio[]>;
   createConversionRatio(ratio: InsertConversionRatio): Promise<ConversionRatio>;
   seedConversionRatios(): Promise<void>;
@@ -58,8 +58,8 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async getConversionRatio(fromUnit: string, toUnit: string): Promise<ConversionRatio | undefined> {
-    const key = `${fromUnit}-${toUnit}`;
+  async getConversionRatio(fromUnit: string, toUnit: string, system: string = "US"): Promise<ConversionRatio | undefined> {
+    const key = `${system}-${fromUnit}-${toUnit}`;
     return this.conversionRatios.get(key);
   }
 
@@ -70,38 +70,90 @@ export class MemStorage implements IStorage {
   async createConversionRatio(insertRatio: InsertConversionRatio): Promise<ConversionRatio> {
     const id = randomUUID();
     const ratio: ConversionRatio = { ...insertRatio, id };
-    const key = `${insertRatio.fromUnit}-${insertRatio.toUnit}`;
+    const key = `${insertRatio.system}-${insertRatio.fromUnit}-${insertRatio.toUnit}`;
     this.conversionRatios.set(key, ratio);
     return ratio;
   }
 
   async seedConversionRatios(): Promise<void> {
-    // Conversion ratios to mL (base unit)
-    const conversionsToMl = {
-      "teaspoon": 4.92892,
-      "tablespoon": 14.7868,
-      "cup": 236.588,
-      "pint": 473.176,
-      "quart": 946.353,
-      "gallon": 3785.41,
-      "mL/cc": 1,
-      "liter": 1000,
+    // System definitions based on CSV data (cup, tablespoon, teaspoon in mL)
+    const systems = {
+      US: {
+        teaspoon: 4.93,
+        tablespoon: 14.79,
+        cup: 236.6,
+        pint: 473,
+        quart: 946.353,
+        gallon: 3785,
+        mL: 1,
+        liter: 1000,
+      },
+      UK_METRIC: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 240,
+        mL: 1,
+        liter: 1000,
+      },
+      UK_IMPERIAL: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 284,
+        pint: 568,
+        quart: 1136.5,
+        gallon: 4546,
+        mL: 1,
+        liter: 1000,
+      },
+      AU_NZ: {
+        teaspoon: 5,
+        tablespoon: 20,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
+      CA: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
+      EU: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
     };
 
-    const units = Object.keys(conversionsToMl);
-    
-    for (const fromUnit of units) {
-      for (const toUnit of units) {
-        if (fromUnit !== toUnit) {
-          const fromMl = conversionsToMl[fromUnit as keyof typeof conversionsToMl];
-          const toMl = conversionsToMl[toUnit as keyof typeof conversionsToMl];
-          const ratio = fromMl / toMl;
-          
-          await this.createConversionRatio({
-            fromUnit,
-            toUnit,
-            ratio: ratio.toString(),
-          });
+    for (const [systemName, conversionsToMl] of Object.entries(systems)) {
+      const units = Object.keys(conversionsToMl);
+      
+      for (const fromUnit of units) {
+        for (const toUnit of units) {
+          if (fromUnit !== toUnit) {
+            const fromMl = conversionsToMl[fromUnit as keyof typeof conversionsToMl];
+            const toMl = conversionsToMl[toUnit as keyof typeof conversionsToMl];
+            const ratio = fromMl / toMl;
+            
+            await this.createConversionRatio({
+              fromUnit,
+              toUnit,
+              ratio: ratio.toString(),
+              system: systemName,
+            });
+          }
         }
       }
     }
@@ -249,14 +301,15 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async getConversionRatio(fromUnit: string, toUnit: string): Promise<ConversionRatio | undefined> {
+  async getConversionRatio(fromUnit: string, toUnit: string, system: string = "US"): Promise<ConversionRatio | undefined> {
     await this.ensureInitialized();
     const result = await this.db
       .select()
       .from(conversionRatios)
       .where(and(
         eq(conversionRatios.fromUnit, fromUnit),
-        eq(conversionRatios.toUnit, toUnit)
+        eq(conversionRatios.toUnit, toUnit),
+        eq(conversionRatios.system, system)
       ))
       .limit(1);
     return result[0];
@@ -279,33 +332,86 @@ export class DatabaseStorage implements IStorage {
       return; // Already seeded
     }
 
-    // Conversion ratios to mL (base unit)
-    const conversionsToMl = {
-      "teaspoon": 4.92892,
-      "tablespoon": 14.7868,
-      "cup": 236.588,
-      "pint": 473.176,
-      "quart": 946.353,
-      "gallon": 3785.41,
-      "mL/cc": 1,
-      "liter": 1000,
+    // System definitions based on CSV data (cup, tablespoon, teaspoon in mL)
+    const systems = {
+      US: {
+        teaspoon: 4.93,
+        tablespoon: 14.79,
+        cup: 236.6,
+        pint: 473,
+        quart: 946.353,
+        gallon: 3785,
+        mL: 1,
+        liter: 1000,
+      },
+      UK_METRIC: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 240,
+        mL: 1,
+        liter: 1000,
+      },
+      UK_IMPERIAL: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 284,
+        pint: 568,
+        quart: 1136.5,
+        gallon: 4546,
+        mL: 1,
+        liter: 1000,
+      },
+      AU_NZ: {
+        teaspoon: 5,
+        tablespoon: 20,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
+      CA: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
+      EU: {
+        teaspoon: 5,
+        tablespoon: 15,
+        cup: 250,
+        pint: 500,
+        quart: 1000,
+        gallon: 4000,
+        mL: 1,
+        liter: 1000,
+      },
     };
 
-    const units = Object.keys(conversionsToMl);
     const ratiosToInsert: InsertConversionRatio[] = [];
     
-    for (const fromUnit of units) {
-      for (const toUnit of units) {
-        if (fromUnit !== toUnit) {
-          const fromMl = conversionsToMl[fromUnit as keyof typeof conversionsToMl];
-          const toMl = conversionsToMl[toUnit as keyof typeof conversionsToMl];
-          const ratio = fromMl / toMl;
-          
-          ratiosToInsert.push({
-            fromUnit,
-            toUnit,
-            ratio: ratio.toString(),
-          });
+    for (const [systemName, conversionsToMl] of Object.entries(systems)) {
+      const units = Object.keys(conversionsToMl);
+      
+      for (const fromUnit of units) {
+        for (const toUnit of units) {
+          if (fromUnit !== toUnit) {
+            const fromMl = conversionsToMl[fromUnit as keyof typeof conversionsToMl];
+            const toMl = conversionsToMl[toUnit as keyof typeof conversionsToMl];
+            const ratio = fromMl / toMl;
+            
+            ratiosToInsert.push({
+              fromUnit,
+              toUnit,
+              ratio: ratio.toString(),
+              system: systemName,
+            });
+          }
         }
       }
     }
