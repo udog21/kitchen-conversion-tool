@@ -59,7 +59,7 @@ export function ClickableButton({
         {/* Text - Burnt sienna */}
         <text 
           className="font-semibold text-base" 
-          style={{ fill: "#E76F51", fontSize: "12px" }}
+          style={{ fill: "#E76F51", fontSize: "11px" }}
           x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"

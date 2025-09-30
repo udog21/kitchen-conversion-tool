@@ -175,7 +175,7 @@ export function ConversionDisplay() {
                 {/* Text - Persian green */}
                 <text 
                   className="font-semibold" 
-                  style={{ fill: "#2A9D8F", fontSize: "12px" }}
+                  style={{ fill: "#2A9D8F", fontSize: "11px" }}
                   x="50" y="30" 
                   textAnchor="middle" 
                   dominantBaseline="middle"
