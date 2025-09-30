@@ -141,14 +141,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
     prevInputUnitRef.current = inputUnit;
   }, [inputUnit]);
 
-  // Auto-select appropriate output unit when input changes
-  useEffect(() => {
-    if (isInputMetric && IMPERIAL_UNITS.includes(outputUnit)) {
-      setOutputUnit("mL/cc");
-    } else if (!isInputMetric && METRIC_UNITS.includes(outputUnit)) {
-      setOutputUnit("tablespoon");
-    }
-  }, [inputUnit, outputUnit, isInputMetric]);
+  // No longer auto-switching output units - users can convert within same system or between systems
 
   const calculateConversion = (): number => {
     const inputValue = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
@@ -259,7 +252,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
         onClose={() => setShowOutputUnitPicker(false)}
         currentUnit={outputUnit}
         onUnitChange={setOutputUnit}
-        units={isInputMetric ? availableImperialUnits : availableMetricUnits}
+        units={availableUnits}
         title="Select Output Unit"
       />
     </div>
