@@ -1,20 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ConversionTabs, TabType } from "@/components/ConversionTabs";
 import { ConversionDisplay } from "@/components/ConversionDisplay";
 import { VolumeWeightDisplay } from "@/components/VolumeWeightDisplay";
 import { SubstitutionsDisplay } from "@/components/SubstitutionsDisplay";
 import { AdBanner } from "@/components/AdBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SystemPicker } from "@/components/SystemPicker";
+import { ClickableButton } from "@/components/ClickableButton";
+import {
+  type MeasurementSystem,
+  getStoredSystem,
+  storeSystem,
+  detectSystemFromLocation,
+  getSystemInfo,
+} from "@/lib/systemDetection";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("imperial-metric");
+  const [measurementSystem, setMeasurementSystem] = useState<MeasurementSystem>("US");
+  const [showSystemPicker, setShowSystemPicker] = useState(false);
+
+  // Auto-detect system on mount
+  useEffect(() => {
+    const initializeSystem = async () => {
+      // Check if user has a stored preference
+      const stored = getStoredSystem();
+      if (stored) {
+        setMeasurementSystem(stored);
+        return;
+      }
+
+      // Otherwise, detect from location
+      const detected = await detectSystemFromLocation();
+      setMeasurementSystem(detected);
+      storeSystem(detected);
+    };
+
+    initializeSystem();
+  }, []);
+
+  const handleSystemChange = (system: MeasurementSystem) => {
+    setMeasurementSystem(system);
+    storeSystem(system);
+  };
+
+  const systemInfo = getSystemInfo(measurementSystem);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "imperial-metric":
-        return <ConversionDisplay />;
+        return <ConversionDisplay system={measurementSystem} />;
       case "volume-weight":
-        return <VolumeWeightDisplay />;
+        return <VolumeWeightDisplay system={measurementSystem} />;
       case "substitutions":
         return <SubstitutionsDisplay />;
       default:
@@ -24,10 +61,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with theme toggle */}
+      {/* Header with system selector and theme toggle */}
       <header className="flex justify-between items-center p-4 border-b border-border">
         <h1 className="text-xl font-semibold text-foreground">Kitchen Conversions</h1>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <ClickableButton
+            onClick={() => setShowSystemPicker(true)}
+            data-testid="button-system-selector"
+            className="text-2xl px-3"
+            showInnerBorder={false}
+          >
+            {systemInfo.icon || systemInfo.flag}
+          </ClickableButton>
+          <ThemeToggle />
+        </div>
       </header>
 
       <div className="max-w-4xl mx-auto">
@@ -54,6 +101,14 @@ export default function Home() {
           <AdBanner type="square" />
         </div>
       </div>
+
+      {/* System Picker Modal */}
+      <SystemPicker
+        isOpen={showSystemPicker}
+        onClose={() => setShowSystemPicker(false)}
+        currentSystem={measurementSystem}
+        onSystemChange={handleSystemChange}
+      />
     </div>
   );
 }

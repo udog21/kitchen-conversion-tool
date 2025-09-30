@@ -12,9 +12,9 @@ import {
 } from "@/lib/fractionUtils";
 
 // Volume units with their categories
-const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL/cc", "liter"];
+const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL", "liter"];
 const IMPERIAL_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
-const METRIC_UNITS = ["mL/cc", "liter"];
+const METRIC_UNITS = ["mL", "liter"];
 
 // Function to pluralize unit names based on amount
 const pluralizeUnit = (unit: string, amount: number): string => {
@@ -45,7 +45,7 @@ const CONVERSIONS_TO_ML: { [key: string]: number } = {
   "pint": 473.176,
   "quart": 946.353,
   "gallon": 3785.41,
-  "mL/cc": 1,
+  "mL": 1,
   "liter": 1000,
 };
 
@@ -63,7 +63,11 @@ function formatResult(value: number, isMetric: boolean): string {
   return Math.round(value).toString();
 }
 
-export function ConversionDisplay() {
+interface ConversionDisplayProps {
+  system: string;
+}
+
+export function ConversionDisplay({ system }: ConversionDisplayProps) {
   const [inputAmount, setInputAmount] = useState("2 1/4");
   const [inputUnit, setInputUnit] = useState("cup");
   const [outputUnit, setOutputUnit] = useState("tablespoon");
@@ -72,9 +76,9 @@ export function ConversionDisplay() {
   const [showOutputUnitPicker, setShowOutputUnitPicker] = useState(false);
   const prevInputUnitRef = useRef(inputUnit);
 
-  // Fetch conversion ratios from API
+  // Fetch conversion ratios from API (filtered by system)
   const { data: conversionRatios, isLoading } = useQuery({
-    queryKey: ['/api/conversions'],
+    queryKey: ['/api/conversions', system],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 

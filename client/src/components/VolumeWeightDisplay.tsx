@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Volume units
-const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL/cc", "liter"];
+const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL", "liter"];
 const IMPERIAL_VOLUME = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
-const METRIC_VOLUME = ["mL/cc", "liter"];
+const METRIC_VOLUME = ["mL", "liter"];
 
 // Weight units
 const WEIGHT_UNITS = ["ounce", "pound", "gram", "kilogram"];
@@ -53,6 +53,7 @@ const VOLUME_TO_ML: { [key: string]: number } = {
   "pint": 473.176,
   "quart": 946.353,
   "gallon": 3785.41,
+  "mL": 1,
   "mL/cc": 1,
   "liter": 1000,
 };
@@ -79,7 +80,11 @@ function formatResult(value: number): string {
   return Math.round(value).toString();
 }
 
-export function VolumeWeightDisplay() {
+interface VolumeWeightDisplayProps {
+  system: string;
+}
+
+export function VolumeWeightDisplay({ system }: VolumeWeightDisplayProps) {
   const [inputAmount, setInputAmount] = useState("1");
   const [inputUnit, setInputUnit] = useState("cup");
   const [outputUnit, setOutputUnit] = useState("ounce");

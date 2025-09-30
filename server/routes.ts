@@ -14,10 +14,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/conversions/:fromUnit/:toUnit", async (req, res) => {
+  // Get conversions for a specific system
+  app.get("/api/conversions/:system", async (req, res) => {
     try {
-      const { fromUnit, toUnit } = req.params;
-      const ratio = await storage.getConversionRatio(fromUnit, toUnit);
+      const { system } = req.params;
+      const allRatios = await storage.getAllConversionRatios();
+      
+      // Filter ratios by system
+      const systemRatios = allRatios.filter((ratio: any) => ratio.system === system);
+      
+      res.json(systemRatios);
+    } catch (error) {
+      console.error("Error fetching conversion ratios:", error);
+      res.status(500).json({ error: "Failed to fetch conversion ratios" });
+    }
+  });
+
+  app.get("/api/conversions/:system/:fromUnit/:toUnit", async (req, res) => {
+    try {
+      const { system, fromUnit, toUnit } = req.params;
+      const ratio = await storage.getConversionRatio(fromUnit, toUnit, system);
       
       if (!ratio) {
         return res.status(404).json({ error: "Conversion ratio not found" });
