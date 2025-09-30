@@ -57,7 +57,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
         
         <OutputDisplay
           data-testid="keypad-display"
-          className="text-2xl font-mono font-bold mb-4"
+          className="text-3xl font-mono font-bold mb-4"
         >
           {value}
         </OutputDisplay>
@@ -69,7 +69,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
               onClick={() => handleDigit(digit.toString())}
               data-testid={`key-${digit}`}
               showInnerBorder={false}
-              className="text-2xl font-mono font-bold"
+              className="text-3xl font-mono font-bold"
             >
               {digit}
             </ClickableButton>
@@ -79,7 +79,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit(".")}
             data-testid="key-decimal"
             showInnerBorder={false}
-            className="text-2xl font-mono font-bold"
+            className="text-3xl font-mono font-bold"
           >
             .
           </ClickableButton>
@@ -88,7 +88,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit("0")}
             data-testid="key-0"
             showInnerBorder={false}
-            className="text-2xl font-mono font-bold"
+            className="text-3xl font-mono font-bold"
           >
             0
           </ClickableButton>
@@ -97,13 +97,21 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={handleBackspace}
             data-testid="key-backspace"
             showInnerBorder={false}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center text-2xl"
           >
-            <Delete className="w-5 h-5" />
+            <Delete className="w-6 h-6" />
           </ClickableButton>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2">
+          <ClickableButton
+            onClick={onClose}
+            data-testid="key-cancel"
+            showInnerBorder={false}
+            className="text-base"
+          >
+            Cancel
+          </ClickableButton>
           <ClickableButton
             onClick={handleClear}
             data-testid="key-clear"

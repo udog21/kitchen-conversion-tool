@@ -132,7 +132,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         {/* Display current value */}
         <OutputDisplay
           data-testid="keypad-display"
-          className="text-2xl font-mono font-bold"
+          className="text-3xl font-mono font-bold"
         >
           {keypadValue}
         </OutputDisplay>
@@ -144,7 +144,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               key={digit}
               onClick={() => handleKeypadDigit(digit.toString())}
               data-testid={`keypad-${digit}`}
-              className="text-2xl font-mono font-bold"
+              className="text-3xl font-mono font-bold"
               showInnerBorder={false}
             >
               {digit}
@@ -153,7 +153,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={() => handleKeypadDigit("0")}
             data-testid="keypad-0"
-            className="text-2xl font-mono font-bold col-start-2"
+            className="text-3xl font-mono font-bold col-start-2"
             showInnerBorder={false}
           >
             0
@@ -161,15 +161,15 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={handleKeypadBackspace}
             data-testid="keypad-backspace"
-            className="text-2xl font-mono"
+            className="text-3xl font-mono"
             showInnerBorder={false}
           >
             ⌫
           </ClickableButton>
         </div>
 
-        {/* Cancel/Done buttons */}
-        <div className="grid grid-cols-2 gap-2">
+        {/* Cancel/Clear/Done buttons */}
+        <div className="grid grid-cols-3 gap-2">
           <ClickableButton
             onClick={handleKeypadCancel}
             data-testid="keypad-cancel"
@@ -177,6 +177,17 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             className="text-base"
           >
             Cancel
+          </ClickableButton>
+          <ClickableButton
+            onClick={() => {
+              setKeypadValue("0");
+              setIsFirstDigit(true);
+            }}
+            data-testid="keypad-clear"
+            showInnerBorder={false}
+            className="text-base"
+          >
+            Clear
           </ClickableButton>
           <ClickableButton
             onClick={handleKeypadDone}

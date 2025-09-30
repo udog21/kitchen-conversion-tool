@@ -11,19 +11,34 @@ interface MetricKeypadProps {
 
 export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadProps) {
   const [value, setValue] = useState(initialValue);
+  const [isFirstDigit, setIsFirstDigit] = useState(true);
 
   const handleDigit = (digit: string) => {
-    setValue(prev => prev + digit);
+    if (isFirstDigit) {
+      setValue(digit);
+      setIsFirstDigit(false);
+    } else {
+      setValue(prev => prev + digit);
+    }
   };
 
   const handleDecimal = () => {
-    if (!value.includes(".")) {
+    if (isFirstDigit) {
+      setValue("0.");
+      setIsFirstDigit(false);
+    } else if (!value.includes(".")) {
       setValue(prev => prev + ".");
     }
   };
 
   const handleBackspace = () => {
     setValue(prev => prev.slice(0, -1) || "0");
+    setIsFirstDigit(false);
+  };
+
+  const handleClear = () => {
+    setValue("0");
+    setIsFirstDigit(true);
   };
 
   const handleDone = () => {
@@ -35,7 +50,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
     <div className="space-y-4">
       {/* Display */}
       <OutputDisplay
-        className="text-2xl font-mono font-bold"
+        className="text-3xl font-mono font-bold"
       >
         {value || "0"}
       </OutputDisplay>
@@ -48,7 +63,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
             onClick={() => handleDigit(digit.toString())}
             data-testid={`button-digit-${digit}`}
             showInnerBorder={false}
-            className="text-2xl font-mono font-bold"
+            className="text-3xl font-mono font-bold"
           >
             {digit}
           </ClickableButton>
@@ -58,7 +73,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={handleDecimal}
           data-testid="button-decimal"
           showInnerBorder={false}
-          className="text-2xl font-mono font-bold"
+          className="text-3xl font-mono font-bold"
         >
           .
         </ClickableButton>
@@ -67,7 +82,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={() => handleDigit("0")}
           data-testid="button-digit-0"
           showInnerBorder={false}
-          className="text-2xl font-mono font-bold"
+          className="text-3xl font-mono font-bold"
         >
           0
         </ClickableButton>
@@ -76,14 +91,14 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={handleBackspace}
           data-testid="button-backspace"
           showInnerBorder={false}
-          className="flex items-center justify-center"
+          className="flex items-center justify-center text-2xl"
         >
-          <Delete className="w-5 h-5" />
+          <Delete className="w-6 h-6" />
         </ClickableButton>
       </div>
 
-      {/* Done/Cancel Buttons - outer border only */}
-      <div className="grid grid-cols-2 gap-2 pt-2">
+      {/* Cancel/Clear/Done Buttons */}
+      <div className="grid grid-cols-3 gap-2 pt-2">
         <ClickableButton
           onClick={onCancel}
           data-testid="button-cancel"
@@ -91,6 +106,15 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           className="text-base"
         >
           Cancel
+        </ClickableButton>
+
+        <ClickableButton
+          onClick={handleClear}
+          data-testid="button-clear"
+          showInnerBorder={false}
+          className="text-base"
+        >
+          Clear
         </ClickableButton>
 
         <ClickableButton
