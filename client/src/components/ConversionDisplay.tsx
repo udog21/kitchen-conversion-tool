@@ -156,26 +156,26 @@ export function ConversionDisplay() {
                 viewBox="0 0 100 60" 
                 className="w-full h-full min-h-10"
               >
-                {/* Outer shell - Persian green frame for output */}
+                {/* Outer shell - Charcoal frame for output */}
                 <rect 
                   className="fill-transparent" 
-                  style={{ strokeWidth: "2px", stroke: "#2A9D8F" }}
+                  style={{ strokeWidth: "2px", stroke: "#264653" }}
                   x="5" y="5" width="90" height="50" rx="8" ry="8"
                   vectorEffect="non-scaling-stroke"
                 />
                 
-                {/* Inner display area - Persian green, no reflection gap since it's not interactive */}
+                {/* Inner display area - Charcoal, no reflection gap since it's not interactive */}
                 <rect 
                   className="fill-transparent" 
-                  style={{ strokeWidth: "2px", stroke: "#2A9D8F" }}
+                  style={{ strokeWidth: "2px", stroke: "#264653" }}
                   x="12" y="12" width="76" height="36" rx="6" ry="6"
                   vectorEffect="non-scaling-stroke"
                 />
                 
-                {/* Text - Charcoal */}
+                {/* Text - Persian green */}
                 <text 
                   className="font-semibold" 
-                  style={{ fill: "#264653", fontSize: "12px" }}
+                  style={{ fill: "#2A9D8F", fontSize: "12px" }}
                   x="50" y="30" 
                   textAnchor="middle" 
                   dominantBaseline="middle"
