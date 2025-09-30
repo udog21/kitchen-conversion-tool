@@ -87,20 +87,30 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
   };
 
   const [keypadValue, setKeypadValue] = useState(wholeNumber.toString());
+  const [isFirstDigit, setIsFirstDigit] = useState(true);
 
   // Sync keypad value when picker opens
   useEffect(() => {
     if (showWholeNumberPicker) {
       setKeypadValue(wholeNumber.toString());
+      setIsFirstDigit(true);
     }
   }, [showWholeNumberPicker, wholeNumber]);
 
   const handleKeypadDigit = (digit: string) => {
-    setKeypadValue((prev) => prev + digit);
+    if (isFirstDigit) {
+      // Replace the current value on first digit
+      setKeypadValue(digit);
+      setIsFirstDigit(false);
+    } else {
+      // Append subsequent digits
+      setKeypadValue((prev) => prev + digit);
+    }
   };
 
   const handleKeypadBackspace = () => {
     setKeypadValue((prev) => prev.slice(0, -1) || "0");
+    setIsFirstDigit(false);
   };
 
   const handleKeypadDone = () => {
@@ -134,7 +144,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               key={digit}
               onClick={() => handleKeypadDigit(digit.toString())}
               data-testid={`keypad-${digit}`}
-              className="font-mono font-bold"
+              className="text-lg font-mono font-bold"
               showInnerBorder={false}
             >
               {digit}
@@ -143,7 +153,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={() => handleKeypadDigit("0")}
             data-testid="keypad-0"
-            className="font-mono font-bold col-start-2"
+            className="text-lg font-mono font-bold col-start-2"
             showInnerBorder={false}
           >
             0
@@ -151,7 +161,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={handleKeypadBackspace}
             data-testid="keypad-backspace"
-            className="font-mono"
+            className="text-lg font-mono"
             showInnerBorder={false}
           >
             ⌫
