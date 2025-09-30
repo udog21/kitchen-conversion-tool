@@ -155,7 +155,6 @@ export function UnitPicker({
                   onClick={() => handleUnitSelect(unit)}
                   data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                   variant="modal"
-                  className="capitalize"
                 >
                   {unit}
                 </ClickableButton>
