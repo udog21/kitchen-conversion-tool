@@ -55,7 +55,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
         </div>
         
         <div className="mb-4 p-3 bg-muted rounded-md text-center">
-          <span className="text-2xl font-mono" data-testid="keypad-display">{value}</span>
+          <span className="text-lg font-mono" data-testid="keypad-display">{value}</span>
         </div>
 
         <div className="grid grid-cols-3 gap-2 mb-4">
@@ -65,7 +65,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
               onClick={() => handleDigit(digit.toString())}
               data-testid={`key-${digit}`}
               showInnerBorder={false}
-              className="font-mono font-bold"
+              className="text-base font-mono font-bold"
             >
               {digit}
             </ClickableButton>
@@ -75,7 +75,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit(".")}
             data-testid="key-decimal"
             showInnerBorder={false}
-            className="font-mono font-bold"
+            className="text-base font-mono font-bold"
           >
             .
           </ClickableButton>
@@ -84,7 +84,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit("0")}
             data-testid="key-0"
             showInnerBorder={false}
-            className="font-mono font-bold"
+            className="text-base font-mono font-bold"
           >
             0
           </ClickableButton>
@@ -104,6 +104,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={handleClear}
             data-testid="key-clear"
             showInnerBorder={false}
+            className="text-base"
           >
             Clear
           </ClickableButton>
@@ -111,6 +112,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={onClose}
             data-testid="key-done"
             showInnerBorder={false}
+            className="text-base"
           >
             Done
           </ClickableButton>

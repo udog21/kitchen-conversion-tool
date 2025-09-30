@@ -33,7 +33,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
   return (
     <div className="space-y-4">
       {/* Display */}
-      <div className="text-center text-3xl font-mono font-bold text-foreground p-4 bg-muted rounded-lg min-h-16 flex items-center justify-center">
+      <div className="text-center text-lg font-mono font-bold text-foreground p-4 bg-muted rounded-lg min-h-16 flex items-center justify-center">
         {value || "0"}
       </div>
 
@@ -45,7 +45,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
             onClick={() => handleDigit(digit.toString())}
             data-testid={`button-digit-${digit}`}
             showInnerBorder={false}
-            className="text-sm font-mono font-bold"
+            className="text-base font-mono font-bold"
           >
             {digit}
           </ClickableButton>
@@ -55,7 +55,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={handleDecimal}
           data-testid="button-decimal"
           showInnerBorder={false}
-          className="text-sm font-mono font-bold"
+          className="text-base font-mono font-bold"
         >
           .
         </ClickableButton>
@@ -64,7 +64,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={() => handleDigit("0")}
           data-testid="button-digit-0"
           showInnerBorder={false}
-          className="text-sm font-mono font-bold"
+          className="text-base font-mono font-bold"
         >
           0
         </ClickableButton>
@@ -85,7 +85,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={onCancel}
           data-testid="button-cancel"
           showInnerBorder={false}
-          className="text-sm"
+          className="text-base"
         >
           Cancel
         </ClickableButton>
@@ -94,7 +94,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={handleDone}
           data-testid="button-done"
           showInnerBorder={false}
-          className="text-sm"
+          className="text-base"
         >
           Done
         </ClickableButton>
