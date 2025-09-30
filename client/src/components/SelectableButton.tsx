@@ -15,7 +15,8 @@ export function SelectableButton({
   className, 
   "data-testid": dataTestId
 }: SelectableButtonProps) {
-  const randomOffset = Math.random() * 0.3; // Random offset to vary gap positions
+  // Use consistent offset for deterministic rendering
+  const strokeOffset = "0.1";
 
   return (
     <button
@@ -48,7 +49,7 @@ export function SelectableButton({
               stroke: "#F4A261",
               // Simple pattern: 3 small gaps (1.5% each) with solid segments
               strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
-              strokeDashoffset: randomOffset.toString()
+              strokeDashoffset: strokeOffset
             }}
             x="12" y="12" width="76" height="36" rx="6" ry="6"
             pathLength="1"

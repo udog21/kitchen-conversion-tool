@@ -7,6 +7,7 @@ interface ClickableButtonProps {
   className?: string;
   "data-testid"?: string;
   variant?: "normal" | "modal";
+  showInnerBorder?: boolean;
 }
 
 export function ClickableButton({ 
@@ -15,7 +16,8 @@ export function ClickableButton({
   pressed = false, 
   className, 
   "data-testid": dataTestId,
-  variant = "normal"
+  variant = "normal",
+  showInnerBorder = true
 }: ClickableButtonProps) {
   const randomOffset = Math.random() * 0.3; // Random offset to vary gap positions
 
@@ -42,19 +44,21 @@ export function ClickableButton({
         />
         
         {/* Inner label box with exactly 3 small reflection gaps - Sandy brown (same as outer) */}
-        <rect 
-          className="fill-transparent" 
-          style={{ 
-            strokeWidth: "2px",
-            stroke: "#F4A261",
-            // Simple pattern: 3 small gaps (1.5% each) with solid segments
-            strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
-            strokeDashoffset: randomOffset.toString()
-          }}
-          x="12" y="12" width="76" height="36" rx="6" ry="6"
-          pathLength="1"
-          vectorEffect="non-scaling-stroke"
-        />
+        {showInnerBorder && (
+          <rect 
+            className="fill-transparent" 
+            style={{ 
+              strokeWidth: "2px",
+              stroke: "#F4A261",
+              // Simple pattern: 3 small gaps (1.5% each) with solid segments
+              strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
+              strokeDashoffset: randomOffset.toString()
+            }}
+            x="12" y="12" width="76" height="36" rx="6" ry="6"
+            pathLength="1"
+            vectorEffect="non-scaling-stroke"
+          />
+        )}
         
         {/* Text - Burnt sienna */}
         <text 

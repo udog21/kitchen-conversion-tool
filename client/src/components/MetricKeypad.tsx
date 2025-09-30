@@ -75,11 +75,12 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
         </ClickableButton>
       </div>
 
-      {/* Done/Cancel Buttons */}
+      {/* Done/Cancel Buttons - outer border only */}
       <div className="grid grid-cols-2 gap-2 pt-2">
         <ClickableButton
           onClick={onCancel}
           data-testid="button-cancel"
+          showInnerBorder={false}
           className="text-base"
         >
           Cancel
@@ -88,6 +89,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
         <ClickableButton
           onClick={handleDone}
           data-testid="button-done"
+          showInnerBorder={false}
           className="text-base"
         >
           Done

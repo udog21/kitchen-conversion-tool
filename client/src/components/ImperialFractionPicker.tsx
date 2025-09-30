@@ -45,8 +45,8 @@ function getFractions(type: FractionType): string[] {
   switch (type) {
     case "halves": return ["1/2"];
     case "thirds": return ["1/3", "2/3"];
-    case "quarters": return ["1/4", "2/4", "3/4"];
-    case "eighths": return ["1/8", "2/8", "3/8", "4/8", "5/8", "6/8", "7/8"];
+    case "quarters": return ["1/4", "3/4"];
+    case "eighths": return ["1/8", "3/8", "5/8", "7/8"];
     default: return [];
   }
 }
@@ -140,7 +140,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               onClick={() => setFractionType(type.value)}
               isActive={fractionType === type.value}
               data-testid={`button-fraction-type-${type.value}`}
-              className="text-sm flex-shrink-0"
+              className="text-xs flex-shrink-0"
             >
               {type.label}
             </SelectableButton>
@@ -148,31 +148,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         </div>
       </div>
 
-      {/* Row 2: Whole Number and Fraction Buttons */}
-      <div>
-        <h3 className="text-sm font-semibold mb-2">Amount</h3>
-        <div className="flex gap-2">
-          <ClickableButton
-            onClick={() => setShowWholeNumberPicker(true)}
-            data-testid="button-whole-number"
-            className="flex-1 text-lg font-mono font-bold"
-          >
-            {wholeNumber}
-          </ClickableButton>
-
-          {fractionType !== "none" && (
-            <ClickableButton
-              onClick={() => {}}
-              data-testid="button-selected-fraction"
-              className="flex-1 text-lg font-mono font-bold"
-            >
-              {selectedFraction || "0/0"}
-            </ClickableButton>
-          )}
-        </div>
-      </div>
-
-      {/* Row 3: Fraction Selector */}
+      {/* Row 2: Fraction Selector */}
       {fractionType !== "none" && (
         <div>
           <h3 className="text-sm font-semibold mb-2">Select Fraction</h3>
@@ -183,7 +159,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
                 onClick={() => setSelectedFraction(frac)}
                 isActive={selectedFraction === frac}
                 data-testid={`button-fraction-${frac.replace("/", "-")}`}
-                className="text-base font-mono flex-shrink-0"
+                className="text-sm font-mono flex-shrink-0"
               >
                 {frac}
               </SelectableButton>
@@ -192,23 +168,77 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         </div>
       )}
 
-      {/* Done/Cancel Buttons */}
-      <div className="grid grid-cols-2 gap-2 pt-2">
-        <ClickableButton
-          onClick={onCancel}
-          data-testid="button-cancel"
-          className="text-base"
-        >
-          Cancel
-        </ClickableButton>
+      {/* Row 3: Amount Selected - with visual distinction */}
+      <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Amount</h3>
+          <div className="flex gap-2">
+            <ClickableButton
+              onClick={() => setShowWholeNumberPicker(true)}
+              data-testid="button-whole-number"
+              className="flex-1 text-lg font-mono font-bold"
+            >
+              {wholeNumber}
+            </ClickableButton>
 
-        <ClickableButton
-          onClick={handleDone}
-          data-testid="button-done"
-          className="text-base"
-        >
-          Done
-        </ClickableButton>
+            {fractionType !== "none" && (
+              <div className="flex-1 min-h-10" data-testid="button-selected-fraction">
+                <svg 
+                  viewBox="0 0 100 60" 
+                  className="w-full h-full min-h-10"
+                >
+                  {/* Outer shell - Charcoal frame */}
+                  <rect 
+                    className="fill-transparent" 
+                    style={{ strokeWidth: "2px", stroke: "#264653" }}
+                    x="5" y="5" width="90" height="50" rx="8" ry="8"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  
+                  {/* Inner display area - Charcoal */}
+                  <rect 
+                    className="fill-transparent" 
+                    style={{ strokeWidth: "2px", stroke: "#264653" }}
+                    x="12" y="12" width="76" height="36" rx="6" ry="6"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  
+                  {/* Text - Persian green */}
+                  <text 
+                    className="font-semibold" 
+                    style={{ fill: "#2A9D8F", fontSize: "11px" }}
+                    x="50" y="30" 
+                    textAnchor="middle" 
+                    dominantBaseline="middle"
+                  >
+                    {selectedFraction || "0/0"}
+                  </text>
+                </svg>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Done/Cancel Buttons - outer border only */}
+        <div className="grid grid-cols-2 gap-2">
+          <ClickableButton
+            onClick={onCancel}
+            data-testid="button-cancel"
+            showInnerBorder={false}
+            className="text-base"
+          >
+            Cancel
+          </ClickableButton>
+
+          <ClickableButton
+            onClick={handleDone}
+            data-testid="button-done"
+            showInnerBorder={false}
+            className="text-base"
+          >
+            Done
+          </ClickableButton>
+        </div>
       </div>
     </div>
   );
