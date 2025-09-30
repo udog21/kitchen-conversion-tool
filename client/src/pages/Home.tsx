@@ -65,14 +65,13 @@ export default function Home() {
       <header className="flex justify-between items-center p-4 border-b border-border">
         <h1 className="text-xl font-semibold text-foreground">Kitchen Conversions</h1>
         <div className="flex items-center gap-2">
-          <ClickableButton
+          <button
             onClick={() => setShowSystemPicker(true)}
             data-testid="button-system-selector"
-            className="text-2xl px-3"
-            showInnerBorder={false}
+            className="text-3xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
           >
             {systemInfo.icon || systemInfo.flag}
-          </ClickableButton>
+          </button>
           <ThemeToggle />
         </div>
       </header>
