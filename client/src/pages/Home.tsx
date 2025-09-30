@@ -83,7 +83,7 @@ export default function Home() {
         </div>
 
         {/* Main Content */}
-        <div className="space-y-4">
+        <div>
           {/* Conversion Tabs */}
           <ConversionTabs activeTab={activeTab} onTabChange={setActiveTab} />
           

@@ -15,7 +15,7 @@ const tabs = [
 
 export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) {
   return (
-    <div className="flex bg-background border-b border-border">
+    <div className="flex bg-background">
       {tabs.map((tab) => (
         <button
           key={tab.id}
@@ -23,18 +23,18 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
           data-testid={`tab-${tab.id}`}
           className={`
             flex-1 px-4 py-3 font-medium transition-all duration-200 rounded-t-lg
-            min-h-12 relative border-b-2
+            min-h-12 relative border-t border-l border-r
             ${
               activeTab === tab.id
-                ? "bg-card text-foreground border-conversion-accent shadow-sm"
-                : "bg-muted/30 text-muted-foreground border-transparent hover-elevate"
+                ? "bg-card text-foreground border-card-border border-b-0"
+                : "bg-muted/30 text-muted-foreground border-card-border border-b hover-elevate"
             }
           `}
           style={{ fontSize: "13px" }}
         >
           {tab.label}
           {activeTab === tab.id && (
-            <div className="absolute inset-x-0 bottom-0 h-0.5 bg-conversion-accent rounded-t-full" />
+            <div className="absolute inset-x-0 bottom-0 h-[2px] bg-conversion-accent rounded-t-full" />
           )}
         </button>
       ))}

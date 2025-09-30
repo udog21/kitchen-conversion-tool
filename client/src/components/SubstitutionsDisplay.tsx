@@ -249,7 +249,7 @@ export function SubstitutionsDisplay() {
                   data-testid={`substitute-item-${index}`}
                   className="text-xl"
                 >
-                  <span className="font-mono font-bold">{amountStr}</span> {unitStr} of {ingredientStr}
+                  <span className="font-mono font-bold">{amountStr}</span>{" "}{unitStr} of {ingredientStr}
                 </OutputDisplay>
               );
             })}
