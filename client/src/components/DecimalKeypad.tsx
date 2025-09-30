@@ -65,7 +65,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
               onClick={() => handleDigit(digit.toString())}
               data-testid={`key-${digit}`}
               showInnerBorder={false}
-              className="text-lg font-mono font-bold"
+              className="font-mono font-bold"
             >
               {digit}
             </ClickableButton>
@@ -75,7 +75,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit(".")}
             data-testid="key-decimal"
             showInnerBorder={false}
-            className="text-lg font-mono font-bold"
+            className="font-mono font-bold"
           >
             .
           </ClickableButton>
@@ -84,7 +84,7 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
             onClick={() => handleDigit("0")}
             data-testid="key-0"
             showInnerBorder={false}
-            className="text-lg font-mono font-bold"
+            className="font-mono font-bold"
           >
             0
           </ClickableButton>
