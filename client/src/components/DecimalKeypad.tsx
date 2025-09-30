@@ -1,4 +1,5 @@
 import { ClickableButton } from "./ClickableButton";
+import { OutputDisplay } from "./OutputDisplay";
 import { Delete } from "lucide-react";
 
 interface DecimalKeypadProps {
@@ -54,9 +55,12 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
           <h3 className="text-lg font-semibold text-center">Enter Amount</h3>
         </div>
         
-        <div className="mb-4 p-3 bg-muted rounded-md text-center">
-          <span className="text-lg font-mono" data-testid="keypad-display">{value}</span>
-        </div>
+        <OutputDisplay
+          data-testid="keypad-display"
+          className="text-lg font-mono font-bold mb-4"
+        >
+          {value}
+        </OutputDisplay>
 
         <div className="grid grid-cols-3 gap-2 mb-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (

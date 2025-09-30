@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ClickableButton } from "./ClickableButton";
+import { OutputDisplay } from "./OutputDisplay";
 import { Delete } from "lucide-react";
 
 interface MetricKeypadProps {
@@ -33,9 +34,11 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
   return (
     <div className="space-y-4">
       {/* Display */}
-      <div className="text-center text-lg font-mono font-bold text-foreground p-4 bg-muted rounded-lg min-h-16 flex items-center justify-center">
+      <OutputDisplay
+        className="text-lg font-mono font-bold"
+      >
         {value || "0"}
-      </div>
+      </OutputDisplay>
 
       {/* Keypad Grid */}
       <div className="grid grid-cols-3 gap-2">
