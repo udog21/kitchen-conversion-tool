@@ -254,7 +254,7 @@ export function SubstitutionsDisplay() {
                 <div
                   key={index}
                   data-testid={`substitute-item-${index}`}
-                  className="flex items-center gap-1 px-4 py-3 rounded-lg bg-output text-output-foreground border-2 border-output-border text-xl"
+                  className="flex items-baseline gap-1 px-4 py-3 rounded-lg bg-output text-output-foreground border-2 border-output-border text-xl"
                 >
                   <span className="font-mono font-bold">{amountStr}</span>
                   <span>{unitStr}</span>
