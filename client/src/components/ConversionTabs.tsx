@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export type TabType = "imperial-metric" | "volume-weight" | "substitutions";
+export type TabType = "temperature" | "volume-weight" | "substitutions";
 
 interface ConversionTabsProps {
   activeTab: TabType;
@@ -8,8 +8,8 @@ interface ConversionTabsProps {
 }
 
 const tabs = [
-  { id: "imperial-metric" as TabType, label: "Imperial ↔ Metric" },
-  { id: "volume-weight" as TabType, label: "Volume ↔ Weight" },
+  { id: "temperature" as TabType, label: "Temperature" },
+  { id: "volume-weight" as TabType, label: "Volume & Weight" },
   { id: "substitutions" as TabType, label: "Substitutions" },
 ];
 

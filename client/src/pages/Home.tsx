@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ConversionTabs, TabType } from "@/components/ConversionTabs";
+import { TemperatureDisplay } from "@/components/TemperatureDisplay";
 import { ConversionDisplay } from "@/components/ConversionDisplay";
-import { VolumeWeightDisplay } from "@/components/VolumeWeightDisplay";
 import { SubstitutionsDisplay } from "@/components/SubstitutionsDisplay";
 import { AdBanner } from "@/components/AdBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -16,7 +16,7 @@ import {
 } from "@/lib/systemDetection";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabType>("imperial-metric");
+  const [activeTab, setActiveTab] = useState<TabType>("temperature");
   const [measurementSystem, setMeasurementSystem] = useState<MeasurementSystem>("US");
   const [showSystemPicker, setShowSystemPicker] = useState(false);
 
@@ -48,10 +48,10 @@ export default function Home() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "imperial-metric":
-        return <ConversionDisplay system={measurementSystem} />;
+      case "temperature":
+        return <TemperatureDisplay />;
       case "volume-weight":
-        return <VolumeWeightDisplay system={measurementSystem} />;
+        return <ConversionDisplay system={measurementSystem} />;
       case "substitutions":
         return <SubstitutionsDisplay />;
       default:
