@@ -229,11 +229,14 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
 
   const result = calculateConversion();
 
-  // Prepare ingredient list with "anything" as first option
+  // Prepare ingredient list with "anything" as first option, then alphabetically sorted
   const ingredientOptions = useMemo(() => {
     const options = [{ id: 0, name: "anything", category: "general" }];
     if (ingredients) {
-      options.push(...ingredients);
+      const sortedIngredients = [...ingredients].sort((a, b) => 
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
+      options.push(...sortedIngredients);
     }
     return options;
   }, [ingredients]);

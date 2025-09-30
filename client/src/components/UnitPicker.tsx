@@ -147,18 +147,39 @@ export function UnitPicker({
 
           {/* For non-measurement pickers (like ingredients), show as simple list */}
           {!isMeasurementPicker && (
-            <div className="grid grid-cols-2 gap-3">
-              {filteredUnits.map((unit) => (
-                <ClickableButton
-                  key={unit}
-                  showInnerBorder={currentUnit === unit}
-                  onClick={() => handleUnitSelect(unit)}
-                  data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
-                  variant="modal"
-                >
-                  {unit.toLowerCase()}
-                </ClickableButton>
-              ))}
+            <div className="space-y-4">
+              {/* "anything" option at the top */}
+              {filteredUnits.includes("anything") && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <ClickableButton
+                      showInnerBorder={currentUnit === "anything"}
+                      onClick={() => handleUnitSelect("anything")}
+                      data-testid="unit-option-anything"
+                      variant="modal"
+                    >
+                      anything
+                    </ClickableButton>
+                  </div>
+                  {/* Separator line */}
+                  <div className="border-t border-border"></div>
+                </>
+              )}
+              
+              {/* Other ingredients */}
+              <div className="grid grid-cols-2 gap-3">
+                {filteredUnits.filter(unit => unit !== "anything").map((unit) => (
+                  <ClickableButton
+                    key={unit}
+                    showInnerBorder={currentUnit === unit}
+                    onClick={() => handleUnitSelect(unit)}
+                    data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
+                    variant="modal"
+                  >
+                    {unit.toLowerCase()}
+                  </ClickableButton>
+                ))}
+              </div>
             </div>
           )}
         </div>
