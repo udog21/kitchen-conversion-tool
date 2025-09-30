@@ -26,11 +26,12 @@ export function SelectableButton({
         "relative inline-block cursor-pointer outline-none transition-all duration-200",
         className
       )}
-      style={{ width: "auto", minHeight: "36px" }}
+      style={{ width: "auto", height: "36px" }}
     >
       <svg 
         viewBox="0 0 100 60" 
         className="w-full h-full"
+        style={{ maxHeight: "36px" }}
       >
         {/* Outer shell - Sandy brown borders */}
         <rect 
