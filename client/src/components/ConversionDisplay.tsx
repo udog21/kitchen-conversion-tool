@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ClickableButton } from "./ClickableButton";
+import { OutputDisplay } from "./OutputDisplay";
 import { AmountPicker } from "./AmountPicker";
 import { UnitPicker } from "./UnitPicker";
 
@@ -125,7 +126,7 @@ export function ConversionDisplay() {
             <ClickableButton
               onClick={() => setShowAmountPicker(true)}
               data-testid="input-amount-button"
-              className="flex-1 text-lg sm:text-xl font-mono font-bold"
+              className="flex-1 font-mono font-bold"
             >
               {inputAmount}
             </ClickableButton>
@@ -146,36 +147,14 @@ export function ConversionDisplay() {
         
         {/* Output Card */}
         <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 flex-wrap">
             {/* Output Amount Display */}
-            <div 
-              className="flex-1 min-h-10" 
+            <OutputDisplay
               data-testid="output-amount"
+              className="flex-1 font-mono font-bold"
             >
-              <svg 
-                viewBox="0 0 100 60" 
-                className="w-full h-full min-h-10"
-              >
-                {/* Outer shell - Charcoal frame for output */}
-                <rect 
-                  className="fill-transparent" 
-                  style={{ strokeWidth: "2px", stroke: "#264653" }}
-                  x="5" y="5" width="90" height="50" rx="8" ry="8"
-                  vectorEffect="non-scaling-stroke"
-                />
-                
-                {/* Text - Persian green */}
-                <text 
-                  className="font-semibold" 
-                  style={{ fill: "#2A9D8F", fontSize: "11px" }}
-                  x="50" y="30" 
-                  textAnchor="middle" 
-                  dominantBaseline="middle"
-                >
-                  {formatResult(result)}
-                </text>
-              </svg>
-            </div>
+              {formatResult(result)}
+            </OutputDisplay>
             
             {/* Output Unit Button */}
             <ClickableButton
