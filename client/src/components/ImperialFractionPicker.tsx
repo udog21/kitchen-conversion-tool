@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { SelectableButton } from "./SelectableButton";
 import { ClickableButton } from "./ClickableButton";
+import { OutputDisplay } from "./OutputDisplay";
 
 interface ImperialFractionPickerProps {
   initialValue: string;
@@ -100,7 +101,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               onClick={() => handleWholeNumberSelect(num)}
               isActive={wholeNumber === num}
               data-testid={`button-whole-${num}`}
-              className="text-sm font-mono font-bold"
+              className="font-mono font-bold"
             >
               {num}
             </SelectableButton>
@@ -110,7 +111,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         <ClickableButton
           onClick={() => setShowWholeNumberPicker(false)}
           data-testid="button-back"
-          className="w-full text-sm"
+          className="w-full"
         >
           Back
         </ClickableButton>
@@ -140,7 +141,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               onClick={() => setFractionType(type.value)}
               isActive={fractionType === type.value}
               data-testid={`button-fraction-type-${type.value}`}
-              className="text-sm flex-shrink-0"
+              className="flex-shrink-0"
             >
               {type.label}
             </SelectableButton>
@@ -159,7 +160,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
                 onClick={() => setSelectedFraction(frac)}
                 isActive={selectedFraction === frac}
                 data-testid={`button-fraction-${frac.replace("/", "-")}`}
-                className="text-sm font-mono flex-shrink-0"
+                className="font-mono flex-shrink-0"
               >
                 {frac}
               </SelectableButton>
@@ -176,37 +177,18 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             <ClickableButton
               onClick={() => setShowWholeNumberPicker(true)}
               data-testid="button-whole-number"
-              className="flex-1 text-sm font-mono font-bold"
+              className="flex-1 font-mono font-bold"
             >
               {wholeNumber}
             </ClickableButton>
 
             {fractionType !== "none" && (
-              <div className="flex-1 min-h-10" data-testid="button-selected-fraction">
-                <svg 
-                  viewBox="0 0 100 60" 
-                  className="w-full h-full min-h-10"
-                >
-                  {/* Outer shell - Charcoal frame */}
-                  <rect 
-                    className="fill-transparent" 
-                    style={{ strokeWidth: "2px", stroke: "#264653" }}
-                    x="5" y="5" width="90" height="50" rx="8" ry="8"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  
-                  {/* Text - Persian green */}
-                  <text 
-                    className="font-semibold" 
-                    style={{ fill: "#2A9D8F", fontSize: "11px" }}
-                    x="50" y="30" 
-                    textAnchor="middle" 
-                    dominantBaseline="middle"
-                  >
-                    {selectedFraction || "0/0"}
-                  </text>
-                </svg>
-              </div>
+              <OutputDisplay
+                data-testid="button-selected-fraction"
+                className="flex-1 font-mono font-bold"
+              >
+                {selectedFraction || "0/0"}
+              </OutputDisplay>
             )}
           </div>
         </div>
@@ -217,7 +199,6 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={onCancel}
             data-testid="button-cancel"
             showInnerBorder={false}
-            className="text-sm"
           >
             Cancel
           </ClickableButton>
@@ -226,7 +207,6 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={handleDone}
             data-testid="button-done"
             showInnerBorder={false}
-            className="text-sm"
           >
             Done
           </ClickableButton>
