@@ -30,10 +30,11 @@ export function ClickableButton({
         "cursor-pointer outline-none",
         "hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10",
         "min-h-[48px]",
+        "text-sm", // Default size, can be overridden by className prop
         showInnerBorder && "clickable-button-with-inner-border",
         className
       )}
-      style={{ fontSize: "14px", lineHeight: "1.2" }}
+      style={{ lineHeight: "1.2" }}
     >
       {children}
     </button>

@@ -20,9 +20,10 @@ export function OutputDisplay({
         "font-semibold text-[#2A9D8F]",
         "min-h-[48px]",
         "flex items-center justify-center",
+        "text-sm", // Default size, can be overridden by className prop
         className
       )}
-      style={{ fontSize: "14px", lineHeight: "1.2" }}
+      style={{ lineHeight: "1.2" }}
     >
       {children}
     </div>
