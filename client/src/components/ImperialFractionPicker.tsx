@@ -132,7 +132,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         {/* Display current value */}
         <OutputDisplay
           data-testid="keypad-display"
-          className="text-lg font-mono font-bold"
+          className="text-2xl font-mono font-bold"
         >
           {keypadValue}
         </OutputDisplay>
@@ -144,7 +144,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               key={digit}
               onClick={() => handleKeypadDigit(digit.toString())}
               data-testid={`keypad-${digit}`}
-              className="text-base font-mono font-bold"
+              className="text-2xl font-mono font-bold"
               showInnerBorder={false}
             >
               {digit}
@@ -153,7 +153,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={() => handleKeypadDigit("0")}
             data-testid="keypad-0"
-            className="text-base font-mono font-bold col-start-2"
+            className="text-2xl font-mono font-bold col-start-2"
             showInnerBorder={false}
           >
             0
@@ -161,7 +161,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
           <ClickableButton
             onClick={handleKeypadBackspace}
             data-testid="keypad-backspace"
-            className="text-base font-mono"
+            className="text-2xl font-mono"
             showInnerBorder={false}
           >
             ⌫
