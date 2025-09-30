@@ -357,9 +357,6 @@
     border: 2px solid #F4A261;
     border-radius: 4px;
     pointer-events: none;
-    /* Dashed border effect with 3 small gaps */
-    border-style: dashed;
-    border-dash: 10px 2px;
   }
 
   /* Inner border effect for active selectable buttons */

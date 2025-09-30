@@ -22,7 +22,7 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
           onClick={() => onTabChange(tab.id)}
           data-testid={`tab-${tab.id}`}
           className={`
-            flex-1 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-t-lg
+            flex-1 px-4 py-3 font-medium transition-all duration-200 rounded-t-lg
             min-h-12 relative border-b-2
             ${
               activeTab === tab.id
@@ -30,6 +30,7 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
                 : "bg-muted/30 text-muted-foreground border-transparent hover-elevate"
             }
           `}
+          style={{ fontSize: "13px" }}
         >
           {tab.label}
           {activeTab === tab.id && (

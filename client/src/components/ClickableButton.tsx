@@ -24,15 +24,16 @@ export function ClickableButton({
       onClick={onClick}
       data-testid={dataTestId}
       className={cn(
-        "relative px-3 py-2 rounded-lg transition-all duration-200",
+        "relative px-4 py-3 rounded-lg transition-all duration-200",
         "border-2 border-[#F4A261]",
         "font-semibold text-[#E76F51]",
         "cursor-pointer outline-none",
         "hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10",
+        "min-h-[48px]",
         showInnerBorder && "clickable-button-with-inner-border",
         className
       )}
-      style={{ fontSize: "11px", lineHeight: "1.2" }}
+      style={{ fontSize: "14px", lineHeight: "1.2" }}
     >
       {children}
     </button>
