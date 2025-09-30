@@ -1,163 +1,268 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Search, Info } from "lucide-react";
-import { type Substitution } from "@shared/schema";
+import { ClickableButton } from "./ClickableButton";
+import { OutputDisplay } from "./OutputDisplay";
+import { DecimalKeypad } from "./DecimalKeypad";
+import { ImperialFractionPicker } from "./ImperialFractionPicker";
+import { UnitPicker } from "./UnitPicker";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+// High-fidelity substitutions that won't alter taste/texture significantly
+type SubstituteItem = {
+  amount: number;
+  unit: string;
+  ingredient: string;
+};
+
+type SubstitutionRecipe = {
+  name: string;
+  baseAmount: number;
+  baseUnit: string;
+  substitutes: SubstituteItem[];
+};
+
+const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
+  {
+    name: "light brown sugar",
+    baseAmount: 1,
+    baseUnit: "cup",
+    substitutes: [
+      { amount: 1, unit: "cup", ingredient: "white sugar" },
+      { amount: 1, unit: "tablespoon", ingredient: "molasses" },
+    ],
+  },
+  {
+    name: "buttermilk",
+    baseAmount: 1,
+    baseUnit: "cup",
+    substitutes: [
+      { amount: 1, unit: "cup", ingredient: "whole milk" },
+      { amount: 1, unit: "tablespoon", ingredient: "lemon juice" },
+    ],
+  },
+  {
+    name: "baking powder",
+    baseAmount: 1,
+    baseUnit: "teaspoon",
+    substitutes: [
+      { amount: 0.25, unit: "teaspoon", ingredient: "baking soda" },
+      { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
+    ],
+  },
+  {
+    name: "self-raising flour",
+    baseAmount: 1,
+    baseUnit: "cup",
+    substitutes: [
+      { amount: 1, unit: "cup", ingredient: "all-purpose flour" },
+      { amount: 1.5, unit: "teaspoon", ingredient: "baking powder" },
+      { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
+    ],
+  },
+];
+
+const AVAILABLE_UNITS = [
+  "teaspoon",
+  "tablespoon",
+  "cup",
+  "fluid ounce",
+  "pint",
+  "quart",
+  "gallon",
+  "milliliter",
+  "liter",
+];
+
+// Format a number for display, handling fractions intelligently
+function formatAmount(amount: number): string {
+  // Check if it's a whole number
+  if (amount === Math.floor(amount)) {
+    return amount.toString();
+  }
+
+  // Try common fractions
+  const fractions: [number, string][] = [
+    [0.125, "1/8"],
+    [0.25, "1/4"],
+    [0.333, "1/3"],
+    [0.5, "1/2"],
+    [0.667, "2/3"],
+    [0.75, "3/4"],
+  ];
+
+  for (const [decimal, frac] of fractions) {
+    if (Math.abs(amount - decimal) < 0.01) {
+      return frac;
+    }
+    // Check for whole number + fraction
+    const whole = Math.floor(amount);
+    if (whole > 0 && Math.abs(amount - whole - decimal) < 0.01) {
+      return `${whole} ${frac}`;
+    }
+  }
+
+  // Fall back to decimal with 2 places
+  return amount.toFixed(2).replace(/\.?0+$/, "");
+}
 
 export function SubstitutionsDisplay() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [inputAmount, setInputAmount] = useState("1");
+  const [inputUnit, setInputUnit] = useState("cup");
+  const [selectedIngredient, setSelectedIngredient] = useState("light brown sugar");
+  
+  const [showAmountKeypad, setShowAmountKeypad] = useState(false);
+  const [showUnitPicker, setShowUnitPicker] = useState(false);
+  const [showIngredientPicker, setShowIngredientPicker] = useState(false);
 
-  // Fetch all substitutions
-  const { data: substitutions = [], isLoading } = useQuery<Substitution[]>({
-    queryKey: ['/api/substitutions'],
-  });
+  // Find the selected substitution recipe
+  const recipe = HIGH_FIDELITY_SUBSTITUTIONS.find(
+    (r) => r.name === selectedIngredient
+  );
 
-  // Extract unique categories
-  const categories = ["all", ...Array.from(new Set(substitutions.map((sub) => sub.category)))];
+  // Calculate scaled substitutes
+  const scaledSubstitutes: SubstituteItem[] = recipe
+    ? recipe.substitutes.map((sub) => {
+        const inputAmountNum = parseFloat(inputAmount) || 1;
+        const scaleFactor = inputAmountNum / recipe.baseAmount;
+        return {
+          ...sub,
+          amount: sub.amount * scaleFactor,
+        };
+      })
+    : [];
 
-  // Filter substitutions based on search term and category
-  const filteredSubstitutions = substitutions.filter((sub) => {
-    const matchesSearch = 
-      sub.originalIngredient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.substituteIngredient.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || sub.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  // Group substitutions by original ingredient
-  const groupedSubstitutions = filteredSubstitutions.reduce((acc: Record<string, Substitution[]>, sub) => {
-    if (!acc[sub.originalIngredient]) {
-      acc[sub.originalIngredient] = [];
-    }
-    acc[sub.originalIngredient].push(sub);
-    return acc;
-  }, {});
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12" data-testid="loading-substitutions">
-        <div className="text-lg text-muted-foreground">Loading substitutions...</div>
-      </div>
-    );
-  }
+  const handleIngredientSelect = (ingredient: string) => {
+    setSelectedIngredient(ingredient);
+    setShowIngredientPicker(false);
+  };
 
   return (
     <div className="space-y-6">
-      {/* Search and Filter */}
-      <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Search for an ingredient..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-            data-testid="input-ingredient-search"
-          />
-        </div>
+      {/* Input Section */}
+      <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border">
+        <div className="space-y-4">
+          {/* Replace text */}
+          <div className="text-base font-semibold text-muted-foreground">Replace</div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedCategory(category)}
-              data-testid={`button-category-${category}`}
+          {/* Amount + Unit + "of" + Ingredient */}
+          <div className="flex flex-wrap items-center gap-2">
+            <ClickableButton
+              onClick={() => setShowAmountKeypad(true)}
+              data-testid="button-input-amount"
+              className="font-mono font-bold text-xl"
             >
-              {category === "all" ? "All Categories" : category}
-            </Button>
-          ))}
+              {inputAmount}
+            </ClickableButton>
+
+            <ClickableButton
+              onClick={() => setShowUnitPicker(true)}
+              data-testid="button-input-unit"
+              className="text-xl"
+            >
+              {inputUnit}
+            </ClickableButton>
+
+            <span className="text-xl text-muted-foreground">of</span>
+
+            <ClickableButton
+              onClick={() => setShowIngredientPicker(true)}
+              data-testid="button-input-ingredient"
+              className="text-xl"
+            >
+              {selectedIngredient}
+            </ClickableButton>
+          </div>
+
+          {/* "with" text */}
+          <div className="text-base font-semibold text-muted-foreground">with</div>
+
+          {/* Substitutes List */}
+          <div className="space-y-2">
+            {scaledSubstitutes.map((sub, index) => (
+              <div
+                key={index}
+                className="flex flex-wrap items-center gap-2"
+                data-testid={`substitute-item-${index}`}
+              >
+                <OutputDisplay className="font-mono font-bold text-xl">
+                  {formatAmount(sub.amount)}
+                </OutputDisplay>
+                <OutputDisplay className="text-xl">
+                  {sub.unit}
+                </OutputDisplay>
+                <OutputDisplay className="text-xl">
+                  {sub.ingredient}
+                </OutputDisplay>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Introduction */}
-      {searchTerm === "" && selectedCategory === "all" && (
-        <Card className="bg-card border-card-border">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Info className="w-5 h-5 text-conversion-accent" />
-              Ingredient Substitutions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Find common cooking substitutions when you're missing an ingredient. 
-              Search for what you need or browse by category to discover alternatives.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Substitutions List */}
-      {Object.keys(groupedSubstitutions).length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground bg-card rounded-lg border border-card-border">
-          <h3 className="text-lg font-medium mb-2">No Substitutions Found</h3>
-          <p>Try searching for a different ingredient or adjust your filters.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {Object.entries(groupedSubstitutions)
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([originalIngredient, subs]) => (
-              <Card key={originalIngredient} className="bg-card border-card-border">
-                <CardHeader>
-                  <CardTitle className="text-lg" data-testid={`title-${originalIngredient.replace(/\s+/g, '-').toLowerCase()}`}>
-                    {originalIngredient}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {subs.map((sub: Substitution, index: number) => (
-                      <div 
-                        key={`${sub.id}-${index}`} 
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-muted/30 rounded-lg"
-                        data-testid={`substitution-${originalIngredient.replace(/\s+/g, '-').toLowerCase()}-${index}`}
-                      >
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium text-conversion-accent">
-                              {sub.substituteIngredient}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              {sub.category}
-                            </Badge>
-                          </div>
-                          <div className="text-sm">
-                            <span className="font-medium">Ratio:</span> {sub.ratio}
-                          </div>
-                          {sub.notes && (
-                            <div className="text-sm text-muted-foreground">
-                              <span className="font-medium">Note:</span> {sub.notes}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+      {/* Amount Input Dialog - Fraction Picker */}
+      {showAmountKeypad && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card border border-border rounded-lg p-4 w-full max-w-md">
+            <ImperialFractionPicker
+              initialValue={inputAmount}
+              onDone={(value) => {
+                setInputAmount(value);
+                setShowAmountKeypad(false);
+              }}
+              onCancel={() => setShowAmountKeypad(false)}
+            />
+          </div>
         </div>
       )}
 
-      {/* Helpful Tips */}
-      <Card className="bg-card border-card-border">
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">💡 Substitution Tips</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
-          <p>• Always consider how substitutions might affect texture, flavor, and cooking time</p>
-          <p>• When substituting liquids for solids (or vice versa), adjust other liquid ingredients</p>
-          <p>• Test substitutions in small batches before using in important recipes</p>
-          <p>• Some substitutions work better for specific cooking methods (baking vs. cooking)</p>
-        </CardContent>
-      </Card>
+      {/* Unit Picker Dialog */}
+      <UnitPicker
+        isOpen={showUnitPicker}
+        onClose={() => setShowUnitPicker(false)}
+        currentUnit={inputUnit}
+        onUnitChange={setInputUnit}
+        units={AVAILABLE_UNITS}
+        title="Select Unit"
+      />
+
+      {/* Ingredient Picker Dialog */}
+      <Dialog open={showIngredientPicker} onOpenChange={setShowIngredientPicker}>
+        <DialogContent className="max-w-md">
+          <div className="space-y-4">
+            <h3 className="text-base font-semibold">Select Ingredient</h3>
+            <div className="space-y-2">
+              {HIGH_FIDELITY_SUBSTITUTIONS.map((recipe) => (
+                <ClickableButton
+                  key={recipe.name}
+                  onClick={() => handleIngredientSelect(recipe.name)}
+                  data-testid={`button-ingredient-${recipe.name.replace(/\s+/g, "-")}`}
+                  className="w-full text-xl"
+                  showInnerBorder={selectedIngredient === recipe.name}
+                >
+                  {recipe.name}
+                </ClickableButton>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <ClickableButton
+                onClick={() => setShowIngredientPicker(false)}
+                data-testid="button-cancel-ingredient"
+                showInnerBorder={false}
+                className="text-base"
+              >
+                Cancel
+              </ClickableButton>
+              <ClickableButton
+                onClick={() => handleIngredientSelect(selectedIngredient)}
+                data-testid="button-done-ingredient"
+                showInnerBorder={false}
+                className="text-base"
+              >
+                Done
+              </ClickableButton>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
