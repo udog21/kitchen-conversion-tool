@@ -75,6 +75,10 @@ const AVAILABLE_UNITS = [
   "gallon",
   "milliliter",
   "liter",
+  "gram",
+  "kilogram",
+  "ounce",
+  "pound",
 ];
 
 // Format a number for display, handling fractions intelligently
@@ -196,6 +200,9 @@ export function SubstitutionsDisplay() {
     setShowIngredientPicker(false);
   };
 
+  // Pluralize the input unit for display
+  const displayInputUnit = pluralizeUnit(parseFloat(inputAmount) || 0, inputUnit);
+
   return (
     <div className="space-y-6">
       {/* Input Section */}
@@ -219,7 +226,7 @@ export function SubstitutionsDisplay() {
               data-testid="button-input-unit"
               className="text-xl"
             >
-              {inputUnit}
+              {displayInputUnit}
             </ClickableButton>
 
             <span className="text-xl text-muted-foreground">of</span>
@@ -244,13 +251,16 @@ export function SubstitutionsDisplay() {
               const ingredientStr = pluralizeIngredient(sub.amount, sub.ingredient);
               
               return (
-                <OutputDisplay
+                <div
                   key={index}
                   data-testid={`substitute-item-${index}`}
-                  className="text-xl"
+                  className="flex items-center gap-1 px-4 py-3 rounded-lg bg-output text-output-foreground border-2 border-output-border text-xl"
                 >
-                  <span className="font-mono font-bold">{amountStr}</span>{" "}{unitStr} of {ingredientStr}
-                </OutputDisplay>
+                  <span className="font-mono font-bold">{amountStr}</span>
+                  <span>{unitStr}</span>
+                  <span>of</span>
+                  <span>{ingredientStr}</span>
+                </div>
               );
             })}
           </div>

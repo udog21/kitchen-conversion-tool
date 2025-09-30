@@ -26,7 +26,7 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
             min-h-12 relative border-t border-l border-r
             ${
               activeTab === tab.id
-                ? "bg-card text-foreground border-card-border border-b-0"
+                ? "bg-card text-foreground border-card-border border-b-0 -mb-px z-10"
                 : "bg-muted/30 text-muted-foreground border-card-border border-b hover-elevate"
             }
           `}
