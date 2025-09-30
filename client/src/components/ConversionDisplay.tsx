@@ -164,14 +164,6 @@ export function ConversionDisplay() {
                   vectorEffect="non-scaling-stroke"
                 />
                 
-                {/* Inner display area - Charcoal, no reflection gap since it's not interactive */}
-                <rect 
-                  className="fill-transparent" 
-                  style={{ strokeWidth: "2px", stroke: "#264653" }}
-                  x="12" y="12" width="76" height="36" rx="6" ry="6"
-                  vectorEffect="non-scaling-stroke"
-                />
-                
                 {/* Text - Persian green */}
                 <text 
                   className="font-semibold" 

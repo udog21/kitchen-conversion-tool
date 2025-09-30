@@ -44,7 +44,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
             key={digit}
             onClick={() => handleDigit(digit.toString())}
             data-testid={`button-digit-${digit}`}
-            className="text-lg font-mono font-bold"
+            className="text-sm font-mono font-bold"
           >
             {digit}
           </ClickableButton>
@@ -53,7 +53,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
         <ClickableButton
           onClick={handleDecimal}
           data-testid="button-decimal"
-          className="text-lg font-mono font-bold"
+          className="text-sm font-mono font-bold"
         >
           .
         </ClickableButton>
@@ -61,7 +61,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
         <ClickableButton
           onClick={() => handleDigit("0")}
           data-testid="button-digit-0"
-          className="text-lg font-mono font-bold"
+          className="text-sm font-mono font-bold"
         >
           0
         </ClickableButton>
@@ -81,7 +81,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={onCancel}
           data-testid="button-cancel"
           showInnerBorder={false}
-          className="text-base"
+          className="text-sm"
         >
           Cancel
         </ClickableButton>
@@ -90,7 +90,7 @@ export function MetricKeypad({ initialValue, onDone, onCancel }: MetricKeypadPro
           onClick={handleDone}
           data-testid="button-done"
           showInnerBorder={false}
-          className="text-base"
+          className="text-sm"
         >
           Done
         </ClickableButton>

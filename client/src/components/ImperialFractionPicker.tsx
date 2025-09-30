@@ -100,7 +100,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               onClick={() => handleWholeNumberSelect(num)}
               isActive={wholeNumber === num}
               data-testid={`button-whole-${num}`}
-              className="text-lg font-mono font-bold"
+              className="text-sm font-mono font-bold"
             >
               {num}
             </SelectableButton>
@@ -110,7 +110,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         <ClickableButton
           onClick={() => setShowWholeNumberPicker(false)}
           data-testid="button-back"
-          className="w-full text-base"
+          className="w-full text-sm"
         >
           Back
         </ClickableButton>
@@ -140,7 +140,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               onClick={() => setFractionType(type.value)}
               isActive={fractionType === type.value}
               data-testid={`button-fraction-type-${type.value}`}
-              className="text-xs flex-shrink-0"
+              className="text-sm flex-shrink-0"
             >
               {type.label}
             </SelectableButton>
@@ -176,7 +176,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             <ClickableButton
               onClick={() => setShowWholeNumberPicker(true)}
               data-testid="button-whole-number"
-              className="flex-1 text-lg font-mono font-bold"
+              className="flex-1 text-sm font-mono font-bold"
             >
               {wholeNumber}
             </ClickableButton>
@@ -192,14 +192,6 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
                     className="fill-transparent" 
                     style={{ strokeWidth: "2px", stroke: "#264653" }}
                     x="5" y="5" width="90" height="50" rx="8" ry="8"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  
-                  {/* Inner display area - Charcoal */}
-                  <rect 
-                    className="fill-transparent" 
-                    style={{ strokeWidth: "2px", stroke: "#264653" }}
-                    x="12" y="12" width="76" height="36" rx="6" ry="6"
                     vectorEffect="non-scaling-stroke"
                   />
                   
@@ -225,7 +217,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={onCancel}
             data-testid="button-cancel"
             showInnerBorder={false}
-            className="text-base"
+            className="text-sm"
           >
             Cancel
           </ClickableButton>
@@ -234,7 +226,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={handleDone}
             data-testid="button-done"
             showInnerBorder={false}
-            className="text-base"
+            className="text-sm"
           >
             Done
           </ClickableButton>

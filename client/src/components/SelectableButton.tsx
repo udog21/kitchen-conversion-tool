@@ -59,8 +59,8 @@ export function SelectableButton({
         
         {/* Text - Burnt sienna */}
         <text 
-          className="font-semibold text-base" 
-          style={{ fill: "#E76F51", fontSize: "11px" }}
+          className="font-semibold text-sm" 
+          style={{ fill: "#E76F51", fontSize: "9px" }}
           x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"
