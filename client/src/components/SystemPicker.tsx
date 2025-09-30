@@ -36,7 +36,7 @@ export function SystemPicker({
               className="w-full text-left flex items-center"
               showInnerBorder={currentSystem === system.id}
             >
-              <span className="text-2xl w-10 flex items-center justify-start">
+              <span className={`text-2xl w-10 flex items-center justify-start ${system.icon ? '-mt-0.5' : ''}`}>
                 {system.icon || system.flag}
               </span>
               <span className="flex-1">{system.name}</span>
