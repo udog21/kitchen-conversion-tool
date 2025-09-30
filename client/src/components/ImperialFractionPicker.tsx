@@ -86,37 +86,95 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
     onDone(result);
   };
 
-  const handleWholeNumberSelect = (num: number) => {
+  const [keypadValue, setKeypadValue] = useState(wholeNumber.toString());
+
+  // Sync keypad value when picker opens
+  useEffect(() => {
+    if (showWholeNumberPicker) {
+      setKeypadValue(wholeNumber.toString());
+    }
+  }, [showWholeNumberPicker, wholeNumber]);
+
+  const handleKeypadDigit = (digit: string) => {
+    setKeypadValue((prev) => prev + digit);
+  };
+
+  const handleKeypadBackspace = () => {
+    setKeypadValue((prev) => prev.slice(0, -1) || "0");
+  };
+
+  const handleKeypadDone = () => {
+    const num = parseInt(keypadValue) || 0;
     setWholeNumber(num);
+    setShowWholeNumberPicker(false);
+  };
+
+  const handleKeypadCancel = () => {
+    setKeypadValue(wholeNumber.toString());
     setShowWholeNumberPicker(false);
   };
 
   if (showWholeNumberPicker) {
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-center">Select Whole Number</h3>
+        <h3 className="text-lg font-semibold text-center">Enter Whole Number</h3>
         
+        {/* Display current value */}
+        <OutputDisplay
+          data-testid="keypad-display"
+          className="text-2xl font-mono font-bold"
+        >
+          {keypadValue}
+        </OutputDisplay>
+
+        {/* Keypad grid: 1-9, then 0 */}
         <div className="grid grid-cols-3 gap-2">
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-            <SelectableButton
-              key={num}
-              onClick={() => handleWholeNumberSelect(num)}
-              isActive={wholeNumber === num}
-              data-testid={`button-whole-${num}`}
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
+            <ClickableButton
+              key={digit}
+              onClick={() => handleKeypadDigit(digit.toString())}
+              data-testid={`keypad-${digit}`}
               className="font-mono font-bold"
+              showInnerBorder={false}
             >
-              {num}
-            </SelectableButton>
+              {digit}
+            </ClickableButton>
           ))}
+          <ClickableButton
+            onClick={() => handleKeypadDigit("0")}
+            data-testid="keypad-0"
+            className="font-mono font-bold col-start-2"
+            showInnerBorder={false}
+          >
+            0
+          </ClickableButton>
+          <ClickableButton
+            onClick={handleKeypadBackspace}
+            data-testid="keypad-backspace"
+            className="font-mono"
+            showInnerBorder={false}
+          >
+            ⌫
+          </ClickableButton>
         </div>
 
-        <ClickableButton
-          onClick={() => setShowWholeNumberPicker(false)}
-          data-testid="button-back"
-          className="w-full"
-        >
-          Back
-        </ClickableButton>
+        {/* Cancel/Done buttons */}
+        <div className="grid grid-cols-2 gap-2">
+          <ClickableButton
+            onClick={handleKeypadCancel}
+            data-testid="keypad-cancel"
+            showInnerBorder={false}
+          >
+            Cancel
+          </ClickableButton>
+          <ClickableButton
+            onClick={handleKeypadDone}
+            data-testid="keypad-done"
+            showInnerBorder={false}
+          >
+            Done
+          </ClickableButton>
+        </div>
       </div>
     );
   }
