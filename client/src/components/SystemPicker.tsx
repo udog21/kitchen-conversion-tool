@@ -33,16 +33,13 @@ export function SystemPicker({
               key={system.id}
               onClick={() => handleSystemSelect(system.id)}
               data-testid={`system-${system.id}`}
-              className="w-full justify-start text-left"
+              className="w-full text-left flex items-center"
               showInnerBorder={currentSystem === system.id}
             >
-              <span className="text-2xl mr-3">
+              <span className="text-2xl w-10 flex items-center justify-start">
                 {system.icon || system.flag}
               </span>
               <span className="flex-1">{system.name}</span>
-              {currentSystem === system.id && (
-                <span className="text-primary">✓</span>
-              )}
             </ClickableButton>
           ))}
         </div>

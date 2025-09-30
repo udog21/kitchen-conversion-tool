@@ -11,9 +11,9 @@ export interface SystemInfo {
 
 export const SYSTEMS: SystemInfo[] = [
   { id: "US", name: "United States", flag: "\u{1F1FA}\u{1F1F8}" },
-  { id: "UK_METRIC", name: "United Kingdom", flag: "\u{1F1EC}\u{1F1E7}" },
+  { id: "UK_METRIC", name: "United Kingdom (Metric)", flag: "\u{1F1EC}\u{1F1E7}" },
   { id: "UK_IMPERIAL", name: "Imperial (Traditional)", flag: "", icon: "\u{1F451}" },
-  { id: "AU_NZ", name: "Australia / New Zealand", flag: "\u{1F1E6}\u{1F1FA}" },
+  { id: "AU_NZ", name: "Australia", flag: "\u{1F1E6}\u{1F1FA}" },
   { id: "CA", name: "Canada", flag: "\u{1F1E8}\u{1F1E6}" },
   { id: "EU", name: "European Union", flag: "\u{1F1EA}\u{1F1FA}" },
 ];

@@ -68,7 +68,7 @@ export default function Home() {
           <button
             onClick={() => setShowSystemPicker(true)}
             data-testid="button-system-selector"
-            className="text-3xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
+            className="text-2xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
           >
             {systemInfo.icon || systemInfo.flag}
           </button>
