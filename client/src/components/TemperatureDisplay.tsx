@@ -64,7 +64,7 @@ export function TemperatureDisplay() {
                 <ClickableButton
                   onClick={() => setInputUnit("C")}
                   data-testid="input-unit-c"
-                  className="w-16"
+                  className="w-16 text-xl"
                   showInnerBorder={inputUnit === "C"}
                 >
                   °C
@@ -72,7 +72,7 @@ export function TemperatureDisplay() {
                 <ClickableButton
                   onClick={() => setInputUnit("F")}
                   data-testid="input-unit-f"
-                  className="w-16"
+                  className="w-16 text-xl"
                   showInnerBorder={inputUnit === "F"}
                 >
                   °F
@@ -115,7 +115,7 @@ export function TemperatureDisplay() {
                 <ClickableButton
                   onClick={() => setOutputUnit("C")}
                   data-testid="output-unit-c"
-                  className="w-16"
+                  className="w-16 text-xl"
                   showInnerBorder={outputUnit === "C"}
                 >
                   °C
@@ -123,7 +123,7 @@ export function TemperatureDisplay() {
                 <ClickableButton
                   onClick={() => setOutputUnit("F")}
                   data-testid="output-unit-f"
-                  className="w-16"
+                  className="w-16 text-xl"
                   showInnerBorder={outputUnit === "F"}
                 >
                   °F
