@@ -18,6 +18,7 @@ type SubstitutionRecipe = {
   baseAmount: number;
   baseUnit: string;
   substitutes: SubstituteItem[];
+  instructions: string;
 };
 
 const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
@@ -29,6 +30,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 1, unit: "cup", ingredient: "white sugar" },
       { amount: 1, unit: "tablespoon", ingredient: "molasses" },
     ],
+    instructions: "Mix ingredients thoroughly.",
   },
   {
     name: "buttermilk",
@@ -38,6 +40,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 1, unit: "cup", ingredient: "whole milk" },
       { amount: 1, unit: "tablespoon", ingredient: "lemon juice" },
     ],
+    instructions: "Mix ingredients thoroughly.",
   },
   {
     name: "baking powder",
@@ -47,6 +50,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 0.25, unit: "teaspoon", ingredient: "baking soda" },
       { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
     ],
+    instructions: "Mix ingredients thoroughly.",
   },
   {
     name: "self-raising flour",
@@ -57,6 +61,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 1.5, unit: "teaspoon", ingredient: "baking powder" },
       { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
     ],
+    instructions: "Mix ingredients thoroughly.",
   },
 ];
 
@@ -102,6 +107,62 @@ function formatAmount(amount: number): string {
 
   // Fall back to decimal with 2 places
   return amount.toFixed(2).replace(/\.?0+$/, "");
+}
+
+// Pluralize units based on amount
+function pluralizeUnit(amount: number, unit: string): string {
+  if (amount === 1) return unit;
+  
+  // Special cases
+  if (unit === "teaspoon") return "teaspoons";
+  if (unit === "tablespoon") return "tablespoons";
+  if (unit === "cup") return "cups";
+  if (unit === "fluid ounce") return "fluid ounces";
+  if (unit === "pint") return "pints";
+  if (unit === "quart") return "quarts";
+  if (unit === "gallon") return "gallons";
+  
+  // Metric units typically stay the same or add 's'
+  if (unit === "milliliter") return "milliliters";
+  if (unit === "liter") return "liters";
+  
+  return unit;
+}
+
+// Pluralize ingredient names based on amount
+function pluralizeIngredient(amount: number, ingredient: string): string {
+  if (amount === 1) return ingredient;
+  
+  // Don't pluralize mass nouns and special cases
+  const massNouns = [
+    "sugar",
+    "flour",
+    "salt",
+    "milk",
+    "water",
+    "oil",
+    "butter",
+    "molasses",
+    "lemon juice",
+    "vinegar",
+    "cream of tartar",
+    "baking soda",
+    "baking powder",
+    "all-purpose flour",
+    "white sugar",
+    "whole milk",
+  ];
+  
+  if (massNouns.includes(ingredient.toLowerCase())) {
+    return ingredient;
+  }
+  
+  // For other ingredients, add 's' or 'es'
+  if (ingredient.endsWith("s") || ingredient.endsWith("x") || ingredient.endsWith("ch")) {
+    return ingredient + "es";
+  }
+  
+  return ingredient + "s";
 }
 
 export function SubstitutionsDisplay() {
@@ -177,24 +238,29 @@ export function SubstitutionsDisplay() {
 
           {/* Substitutes List */}
           <div className="space-y-2">
-            {scaledSubstitutes.map((sub, index) => (
-              <div
-                key={index}
-                className="flex flex-wrap items-center gap-2"
-                data-testid={`substitute-item-${index}`}
-              >
-                <OutputDisplay className="font-mono font-bold text-xl">
-                  {formatAmount(sub.amount)}
+            {scaledSubstitutes.map((sub, index) => {
+              const amountStr = formatAmount(sub.amount);
+              const unitStr = pluralizeUnit(sub.amount, sub.unit);
+              const ingredientStr = pluralizeIngredient(sub.amount, sub.ingredient);
+              
+              return (
+                <OutputDisplay
+                  key={index}
+                  data-testid={`substitute-item-${index}`}
+                  className="text-xl"
+                >
+                  <span className="font-mono font-bold">{amountStr}</span> {unitStr} of {ingredientStr}
                 </OutputDisplay>
-                <OutputDisplay className="text-xl">
-                  {sub.unit}
-                </OutputDisplay>
-                <OutputDisplay className="text-xl">
-                  {sub.ingredient}
-                </OutputDisplay>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
+          {/* Instructions */}
+          {recipe && (
+            <div className="text-base font-semibold text-muted-foreground mt-4">
+              {recipe.instructions}
+            </div>
+          )}
         </div>
       </div>
 
