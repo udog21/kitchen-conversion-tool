@@ -29,11 +29,11 @@ export function ClickableButton({
         "relative inline-block cursor-pointer outline-none transition-all duration-200",
         className
       )}
-      style={{ width: "auto", minHeight: "48px" }}
+      style={{ width: "auto", minHeight: "36px" }}
     >
       <svg 
         viewBox="0 0 100 60" 
-        className="w-full h-full min-h-10"
+        className="w-full h-full"
       >
         {/* Outer shell - Sandy brown borders */}
         <rect 
@@ -62,8 +62,8 @@ export function ClickableButton({
         
         {/* Text - Burnt sienna */}
         <text 
-          className="font-semibold text-base" 
-          style={{ fill: "#E76F51", fontSize: "11px" }}
+          className="font-semibold" 
+          style={{ fill: "#E76F51", fontSize: "8px" }}
           x="50" y="30" 
           textAnchor="middle" 
           dominantBaseline="middle"
