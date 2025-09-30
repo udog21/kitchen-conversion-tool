@@ -77,7 +77,7 @@
   --chart-4: 260 85% 50%;
   --chart-5: 30 85% 50%;
 
-  --font-sans: Inter, sans-serif;
+  --font-sans: "Twemoji Country Flags", Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: ui-monospace, Menlo, monospace;
   --radius: .5rem; /* 8px */
