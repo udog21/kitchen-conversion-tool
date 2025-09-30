@@ -15,60 +15,22 @@ export function SelectableButton({
   className, 
   "data-testid": dataTestId
 }: SelectableButtonProps) {
-  // Use consistent offset for deterministic rendering
-  const strokeOffset = "0.1";
-
   return (
     <button
       onClick={onClick}
       data-testid={dataTestId}
       className={cn(
-        "relative inline-block cursor-pointer outline-none transition-all duration-200",
+        "relative px-3 py-2 rounded-lg transition-all duration-200",
+        "border-2 border-[#F4A261]",
+        "font-semibold text-[#E76F51]",
+        "cursor-pointer outline-none",
+        "hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10",
+        isActive && "selectable-button-active",
         className
       )}
-      style={{ width: "auto", height: "36px" }}
+      style={{ fontSize: "11px", lineHeight: "1.2" }}
     >
-      <svg 
-        viewBox="0 0 100 60" 
-        className="w-full h-full"
-        style={{ maxHeight: "36px" }}
-      >
-        {/* Outer shell - Sandy brown borders */}
-        <rect 
-          className="fill-transparent" 
-          style={{ strokeWidth: "2px", stroke: "#F4A261" }}
-          x="5" y="5" width="90" height="50" rx="8" ry="8"
-          vectorEffect="non-scaling-stroke"
-        />
-        
-        {/* Inner label box - only shown when active */}
-        {isActive && (
-          <rect 
-            className="fill-transparent" 
-            style={{ 
-              strokeWidth: "2px",
-              stroke: "#F4A261",
-              // Simple pattern: 3 small gaps (1.5% each) with solid segments
-              strokeDasharray: "0.315 0.015 0.315 0.015 0.315 0.015 100",
-              strokeDashoffset: strokeOffset
-            }}
-            x="12" y="12" width="76" height="36" rx="6" ry="6"
-            pathLength="1"
-            vectorEffect="non-scaling-stroke"
-          />
-        )}
-        
-        {/* Text - Burnt sienna */}
-        <text 
-          className="font-semibold" 
-          style={{ fill: "#E76F51", fontSize: "11px" }}
-          x="50" y="30" 
-          textAnchor="middle" 
-          dominantBaseline="middle"
-        >
-          {children}
-        </text>
-      </svg>
+      {children}
     </button>
   );
 }
