@@ -54,7 +54,7 @@ export function TemperatureDisplay() {
               <ClickableButton
                 onClick={() => setShowKeypad(true)}
                 data-testid="input-temperature-button"
-                className="flex-1 font-mono font-bold"
+                className="flex-1 font-mono font-bold text-xl"
               >
                 {inputTemp}
               </ClickableButton>
@@ -105,7 +105,7 @@ export function TemperatureDisplay() {
               {/* Output Temperature */}
               <OutputDisplay
                 data-testid="output-temperature"
-                className="flex-1 font-mono font-bold"
+                className="flex-1 font-mono font-bold text-xl"
               >
                 {result}
               </OutputDisplay>

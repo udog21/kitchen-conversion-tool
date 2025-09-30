@@ -253,7 +253,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
               <ClickableButton
                 onClick={() => setShowAmountPicker(true)}
                 data-testid="input-amount-button"
-                className="flex-1 font-mono font-bold"
+                className="flex-1 font-mono font-bold text-xl"
               >
                 {inputAmount}
               </ClickableButton>
@@ -278,7 +278,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
               {/* Output Amount Display */}
               <OutputDisplay
                 data-testid="output-amount"
-                className="flex-1 font-mono font-bold"
+                className="flex-1 font-mono font-bold text-xl"
               >
                 {isCrossCategory && selectedIngredient === "anything" ? "—" : formatResult(result, isOutputMetric)}
               </OutputDisplay>
