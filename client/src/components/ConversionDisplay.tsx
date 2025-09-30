@@ -66,7 +66,7 @@ function formatResult(value: number): string {
 }
 
 export function ConversionDisplay() {
-  const [inputAmount, setInputAmount] = useState("1");
+  const [inputAmount, setInputAmount] = useState("2 1/4");
   const [inputUnit, setInputUnit] = useState("cup");
   const [outputUnit, setOutputUnit] = useState("tablespoon");
   const [showAmountPicker, setShowAmountPicker] = useState(false);

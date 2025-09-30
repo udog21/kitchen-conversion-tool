@@ -1,0 +1,215 @@
+import { useState, useEffect } from "react";
+import { SelectableButton } from "./SelectableButton";
+import { ClickableButton } from "./ClickableButton";
+
+interface ImperialFractionPickerProps {
+  initialValue: string;
+  onDone: (value: string) => void;
+  onCancel: () => void;
+}
+
+type FractionType = "none" | "halves" | "thirds" | "quarters" | "eighths";
+
+// Parse fraction string like "2 1/4" into parts
+function parseFraction(value: string): { whole: number; numerator: number; denominator: number } {
+  const parts = value.trim().split(" ");
+  
+  if (parts.length === 2) {
+    // Has whole and fraction
+    const whole = parseInt(parts[0]) || 0;
+    const [num, den] = parts[1].split("/").map(Number);
+    return { whole, numerator: num || 0, denominator: den || 4 };
+  } else if (parts.length === 1 && parts[0].includes("/")) {
+    // Just fraction
+    const [num, den] = parts[0].split("/").map(Number);
+    return { whole: 0, numerator: num || 0, denominator: den || 4 };
+  } else {
+    // Just whole number
+    return { whole: parseInt(parts[0]) || 0, numerator: 0, denominator: 4 };
+  }
+}
+
+// Determine fraction type from denominator
+function getFractionType(denominator: number): FractionType {
+  switch (denominator) {
+    case 2: return "halves";
+    case 3: return "thirds";
+    case 4: return "quarters";
+    case 8: return "eighths";
+    default: return "quarters";
+  }
+}
+
+// Get available fractions for a type
+function getFractions(type: FractionType): string[] {
+  switch (type) {
+    case "halves": return ["1/2"];
+    case "thirds": return ["1/3", "2/3"];
+    case "quarters": return ["1/4", "2/4", "3/4"];
+    case "eighths": return ["1/8", "2/8", "3/8", "4/8", "5/8", "6/8", "7/8"];
+    default: return [];
+  }
+}
+
+export function ImperialFractionPicker({ initialValue, onDone, onCancel }: ImperialFractionPickerProps) {
+  const parsed = parseFraction(initialValue);
+  const initialFractionType = parsed.numerator > 0 ? getFractionType(parsed.denominator) : "quarters";
+  
+  const [fractionType, setFractionType] = useState<FractionType>(initialFractionType);
+  const [wholeNumber, setWholeNumber] = useState(parsed.whole);
+  const [selectedFraction, setSelectedFraction] = useState(
+    parsed.numerator > 0 ? `${parsed.numerator}/${parsed.denominator}` : ""
+  );
+  const [showWholeNumberPicker, setShowWholeNumberPicker] = useState(false);
+
+  // Update selected fraction when fraction type changes
+  useEffect(() => {
+    if (fractionType === "none") {
+      setSelectedFraction("");
+    } else {
+      const fractions = getFractions(fractionType);
+      // Try to keep a similar fraction value, or default to the last option
+      if (!fractions.includes(selectedFraction)) {
+        setSelectedFraction(fractions[fractions.length - 1] || "");
+      }
+    }
+  }, [fractionType]);
+
+  const handleDone = () => {
+    let result = wholeNumber.toString();
+    if (selectedFraction && fractionType !== "none") {
+      result = wholeNumber > 0 ? `${wholeNumber} ${selectedFraction}` : selectedFraction;
+    }
+    onDone(result);
+  };
+
+  const handleWholeNumberSelect = (num: number) => {
+    setWholeNumber(num);
+    setShowWholeNumberPicker(false);
+  };
+
+  if (showWholeNumberPicker) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-center">Select Whole Number</h3>
+        
+        <div className="grid grid-cols-3 gap-2">
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
+            <SelectableButton
+              key={num}
+              onClick={() => handleWholeNumberSelect(num)}
+              isActive={wholeNumber === num}
+              data-testid={`button-whole-${num}`}
+              className="text-lg font-mono font-bold"
+            >
+              {num}
+            </SelectableButton>
+          ))}
+        </div>
+
+        <ClickableButton
+          onClick={() => setShowWholeNumberPicker(false)}
+          data-testid="button-back"
+          className="w-full text-base"
+        >
+          Back
+        </ClickableButton>
+      </div>
+    );
+  }
+
+  const fractionTypes: { value: FractionType; label: string }[] = [
+    { value: "none", label: "no fraction" },
+    { value: "halves", label: "halves" },
+    { value: "thirds", label: "thirds" },
+    { value: "quarters", label: "quarters" },
+    { value: "eighths", label: "eighths" },
+  ];
+
+  const fractions = getFractions(fractionType);
+
+  return (
+    <div className="space-y-4">
+      {/* Row 1: Fraction Type Selector */}
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Fraction Type</h3>
+        <div className="flex flex-wrap gap-2">
+          {fractionTypes.map((type) => (
+            <SelectableButton
+              key={type.value}
+              onClick={() => setFractionType(type.value)}
+              isActive={fractionType === type.value}
+              data-testid={`button-fraction-type-${type.value}`}
+              className="text-sm flex-shrink-0"
+            >
+              {type.label}
+            </SelectableButton>
+          ))}
+        </div>
+      </div>
+
+      {/* Row 2: Whole Number and Fraction Buttons */}
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Amount</h3>
+        <div className="flex gap-2">
+          <ClickableButton
+            onClick={() => setShowWholeNumberPicker(true)}
+            data-testid="button-whole-number"
+            className="flex-1 text-lg font-mono font-bold"
+          >
+            {wholeNumber}
+          </ClickableButton>
+
+          {fractionType !== "none" && (
+            <ClickableButton
+              onClick={() => {}}
+              data-testid="button-selected-fraction"
+              className="flex-1 text-lg font-mono font-bold"
+            >
+              {selectedFraction || "0/0"}
+            </ClickableButton>
+          )}
+        </div>
+      </div>
+
+      {/* Row 3: Fraction Selector */}
+      {fractionType !== "none" && (
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Select Fraction</h3>
+          <div className="flex flex-wrap gap-2">
+            {fractions.map((frac) => (
+              <SelectableButton
+                key={frac}
+                onClick={() => setSelectedFraction(frac)}
+                isActive={selectedFraction === frac}
+                data-testid={`button-fraction-${frac.replace("/", "-")}`}
+                className="text-base font-mono flex-shrink-0"
+              >
+                {frac}
+              </SelectableButton>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Done/Cancel Buttons */}
+      <div className="grid grid-cols-2 gap-2 pt-2">
+        <ClickableButton
+          onClick={onCancel}
+          data-testid="button-cancel"
+          className="text-base"
+        >
+          Cancel
+        </ClickableButton>
+
+        <ClickableButton
+          onClick={handleDone}
+          data-testid="button-done"
+          className="text-base"
+        >
+          Done
+        </ClickableButton>
+      </div>
+    </div>
+  );
+}
