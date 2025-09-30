@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { ClickableButton } from "./ClickableButton";
+import { Delete } from "lucide-react";
 
 interface DecimalKeypadProps {
   value: string;
@@ -43,13 +43,6 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
     onChange("0");
   };
 
-  const keys = [
-    ["1", "2", "3"],
-    ["4", "5", "6"],
-    ["7", "8", "9"],
-    [".", "0", "⌫"]
-  ];
-
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50" onClick={onClose}>
       <div 
@@ -57,11 +50,8 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
         onClick={(e) => e.stopPropagation()}
         data-testid="decimal-keypad"
       >
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Enter Amount</h3>
-          <Button variant="ghost" size="icon" onClick={onClose} data-testid="keypad-close">
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-center">Enter Amount</h3>
         </div>
         
         <div className="mb-4 p-3 bg-muted rounded-md text-center">
@@ -69,33 +59,61 @@ export function DecimalKeypad({ value, onChange, onClose, maxDecimalPlaces = 2 }
         </div>
 
         <div className="grid grid-cols-3 gap-2 mb-4">
-          {keys.flat().map((key) => (
-            <Button
-              key={key}
-              variant="outline"
-              size="lg"
-              className="h-12 text-lg font-semibold"
-              onClick={() => {
-                if (key === "⌫") {
-                  handleBackspace();
-                } else {
-                  handleDigit(key);
-                }
-              }}
-              data-testid={`key-${key === "⌫" ? "backspace" : key}`}
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
+            <ClickableButton
+              key={digit}
+              onClick={() => handleDigit(digit.toString())}
+              data-testid={`key-${digit}`}
+              showInnerBorder={false}
+              className="text-lg font-mono font-bold"
             >
-              {key}
-            </Button>
+              {digit}
+            </ClickableButton>
           ))}
+
+          <ClickableButton
+            onClick={() => handleDigit(".")}
+            data-testid="key-decimal"
+            showInnerBorder={false}
+            className="text-lg font-mono font-bold"
+          >
+            .
+          </ClickableButton>
+
+          <ClickableButton
+            onClick={() => handleDigit("0")}
+            data-testid="key-0"
+            showInnerBorder={false}
+            className="text-lg font-mono font-bold"
+          >
+            0
+          </ClickableButton>
+
+          <ClickableButton
+            onClick={handleBackspace}
+            data-testid="key-backspace"
+            showInnerBorder={false}
+            className="flex items-center justify-center"
+          >
+            <Delete className="w-5 h-5" />
+          </ClickableButton>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" onClick={handleClear} data-testid="key-clear">
+          <ClickableButton
+            onClick={handleClear}
+            data-testid="key-clear"
+            showInnerBorder={false}
+          >
             Clear
-          </Button>
-          <Button onClick={onClose} data-testid="key-done">
+          </ClickableButton>
+          <ClickableButton
+            onClick={onClose}
+            data-testid="key-done"
+            showInnerBorder={false}
+          >
             Done
-          </Button>
+          </ClickableButton>
         </div>
       </div>
     </div>

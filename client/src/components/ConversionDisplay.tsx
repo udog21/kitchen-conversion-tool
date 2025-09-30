@@ -165,6 +165,17 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
     prevInputUnitRef.current = inputUnit;
   }, [inputUnit]);
 
+  // Auto-select water when switching to cross-category conversion
+  useEffect(() => {
+    if (isCrossCategory && selectedIngredient === "anything") {
+      setSelectedIngredient("water");
+    } else if (!isCrossCategory && selectedIngredient !== "anything") {
+      // Optionally reset to "anything" when switching back to same-category
+      // Commenting this out to preserve user's ingredient selection
+      // setSelectedIngredient("anything");
+    }
+  }, [isCrossCategory]);
+
   const calculateConversion = (): number => {
     const inputValue = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
     
