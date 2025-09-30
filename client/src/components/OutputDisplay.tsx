@@ -15,7 +15,7 @@ export function OutputDisplay({
     <div
       data-testid={dataTestId}
       className={cn(
-        "relative px-4 py-3 rounded-lg",
+        "relative px-4 py-5 rounded-lg",
         "border-2 border-[#264653]",
         "font-semibold text-[#2A9D8F]",
         "min-h-[48px]",

@@ -24,7 +24,7 @@ export function ClickableButton({
       onClick={onClick}
       data-testid={dataTestId}
       className={cn(
-        "relative px-4 py-3 rounded-lg transition-all duration-200",
+        "relative px-4 py-5 rounded-lg transition-all duration-200",
         "border-2 border-[#F4A261]",
         "font-semibold text-[#E76F51]",
         "cursor-pointer outline-none",
