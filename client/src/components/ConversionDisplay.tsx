@@ -1,29 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { AmountPicker } from "./AmountPicker";
 import { UnitPicker } from "./UnitPicker";
+import { 
+  fractionToDecimal, 
+  formatImperialAmount, 
+  convertImperialToMetric, 
+  convertMetricToImperial 
+} from "@/lib/fractionUtils";
 
 // Volume units with their categories
 const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL/cc", "liter"];
 const IMPERIAL_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
 const METRIC_UNITS = ["mL/cc", "liter"];
-
-// Function to convert fraction strings to decimal numbers
-function fractionToDecimal(fraction: string): number {
-  if (fraction.includes(" ")) {
-    const [whole, frac] = fraction.split(" ");
-    return parseFloat(whole) + fractionToDecimal(frac);
-  }
-  
-  if (fraction.includes("/")) {
-    const [num, den] = fraction.split("/").map(Number);
-    return num / den;
-  }
-  
-  return parseFloat(fraction);
-}
 
 // Function to pluralize unit names based on amount
 const pluralizeUnit = (unit: string, amount: number): string => {
@@ -58,7 +49,13 @@ const CONVERSIONS_TO_ML: { [key: string]: number } = {
   "liter": 1000,
 };
 
-function formatResult(value: number): string {
+function formatResult(value: number, isMetric: boolean): string {
+  // For imperial, use fractions
+  if (!isMetric) {
+    return formatImperialAmount(value, true);
+  }
+  
+  // For metric, use decimals
   if (value < 0.01) return value.toFixed(4);
   if (value < 1) return value.toFixed(3);
   if (value < 10) return value.toFixed(2);
@@ -73,6 +70,7 @@ export function ConversionDisplay() {
   const [showAmountPicker, setShowAmountPicker] = useState(false);
   const [showInputUnitPicker, setShowInputUnitPicker] = useState(false);
   const [showOutputUnitPicker, setShowOutputUnitPicker] = useState(false);
+  const prevInputUnitRef = useRef(inputUnit);
 
   // Fetch conversion ratios from API
   const { data: conversionRatios, isLoading } = useQuery({
@@ -82,6 +80,23 @@ export function ConversionDisplay() {
 
   const isInputMetric = METRIC_UNITS.includes(inputUnit);
   const isOutputMetric = METRIC_UNITS.includes(outputUnit);
+
+  // Auto-convert input amount when unit system changes (imperial ↔ metric)
+  useEffect(() => {
+    const prevUnit = prevInputUnitRef.current;
+    const wasMetric = METRIC_UNITS.includes(prevUnit);
+    
+    // If switching from imperial to metric
+    if (!wasMetric && isInputMetric) {
+      setInputAmount(convertImperialToMetric(inputAmount));
+    }
+    // If switching from metric to imperial
+    else if (wasMetric && !isInputMetric) {
+      setInputAmount(convertMetricToImperial(inputAmount));
+    }
+    
+    prevInputUnitRef.current = inputUnit;
+  }, [inputUnit]);
 
   // Auto-select appropriate output unit when input changes
   useEffect(() => {
@@ -153,7 +168,7 @@ export function ConversionDisplay() {
               data-testid="output-amount"
               className="flex-1 font-mono font-bold"
             >
-              {formatResult(result)}
+              {formatResult(result, isOutputMetric)}
             </OutputDisplay>
             
             {/* Output Unit Button */}
