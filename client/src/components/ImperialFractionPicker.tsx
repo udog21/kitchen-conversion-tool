@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { SelectableButton } from "./SelectableButton";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface ImperialFractionPickerProps {
   initialValue: string;
@@ -55,7 +57,9 @@ function getFractions(type: FractionType): string[] {
 export function ImperialFractionPicker({ initialValue, onDone, onCancel }: ImperialFractionPickerProps) {
   const parsed = parseFraction(initialValue);
   const initialFractionType = parsed.numerator > 0 ? getFractionType(parsed.denominator) : "quarters";
+  const initialUseFraction = parsed.numerator > 0;
   
+  const [useFraction, setUseFraction] = useState(initialUseFraction);
   const [fractionType, setFractionType] = useState<FractionType>(initialFractionType);
   const [wholeNumber, setWholeNumber] = useState(parsed.whole);
   const [selectedFraction, setSelectedFraction] = useState(
@@ -65,20 +69,18 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
 
   // Update selected fraction when fraction type changes
   useEffect(() => {
-    if (fractionType === "none") {
-      setSelectedFraction("");
-    } else {
+    if (useFraction) {
       const fractions = getFractions(fractionType);
       // Try to keep a similar fraction value, or default to the last option
       if (!fractions.includes(selectedFraction)) {
         setSelectedFraction(fractions[fractions.length - 1] || "");
       }
     }
-  }, [fractionType]);
+  }, [fractionType, useFraction]);
 
   const handleDone = () => {
     let result = wholeNumber.toString();
-    if (selectedFraction && fractionType !== "none") {
+    if (useFraction && selectedFraction) {
       result = wholeNumber > 0 ? `${wholeNumber} ${selectedFraction}` : selectedFraction;
     }
     onDone(result);
@@ -120,7 +122,6 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
   }
 
   const fractionTypes: { value: FractionType; label: string }[] = [
-    { value: "none", label: "no fraction" },
     { value: "halves", label: "halves" },
     { value: "thirds", label: "thirds" },
     { value: "quarters", label: "quarters" },
@@ -131,26 +132,41 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
 
   return (
     <div className="space-y-4">
-      {/* Row 1: Fraction Type Selector */}
-      <div>
-        <h3 className="text-sm font-semibold mb-2">Fraction Type</h3>
-        <div className="flex flex-wrap gap-2">
-          {fractionTypes.map((type) => (
-            <SelectableButton
-              key={type.value}
-              onClick={() => setFractionType(type.value)}
-              isActive={fractionType === type.value}
-              data-testid={`button-fraction-type-${type.value}`}
-              className="flex-shrink-0"
-            >
-              {type.label}
-            </SelectableButton>
-          ))}
-        </div>
+      {/* Row 1: Fraction Toggle */}
+      <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
+        <Label htmlFor="fraction-toggle" className="text-sm font-semibold">
+          Use Fractions
+        </Label>
+        <Switch
+          id="fraction-toggle"
+          checked={useFraction}
+          onCheckedChange={setUseFraction}
+          data-testid="toggle-use-fraction"
+        />
       </div>
 
-      {/* Row 2: Fraction Selector */}
-      {fractionType !== "none" && (
+      {/* Row 2: Fraction Type Selector - only shown when fractions enabled */}
+      {useFraction && (
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Fraction Type</h3>
+          <div className="flex flex-wrap gap-2">
+            {fractionTypes.map((type) => (
+              <SelectableButton
+                key={type.value}
+                onClick={() => setFractionType(type.value)}
+                isActive={fractionType === type.value}
+                data-testid={`button-fraction-type-${type.value}`}
+                className="flex-shrink-0"
+              >
+                {type.label}
+              </SelectableButton>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Row 3: Fraction Selector - only shown when fractions enabled */}
+      {useFraction && (
         <div>
           <h3 className="text-sm font-semibold mb-2">Select Fraction</h3>
           <div className="flex flex-wrap gap-2">
@@ -169,7 +185,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         </div>
       )}
 
-      {/* Row 3: Amount Selected - with visual distinction */}
+      {/* Row 4: Amount Selected - with visual distinction */}
       <div className="bg-muted/50 p-4 rounded-lg space-y-3">
         <div>
           <h3 className="text-sm font-semibold mb-2">Amount</h3>
@@ -182,7 +198,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
               {wholeNumber}
             </ClickableButton>
 
-            {fractionType !== "none" && (
+            {useFraction && (
               <OutputDisplay
                 data-testid="button-selected-fraction"
                 className="flex-1 font-mono font-bold"
