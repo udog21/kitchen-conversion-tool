@@ -119,7 +119,7 @@ export function UnitPicker({
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                     variant="modal"
                   >
-                    {unit}
+                    {unit.toLowerCase()}
                   </ClickableButton>
                 ))}
               </div>
@@ -138,7 +138,7 @@ export function UnitPicker({
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                     variant="modal"
                   >
-                    {unit}
+                    {unit.toLowerCase()}
                   </ClickableButton>
                 ))}
               </div>
@@ -156,7 +156,7 @@ export function UnitPicker({
                   data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                   variant="modal"
                 >
-                  {unit}
+                  {unit.toLowerCase()}
                 </ClickableButton>
               ))}
             </div>
