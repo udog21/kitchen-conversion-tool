@@ -25,7 +25,7 @@ export function UnitPicker({
 
   // Group units by system for better organization
   const imperialUnits = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon"];
-  const metricUnits = ["mL/cc", "liter"];
+  const metricUnits = ["mL", "liter"];
   
   const imperialOptions = units.filter(unit => imperialUnits.includes(unit));
   const metricOptions = units.filter(unit => metricUnits.includes(unit));
@@ -45,7 +45,7 @@ export function UnitPicker({
                 {imperialOptions.map((unit) => (
                   <ClickableButton
                     key={unit}
-                    pressed={currentUnit === unit}
+                    showInnerBorder={currentUnit === unit}
                     onClick={() => handleUnitSelect(unit)}
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                     variant="modal"
@@ -64,7 +64,7 @@ export function UnitPicker({
                 {metricOptions.map((unit) => (
                   <ClickableButton
                     key={unit}
-                    pressed={currentUnit === unit}
+                    showInnerBorder={currentUnit === unit}
                     onClick={() => handleUnitSelect(unit)}
                     data-testid={`unit-option-${unit.replace(/[^a-zA-Z0-9]/g, '-')}`}
                     variant="modal"
