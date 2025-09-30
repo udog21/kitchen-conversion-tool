@@ -215,7 +215,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
     <div className="space-y-4">
       {/* Row 1: Fraction Toggle */}
       <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
-        <Label htmlFor="fraction-toggle" className="text-sm font-semibold">
+        <Label htmlFor="fraction-toggle" className="text-base font-semibold">
           Use Fractions
         </Label>
         <Switch
@@ -229,7 +229,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
       {/* Row 2: Fraction Type Selector - only shown when fractions enabled */}
       {useFraction && (
         <div>
-          <h3 className="text-sm font-semibold mb-2">Fraction Type</h3>
+          <h3 className="text-base font-semibold mb-2">Fraction Type</h3>
           <div className="flex flex-wrap gap-2">
             {fractionTypes.map((type) => (
               <SelectableButton
@@ -237,7 +237,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
                 onClick={() => setFractionType(type.value)}
                 isActive={fractionType === type.value}
                 data-testid={`button-fraction-type-${type.value}`}
-                className="flex-shrink-0"
+                className="flex-shrink-0 text-xl"
               >
                 {type.label}
               </SelectableButton>
@@ -249,7 +249,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
       {/* Row 3: Fraction Selector - only shown when fractions enabled */}
       {useFraction && (
         <div>
-          <h3 className="text-sm font-semibold mb-2">Select Fraction</h3>
+          <h3 className="text-base font-semibold mb-2">Select Fraction</h3>
           <div className="flex flex-wrap gap-2">
             {fractions.map((frac) => (
               <SelectableButton
@@ -257,7 +257,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
                 onClick={() => setSelectedFraction(frac)}
                 isActive={selectedFraction === frac}
                 data-testid={`button-fraction-${frac.replace("/", "-")}`}
-                className="font-mono flex-shrink-0"
+                className="font-mono flex-shrink-0 text-xl"
               >
                 {frac}
               </SelectableButton>
@@ -269,12 +269,12 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
       {/* Row 4: Amount Selected - with visual distinction */}
       <div className="bg-muted/50 p-4 rounded-lg space-y-3">
         <div>
-          <h3 className="text-sm font-semibold mb-2">Amount</h3>
+          <h3 className="text-base font-semibold mb-2">Amount</h3>
           <div className="flex gap-2">
             <ClickableButton
               onClick={() => setShowWholeNumberPicker(true)}
               data-testid="button-whole-number"
-              className="flex-1 font-mono font-bold"
+              className="flex-1 font-mono font-bold text-xl"
             >
               {wholeNumber}
             </ClickableButton>
@@ -282,7 +282,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             {useFraction && (
               <OutputDisplay
                 data-testid="button-selected-fraction"
-                className="flex-1 font-mono font-bold"
+                className="flex-1 font-mono font-bold text-xl"
               >
                 {selectedFraction || "0/0"}
               </OutputDisplay>
@@ -296,6 +296,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={onCancel}
             data-testid="button-cancel"
             showInnerBorder={false}
+            className="text-base"
           >
             Cancel
           </ClickableButton>
@@ -304,6 +305,7 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
             onClick={handleDone}
             data-testid="button-done"
             showInnerBorder={false}
+            className="text-base"
           >
             Done
           </ClickableButton>

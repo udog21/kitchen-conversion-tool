@@ -262,7 +262,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
               <ClickableButton
                 onClick={() => setShowInputUnitPicker(true)}
                 data-testid="input-unit-button" 
-                className="flex-1"
+                className="flex-1 text-xl"
               >
                 {pluralizeUnit(inputUnit, fractionToDecimal(inputAmount))}
               </ClickableButton>
@@ -287,7 +287,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
               <ClickableButton
                 onClick={() => setShowOutputUnitPicker(true)}
                 data-testid="output-unit-button"
-                className="flex-1"
+                className="flex-1 text-xl"
               >
                 {pluralizeUnit(outputUnit, result)}
               </ClickableButton>
@@ -297,11 +297,11 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
 
         {/* "of" and Ingredient Selector */}
         <div className="flex items-center gap-3">
-          <span className="text-muted-foreground text-sm">of</span>
+          <span className="text-muted-foreground text-xl">of</span>
           <ClickableButton
             onClick={() => setShowIngredientPicker(true)}
             data-testid="ingredient-button"
-            className="min-w-[150px]"
+            className="min-w-[150px] text-xl"
           >
             {selectedIngredient}
           </ClickableButton>
