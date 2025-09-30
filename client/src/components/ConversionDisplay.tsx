@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
@@ -84,6 +84,45 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
 
   const isInputMetric = METRIC_UNITS.includes(inputUnit);
   const isOutputMetric = METRIC_UNITS.includes(outputUnit);
+
+  // Extract available units from conversion ratios
+  const availableUnits = useMemo(() => {
+    if (!conversionRatios || !Array.isArray(conversionRatios)) {
+      return VOLUME_UNITS; // Default to all units if data not loaded
+    }
+    
+    const units = new Set<string>();
+    conversionRatios.forEach((ratio: any) => {
+      units.add(ratio.fromUnit);
+      units.add(ratio.toUnit);
+    });
+    
+    // Filter VOLUME_UNITS to maintain order
+    return VOLUME_UNITS.filter(unit => units.has(unit));
+  }, [conversionRatios]);
+
+  const availableImperialUnits = useMemo(() => 
+    availableUnits.filter(unit => IMPERIAL_UNITS.includes(unit)),
+    [availableUnits]
+  );
+
+  const availableMetricUnits = useMemo(() => 
+    availableUnits.filter(unit => METRIC_UNITS.includes(unit)),
+    [availableUnits]
+  );
+
+  // Auto-adjust units if current selection is not available in new system
+  useEffect(() => {
+    if (!availableUnits.includes(inputUnit)) {
+      // Try to select a similar unit or fallback to first available
+      const fallback = availableImperialUnits[0] || availableMetricUnits[0] || "cup";
+      setInputUnit(fallback);
+    }
+    if (!availableUnits.includes(outputUnit)) {
+      const fallback = availableImperialUnits[0] || availableMetricUnits[0] || "tablespoon";
+      setOutputUnit(fallback);
+    }
+  }, [system, availableUnits]);
 
   // Auto-convert input amount when unit system changes (imperial ↔ metric)
   useEffect(() => {
@@ -210,7 +249,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
         onClose={() => setShowInputUnitPicker(false)}
         currentUnit={inputUnit}
         onUnitChange={setInputUnit}
-        units={VOLUME_UNITS}
+        units={availableUnits}
         title="Select Input Unit"
       />
 
@@ -220,7 +259,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
         onClose={() => setShowOutputUnitPicker(false)}
         currentUnit={outputUnit}
         onUnitChange={setOutputUnit}
-        units={isInputMetric ? IMPERIAL_UNITS : METRIC_UNITS}
+        units={isInputMetric ? availableImperialUnits : availableMetricUnits}
         title="Select Output Unit"
       />
     </div>
