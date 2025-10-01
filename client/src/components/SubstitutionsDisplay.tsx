@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
-import { DecimalKeypad } from "./DecimalKeypad";
-import { ImperialFractionPicker } from "./ImperialFractionPicker";
+import { AmountPicker } from "./AmountPicker";
 import { UnitPicker } from "./UnitPicker";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { fractionToDecimal } from "@/lib/fractionUtils";
 
 // High-fidelity substitutions that won't alter taste/texture significantly
 type SubstituteItem = {
@@ -81,6 +80,19 @@ const AVAILABLE_UNITS = [
   "pound",
 ];
 
+// Imperial units for determining which input method to show
+const IMPERIAL_UNITS = [
+  "teaspoon",
+  "tablespoon",
+  "cup",
+  "fluid ounce",
+  "pint",
+  "quart",
+  "gallon",
+  "ounce",
+  "pound",
+];
+
 // Format a number for display, handling fractions intelligently
 function formatAmount(amount: number): string {
   // Check if it's a whole number
@@ -117,7 +129,7 @@ function formatAmount(amount: number): string {
 function pluralizeUnit(amount: number, unit: string): string {
   if (amount === 1) return unit;
   
-  // Special cases
+  // Volume units
   if (unit === "teaspoon") return "teaspoons";
   if (unit === "tablespoon") return "tablespoons";
   if (unit === "cup") return "cups";
@@ -125,10 +137,14 @@ function pluralizeUnit(amount: number, unit: string): string {
   if (unit === "pint") return "pints";
   if (unit === "quart") return "quarts";
   if (unit === "gallon") return "gallons";
-  
-  // Metric units typically stay the same or add 's'
   if (unit === "milliliter") return "milliliters";
   if (unit === "liter") return "liters";
+  
+  // Weight units
+  if (unit === "gram") return "grams";
+  if (unit === "kilogram") return "kilograms";
+  if (unit === "ounce") return "ounces";
+  if (unit === "pound") return "pounds";
   
   return unit;
 }
@@ -174,9 +190,12 @@ export function SubstitutionsDisplay() {
   const [inputUnit, setInputUnit] = useState("cup");
   const [selectedIngredient, setSelectedIngredient] = useState("light brown sugar");
   
-  const [showAmountKeypad, setShowAmountKeypad] = useState(false);
+  const [showAmountPicker, setShowAmountPicker] = useState(false);
   const [showUnitPicker, setShowUnitPicker] = useState(false);
   const [showIngredientPicker, setShowIngredientPicker] = useState(false);
+  
+  // Check if current unit is imperial (determines input method)
+  const isInputMetric = !IMPERIAL_UNITS.includes(inputUnit);
 
   // Find the selected substitution recipe
   const recipe = HIGH_FIDELITY_SUBSTITUTIONS.find(
@@ -186,7 +205,8 @@ export function SubstitutionsDisplay() {
   // Calculate scaled substitutes
   const scaledSubstitutes: SubstituteItem[] = recipe
     ? recipe.substitutes.map((sub) => {
-        const inputAmountNum = parseFloat(inputAmount) || 1;
+        // Parse input amount (may be fraction like "1 1/2" or decimal)
+        const inputAmountNum = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
         const scaleFactor = inputAmountNum / recipe.baseAmount;
         return {
           ...sub,
@@ -201,7 +221,8 @@ export function SubstitutionsDisplay() {
   };
 
   // Pluralize the input unit for display
-  const displayInputUnit = pluralizeUnit(parseFloat(inputAmount) || 0, inputUnit);
+  const inputAmountNum = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
+  const displayInputUnit = pluralizeUnit(inputAmountNum || 0, inputUnit);
 
   return (
     <div className="space-y-6">
@@ -214,7 +235,7 @@ export function SubstitutionsDisplay() {
           {/* Amount + Unit + "of" + Ingredient */}
           <div className="flex flex-wrap items-center gap-2">
             <ClickableButton
-              onClick={() => setShowAmountKeypad(true)}
+              onClick={() => setShowAmountPicker(true)}
               data-testid="button-input-amount"
               className="font-mono font-bold text-xl"
             >
@@ -274,23 +295,16 @@ export function SubstitutionsDisplay() {
         </div>
       </div>
 
-      {/* Amount Input Dialog - Fraction Picker */}
-      {showAmountKeypad && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card border border-border rounded-lg p-4 w-full max-w-md">
-            <ImperialFractionPicker
-              initialValue={inputAmount}
-              onDone={(value) => {
-                setInputAmount(value);
-                setShowAmountKeypad(false);
-              }}
-              onCancel={() => setShowAmountKeypad(false)}
-            />
-          </div>
-        </div>
-      )}
+      {/* Amount Picker Modal */}
+      <AmountPicker
+        isOpen={showAmountPicker}
+        onClose={() => setShowAmountPicker(false)}
+        currentAmount={inputAmount}
+        onAmountChange={setInputAmount}
+        isMetric={isInputMetric}
+      />
 
-      {/* Unit Picker Dialog */}
+      {/* Unit Picker Modal */}
       <UnitPicker
         isOpen={showUnitPicker}
         onClose={() => setShowUnitPicker(false)}
@@ -300,45 +314,15 @@ export function SubstitutionsDisplay() {
         title="Select Unit"
       />
 
-      {/* Ingredient Picker Dialog */}
-      <Dialog open={showIngredientPicker} onOpenChange={setShowIngredientPicker}>
-        <DialogContent className="max-w-md">
-          <div className="space-y-4">
-            <h3 className="text-base font-semibold">Select Ingredient</h3>
-            <div className="space-y-2">
-              {HIGH_FIDELITY_SUBSTITUTIONS.map((recipe) => (
-                <ClickableButton
-                  key={recipe.name}
-                  onClick={() => handleIngredientSelect(recipe.name)}
-                  data-testid={`button-ingredient-${recipe.name.replace(/\s+/g, "-")}`}
-                  className="w-full text-xl"
-                  showInnerBorder={selectedIngredient === recipe.name}
-                >
-                  {recipe.name}
-                </ClickableButton>
-              ))}
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <ClickableButton
-                onClick={() => setShowIngredientPicker(false)}
-                data-testid="button-cancel-ingredient"
-                showInnerBorder={false}
-                className="text-base"
-              >
-                Cancel
-              </ClickableButton>
-              <ClickableButton
-                onClick={() => handleIngredientSelect(selectedIngredient)}
-                data-testid="button-done-ingredient"
-                showInnerBorder={false}
-                className="text-base"
-              >
-                Done
-              </ClickableButton>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Ingredient Picker Modal */}
+      <UnitPicker
+        isOpen={showIngredientPicker}
+        onClose={() => setShowIngredientPicker(false)}
+        currentUnit={selectedIngredient}
+        onUnitChange={handleIngredientSelect}
+        units={HIGH_FIDELITY_SUBSTITUTIONS.map((recipe) => recipe.name)}
+        title="Select Ingredient"
+      />
     </div>
   );
 }
