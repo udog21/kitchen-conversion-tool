@@ -25,9 +25,20 @@ Preferred communication style: Simple, everyday language.
 
 ### Data Storage Solutions
 - **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
-- **Schema**: Three main tables - users, conversion_ratios, and ingredients
+- **Schema**: Five main tables - users, conversion_ratios, ingredients, tab_visits, and conversion_events
 - **Storage Interface**: Abstracted storage layer supporting both in-memory (development) and PostgreSQL (production) implementations
 - **Migrations**: Drizzle Kit for database schema management
+
+### Analytics System
+- **Purpose**: Tracks user interactions for usage insights and conversion patterns
+- **Debouncing**: 2.5-second delay prevents event floods while maintaining responsiveness
+- **Session Tracking**: Client-generated session IDs (timestamp + random string) track user journeys
+- **Tab Visits**: Logged when users switch tabs, includes session context
+- **Conversion Events**: Tracks actual conversions with JSONB-stored input/output parameters
+- **Implementation**: useAnalytics and useDebouncedConversionTracking React hooks with proper memoization
+- **Database Tables**: 
+  - `tab_visits`: Stores tab navigation events with session IDs
+  - `conversion_events`: Stores conversion operations with JSONB payloads for flexible data capture
 
 ### Component Design System
 - **Design Philosophy**: Reference-based approach inspired by utility apps like iOS Calculator
