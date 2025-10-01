@@ -3,7 +3,7 @@ import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { AmountPicker } from "./AmountPicker";
 import { UnitPicker } from "./UnitPicker";
-import { fractionToDecimal } from "@/lib/fractionUtils";
+import { fractionToDecimal, formatImperialAmount } from "@/lib/fractionUtils";
 
 // High-fidelity substitutions that won't alter taste/texture significantly
 type SubstituteItem = {
@@ -93,36 +93,21 @@ const IMPERIAL_UNITS = [
   "pound",
 ];
 
-// Format a number for display, handling fractions intelligently
-function formatAmount(amount: number): string {
-  // Check if it's a whole number
-  if (amount === Math.floor(amount)) {
-    return amount.toString();
+// Format amount based on whether it's imperial (use fractions) or metric (use decimals)
+function formatAmount(amount: number, unit: string): string {
+  const isImperial = IMPERIAL_UNITS.includes(unit);
+  
+  if (isImperial) {
+    // Use the same fraction formatting logic as Volume & Weight tab
+    return formatImperialAmount(amount, true);
+  } else {
+    // For metric, use decimals
+    if (amount < 0.01) return amount.toFixed(4);
+    if (amount < 1) return amount.toFixed(3);
+    if (amount < 10) return amount.toFixed(2);
+    if (amount < 100) return amount.toFixed(1);
+    return Math.round(amount).toString();
   }
-
-  // Try common fractions
-  const fractions: [number, string][] = [
-    [0.125, "1/8"],
-    [0.25, "1/4"],
-    [0.333, "1/3"],
-    [0.5, "1/2"],
-    [0.667, "2/3"],
-    [0.75, "3/4"],
-  ];
-
-  for (const [decimal, frac] of fractions) {
-    if (Math.abs(amount - decimal) < 0.01) {
-      return frac;
-    }
-    // Check for whole number + fraction
-    const whole = Math.floor(amount);
-    if (whole > 0 && Math.abs(amount - whole - decimal) < 0.01) {
-      return `${whole} ${frac}`;
-    }
-  }
-
-  // Fall back to decimal with 2 places
-  return amount.toFixed(2).replace(/\.?0+$/, "");
 }
 
 // Pluralize units based on amount
@@ -267,7 +252,7 @@ export function SubstitutionsDisplay() {
           {/* Substitutes List */}
           <div className="space-y-2">
             {scaledSubstitutes.map((sub, index) => {
-              const amountStr = formatAmount(sub.amount);
+              const amountStr = formatAmount(sub.amount, sub.unit);
               const unitStr = pluralizeUnit(sub.amount, sub.unit);
               const ingredientStr = pluralizeIngredient(sub.amount, sub.ingredient);
               
