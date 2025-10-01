@@ -18,6 +18,8 @@ type SubstitutionRecipe = {
   baseUnit: string;
   substitutes: SubstituteItem[];
   instructions: string;
+  fidelity: "direct" | "near";
+  specialInstructions?: string;
 };
 
 const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
@@ -30,6 +32,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 1, unit: "tablespoon", ingredient: "molasses" },
     ],
     instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
   },
   {
     name: "buttermilk",
@@ -40,6 +43,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 1, unit: "tablespoon", ingredient: "lemon juice" },
     ],
     instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
   },
   {
     name: "baking powder",
@@ -50,6 +54,7 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
     ],
     instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
   },
   {
     name: "self-raising flour",
@@ -61,6 +66,30 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
       { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
     ],
     instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
+  },
+  {
+    name: "powdered sugar",
+    baseAmount: 1,
+    baseUnit: "cup",
+    substitutes: [
+      { amount: 1, unit: "cup", ingredient: "granulated sugar" },
+      { amount: 1, unit: "tablespoon", ingredient: "cornstarch" },
+    ],
+    instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
+    specialInstructions: "Blend until fine.",
+  },
+  {
+    name: "cake flour",
+    baseAmount: 1,
+    baseUnit: "cup",
+    substitutes: [
+      { amount: 0.875, unit: "cup", ingredient: "all-purpose flour" },
+      { amount: 2, unit: "tablespoon", ingredient: "cornstarch" },
+    ],
+    instructions: "Mix ingredients thoroughly.",
+    fidelity: "direct",
   },
 ];
 
@@ -366,7 +395,7 @@ export function SubstitutionsDisplay() {
           {/* Instructions */}
           {recipe && (
             <div className="text-base font-semibold text-muted-foreground mt-4">
-              {recipe.instructions}
+              {recipe.specialInstructions || recipe.instructions}
             </div>
           )}
         </div>
