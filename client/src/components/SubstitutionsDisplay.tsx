@@ -93,6 +93,40 @@ const IMPERIAL_UNITS = [
   "pound",
 ];
 
+// Unit conversion ratios (to teaspoons for volume, to grams for weight)
+const UNIT_CONVERSIONS: { [key: string]: number } = {
+  // Volume (base: teaspoon)
+  "teaspoon": 1,
+  "tablespoon": 3,
+  "cup": 48,
+  "fluid ounce": 6,
+  "pint": 96,
+  "quart": 192,
+  "gallon": 768,
+  "milliliter": 0.202884,
+  "liter": 202.884,
+  // Weight (base: gram)
+  "gram": 1,
+  "kilogram": 1000,
+  "ounce": 28.3495,
+  "pound": 453.592,
+};
+
+// Convert amount from one unit to another
+function convertUnits(amount: number, fromUnit: string, toUnit: string): number {
+  // If same unit, no conversion needed
+  if (fromUnit === toUnit) return amount;
+  
+  // Check if both units are in the same category (volume or weight)
+  const fromConversion = UNIT_CONVERSIONS[fromUnit];
+  const toConversion = UNIT_CONVERSIONS[toUnit];
+  
+  if (!fromConversion || !toConversion) return amount;
+  
+  // Convert from source unit to base unit, then to target unit
+  return (amount * fromConversion) / toConversion;
+}
+
 // Format amount based on whether it's imperial (use fractions) or metric (use decimals)
 function formatAmount(amount: number, unit: string): string {
   const isImperial = IMPERIAL_UNITS.includes(unit);
@@ -192,7 +226,13 @@ export function SubstitutionsDisplay() {
     ? recipe.substitutes.map((sub) => {
         // Parse input amount (may be fraction like "1 1/2" or decimal)
         const inputAmountNum = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
-        const scaleFactor = inputAmountNum / recipe.baseAmount;
+        
+        // Convert input amount to the same unit as the base recipe
+        const inputInBaseUnits = convertUnits(inputAmountNum, inputUnit, recipe.baseUnit);
+        
+        // Calculate scale factor
+        const scaleFactor = inputInBaseUnits / recipe.baseAmount;
+        
         return {
           ...sub,
           amount: sub.amount * scaleFactor,
