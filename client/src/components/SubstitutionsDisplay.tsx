@@ -187,8 +187,10 @@ function formatAmount(amount: number, unit: string): string {
 
 // Pluralize units based on amount
 function pluralizeUnit(amount: number, unit: string): string {
-  if (amount === 1) return unit;
+  // Use singular for amounts between 0 and 1 (inclusive of 1)
+  if (amount > 0 && amount <= 1) return unit;
   
+  // Use plural for amounts greater than 1
   // Volume units
   if (unit === "teaspoon") return "teaspoons";
   if (unit === "tablespoon") return "tablespoons";
@@ -211,7 +213,8 @@ function pluralizeUnit(amount: number, unit: string): string {
 
 // Pluralize ingredient names based on amount
 function pluralizeIngredient(amount: number, ingredient: string): string {
-  if (amount === 1) return ingredient;
+  // Use singular for amounts between 0 and 1 (inclusive of 1)
+  if (amount > 0 && amount <= 1) return ingredient;
   
   // Don't pluralize mass nouns and special cases
   const massNouns = [
