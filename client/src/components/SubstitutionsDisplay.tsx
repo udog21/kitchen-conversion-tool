@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { AmountPicker } from "./AmountPicker";
 import { UnitPicker } from "./UnitPicker";
 import { fractionToDecimal, formatImperialAmount } from "@/lib/fractionUtils";
+import { useAnalytics, useDebouncedConversionTracking } from "@/hooks/use-analytics";
 
 // High-fidelity substitutions that won't alter taste/texture significantly
 type SubstituteItem = {
@@ -286,6 +287,12 @@ export function SubstitutionsDisplay() {
   const [showUnitPicker, setShowUnitPicker] = useState(false);
   const [showIngredientPicker, setShowIngredientPicker] = useState(false);
   
+  const { trackTabVisit, trackConversionEvent } = useAnalytics();
+
+  useEffect(() => {
+    trackTabVisit("Substitutions");
+  }, [trackTabVisit]);
+  
   // Check if current unit is imperial (determines input method)
   const isInputMetric = !IMPERIAL_UNITS.includes(inputUnit);
 
@@ -329,6 +336,26 @@ export function SubstitutionsDisplay() {
   // Pluralize the input unit for display
   const inputAmountNum = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
   const displayInputUnit = pluralizeUnit(inputAmountNum || 0, inputUnit);
+
+  useDebouncedConversionTracking(
+    trackConversionEvent,
+    "Substitutions",
+    "ingredient-substitution",
+    {
+      amount: inputAmount,
+      unit: inputUnit,
+      ingredient: selectedIngredient,
+    },
+    {
+      substitutes: scaledSubstitutes.map(sub => ({
+        amount: formatAmount(sub.displayAmount, sub.displayUnit),
+        unit: pluralizeUnit(sub.displayAmount, sub.displayUnit),
+        ingredient: sub.ingredient,
+      })),
+      fidelity: recipe?.fidelity,
+    },
+    [inputAmount, inputUnit, selectedIngredient]
+  );
 
   return (
     <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type Substitution, type InsertSubstitution, users, conversionRatios, ingredients, substitutions } from "@shared/schema";
+import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type Substitution, type InsertSubstitution, type TabVisit, type InsertTabVisit, type ConversionEvent, type InsertConversionEvent, users, conversionRatios, ingredients, substitutions, tabVisits, conversionEvents } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
@@ -23,6 +23,8 @@ export interface IStorage {
   getAllSubstitutions(): Promise<Substitution[]>;
   createSubstitution(substitution: InsertSubstitution): Promise<Substitution>;
   seedSubstitutions(): Promise<void>;
+  trackTabVisit(visit: InsertTabVisit): Promise<TabVisit>;
+  trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent>;
 }
 
 export class MemStorage implements IStorage {
@@ -30,12 +32,16 @@ export class MemStorage implements IStorage {
   private conversionRatios: Map<string, ConversionRatio>;
   private ingredients: Map<string, Ingredient>;
   private substitutions: Map<string, Substitution[]>;
+  private tabVisitsData: TabVisit[];
+  private conversionEventsData: ConversionEvent[];
 
   constructor() {
     this.users = new Map();
     this.conversionRatios = new Map();
     this.ingredients = new Map();
     this.substitutions = new Map();
+    this.tabVisitsData = [];
+    this.conversionEventsData = [];
     this.seedConversionRatios();
     this.seedIngredients();
     this.seedSubstitutions();
@@ -264,6 +270,32 @@ export class MemStorage implements IStorage {
     for (const substitution of commonSubstitutions) {
       await this.createSubstitution(substitution);
     }
+  }
+
+  async trackTabVisit(visit: InsertTabVisit): Promise<TabVisit> {
+    const id = randomUUID();
+    const tabVisit: TabVisit = {
+      ...visit,
+      id,
+      visitedAt: new Date(),
+      sessionId: visit.sessionId ?? null,
+    };
+    this.tabVisitsData.push(tabVisit);
+    return tabVisit;
+  }
+
+  async trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent> {
+    const id = randomUUID();
+    const conversionEvent: ConversionEvent = {
+      ...event,
+      id,
+      createdAt: new Date(),
+      sessionId: event.sessionId ?? null,
+      conversionType: event.conversionType ?? null,
+      outputValue: event.outputValue ?? null,
+    };
+    this.conversionEventsData.push(conversionEvent);
+    return conversionEvent;
   }
 }
 
@@ -542,6 +574,16 @@ export class DatabaseStorage implements IStorage {
       const batch = commonSubstitutions.slice(i, i + batchSize);
       await this.db.insert(substitutions).values(batch);
     }
+  }
+
+  async trackTabVisit(visit: InsertTabVisit): Promise<TabVisit> {
+    const result = await this.db.insert(tabVisits).values(visit).returning();
+    return result[0];
+  }
+
+  async trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent> {
+    const result = await this.db.insert(conversionEvents).values(event).returning();
+    return result[0];
   }
 }
 

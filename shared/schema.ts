@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, decimal, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -33,6 +33,23 @@ export const substitutions = pgTable("substitutions", {
   category: text("category").notNull(), // e.g., "Baking", "Dairy", "Sweeteners"
 });
 
+export const tabVisits = pgTable("tab_visits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tabName: varchar("tab_name", { length: 50 }).notNull(),
+  visitedAt: timestamp("visited_at").defaultNow().notNull(),
+  sessionId: varchar("session_id", { length: 100 }),
+});
+
+export const conversionEvents = pgTable("conversion_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tabName: varchar("tab_name", { length: 50 }).notNull(),
+  conversionType: varchar("conversion_type", { length: 50 }),
+  inputValue: jsonb("input_value").notNull(),
+  outputValue: jsonb("output_value"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  sessionId: varchar("session_id", { length: 100 }),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -50,6 +67,16 @@ export const insertSubstitutionSchema = createInsertSchema(substitutions).omit({
   id: true,
 });
 
+export const insertTabVisitSchema = createInsertSchema(tabVisits).omit({
+  id: true,
+  visitedAt: true,
+});
+
+export const insertConversionEventSchema = createInsertSchema(conversionEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type ConversionRatio = typeof conversionRatios.$inferSelect;
@@ -58,3 +85,7 @@ export type Ingredient = typeof ingredients.$inferSelect;
 export type InsertIngredient = z.infer<typeof insertIngredientSchema>;
 export type Substitution = typeof substitutions.$inferSelect;
 export type InsertSubstitution = z.infer<typeof insertSubstitutionSchema>;
+export type TabVisit = typeof tabVisits.$inferSelect;
+export type InsertTabVisit = z.infer<typeof insertTabVisitSchema>;
+export type ConversionEvent = typeof conversionEvents.$inferSelect;
+export type InsertConversionEvent = z.infer<typeof insertConversionEventSchema>;

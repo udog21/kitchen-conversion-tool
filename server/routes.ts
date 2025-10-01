@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertTabVisitSchema, insertConversionEventSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Conversion ratios endpoints
@@ -92,6 +93,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching substitutions:", error);
       res.status(500).json({ error: "Failed to fetch substitutions" });
+    }
+  });
+
+  // Analytics endpoints
+  app.post("/api/analytics/tab-visit", async (req, res) => {
+    try {
+      const validatedData = insertTabVisitSchema.parse(req.body);
+      const tabVisit = await storage.trackTabVisit(validatedData);
+      res.json(tabVisit);
+    } catch (error) {
+      console.error("Error tracking tab visit:", error);
+      res.status(400).json({ error: "Failed to track tab visit" });
+    }
+  });
+
+  app.post("/api/analytics/conversion-event", async (req, res) => {
+    try {
+      const validatedData = insertConversionEventSchema.parse(req.body);
+      const conversionEvent = await storage.trackConversionEvent(validatedData);
+      res.json(conversionEvent);
+    } catch (error) {
+      console.error("Error tracking conversion event:", error);
+      res.status(400).json({ error: "Failed to track conversion event" });
     }
   });
 

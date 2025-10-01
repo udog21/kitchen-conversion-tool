@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { DecimalKeypad } from "./DecimalKeypad";
+import { useAnalytics, useDebouncedConversionTracking } from "@/hooks/use-analytics";
 
 export function TemperatureDisplay() {
   const [inputTemp, setInputTemp] = useState("180");
@@ -12,6 +13,12 @@ export function TemperatureDisplay() {
   const [outputUnit, setOutputUnit] = useState<"C" | "F">("F");
   const [outputFan, setOutputFan] = useState(false);
   const [showKeypad, setShowKeypad] = useState(false);
+  
+  const { trackTabVisit, trackConversionEvent } = useAnalytics();
+
+  useEffect(() => {
+    trackTabVisit("Temperature Settings");
+  }, [trackTabVisit]);
 
   const calculateConversion = (): string => {
     const temp = parseFloat(inputTemp) || 0;
@@ -41,6 +48,21 @@ export function TemperatureDisplay() {
   };
 
   const result = calculateConversion();
+
+  useDebouncedConversionTracking(
+    trackConversionEvent,
+    "Temperature Settings",
+    `${inputUnit}-to-${outputUnit}`,
+    {
+      temperature: inputTemp,
+      inputUnit,
+      inputFan,
+      outputUnit,
+      outputFan,
+    },
+    { result },
+    [inputTemp, inputUnit, inputFan, outputUnit, outputFan]
+  );
 
   return (
     <div className="space-y-6">

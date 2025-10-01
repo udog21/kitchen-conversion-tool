@@ -10,6 +10,7 @@ import {
   convertImperialToMetric, 
   convertMetricToImperial 
 } from "@/lib/fractionUtils";
+import { useAnalytics, useDebouncedConversionTracking } from "@/hooks/use-analytics";
 
 // Volume units
 const VOLUME_UNITS = ["teaspoon", "tablespoon", "cup", "pint", "quart", "gallon", "mL", "liter"];
@@ -97,6 +98,12 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
   const [showOutputUnitPicker, setShowOutputUnitPicker] = useState(false);
   const [showIngredientPicker, setShowIngredientPicker] = useState(false);
   const prevInputUnitRef = useRef(inputUnit);
+  
+  const { trackTabVisit, trackConversionEvent } = useAnalytics();
+
+  useEffect(() => {
+    trackTabVisit("Volume & Weight");
+  }, [trackTabVisit]);
 
   // Fetch conversion ratios from API (filtered by system)
   const { data: conversionRatios, isLoading: conversionLoading } = useQuery({
@@ -228,6 +235,28 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
   };
 
   const result = calculateConversion();
+
+  const conversionType = isCrossCategory 
+    ? (isInputVolume ? "volume-to-weight" : "weight-to-volume")
+    : (isInputVolume ? "volume-to-volume" : "weight-to-weight");
+
+  useDebouncedConversionTracking(
+    trackConversionEvent,
+    "Volume & Weight",
+    conversionType,
+    {
+      amount: inputAmount,
+      inputUnit,
+      outputUnit,
+      ingredient: selectedIngredient,
+      system,
+    },
+    { 
+      result: formatResult(result, isOutputMetric),
+      resultNumeric: result,
+    },
+    [inputAmount, inputUnit, outputUnit, selectedIngredient, system]
+  );
 
   // Prepare ingredient list with "anything" as first option, then alphabetically sorted
   const ingredientOptions = useMemo(() => {
