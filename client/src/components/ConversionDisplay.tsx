@@ -301,7 +301,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
           <ClickableButton
             onClick={() => setShowIngredientPicker(true)}
             data-testid="ingredient-button"
-            className="min-w-[150px] text-xl"
+            className="min-w-[150px] text-xl lowercase"
           >
             {selectedIngredient}
           </ClickableButton>

@@ -24,12 +24,12 @@ type SubstitutionRecipe = {
 
 const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
   {
-    name: "light brown sugar",
+    name: "baking powder",
     baseAmount: 1,
-    baseUnit: "cup",
+    baseUnit: "teaspoon",
     substitutes: [
-      { amount: 1, unit: "cup", ingredient: "white sugar" },
-      { amount: 1, unit: "tablespoon", ingredient: "molasses" },
+      { amount: 0.25, unit: "teaspoon", ingredient: "baking soda" },
+      { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
     ],
     instructions: "Mix ingredients thoroughly.",
     fidelity: "direct",
@@ -46,24 +46,23 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
     fidelity: "direct",
   },
   {
-    name: "baking powder",
+    name: "cake flour",
     baseAmount: 1,
-    baseUnit: "teaspoon",
+    baseUnit: "cup",
     substitutes: [
-      { amount: 0.25, unit: "teaspoon", ingredient: "baking soda" },
-      { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
+      { amount: 0.875, unit: "cup", ingredient: "all-purpose flour" },
+      { amount: 2, unit: "tablespoon", ingredient: "cornstarch" },
     ],
     instructions: "Mix ingredients thoroughly.",
     fidelity: "direct",
   },
   {
-    name: "self-raising flour",
+    name: "light brown sugar",
     baseAmount: 1,
     baseUnit: "cup",
     substitutes: [
-      { amount: 1, unit: "cup", ingredient: "all-purpose flour" },
-      { amount: 1.5, unit: "teaspoon", ingredient: "baking powder" },
-      { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
+      { amount: 1, unit: "cup", ingredient: "white sugar" },
+      { amount: 1, unit: "tablespoon", ingredient: "molasses" },
     ],
     instructions: "Mix ingredients thoroughly.",
     fidelity: "direct",
@@ -81,12 +80,13 @@ const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
     specialInstructions: "Blend until fine.",
   },
   {
-    name: "cake flour",
+    name: "self-raising flour",
     baseAmount: 1,
     baseUnit: "cup",
     substitutes: [
-      { amount: 0.875, unit: "cup", ingredient: "all-purpose flour" },
-      { amount: 2, unit: "tablespoon", ingredient: "cornstarch" },
+      { amount: 1, unit: "cup", ingredient: "all-purpose flour" },
+      { amount: 1.5, unit: "teaspoon", ingredient: "baking powder" },
+      { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
     ],
     instructions: "Mix ingredients thoroughly.",
     fidelity: "direct",
