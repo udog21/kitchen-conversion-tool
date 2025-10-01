@@ -127,6 +127,47 @@ function convertUnits(amount: number, fromUnit: string, toUnit: string): number 
   return (amount * fromConversion) / toConversion;
 }
 
+// Find the best unit to display an amount (prioritize input unit, then upscale to larger units)
+function findBestDisplayUnit(amount: number, originalUnit: string, inputUnit: string): { amount: number; unit: string } {
+  // Define unit hierarchies (smallest to largest)
+  const volumeUnits = ["teaspoon", "tablespoon", "fluid ounce", "cup", "pint", "quart", "gallon"];
+  const weightUnits = ["gram", "kilogram", "ounce", "pound"];
+  const metricVolume = ["milliliter", "liter"];
+  
+  // Determine which hierarchy this unit belongs to
+  let hierarchy: string[] = [];
+  if (volumeUnits.includes(originalUnit)) hierarchy = volumeUnits;
+  else if (weightUnits.includes(originalUnit)) hierarchy = weightUnits;
+  else if (metricVolume.includes(originalUnit)) hierarchy = metricVolume;
+  else return { amount, unit: originalUnit };
+  
+  // First, try the input unit if it's in the same hierarchy
+  if (hierarchy.includes(inputUnit)) {
+    const convertedAmount = convertUnits(amount, originalUnit, inputUnit);
+    // If it's a reasonable amount (>= 0.125 or 1/8), use the input unit
+    if (convertedAmount >= 0.125) {
+      return { amount: convertedAmount, unit: inputUnit };
+    }
+  }
+  
+  // Try each unit in the hierarchy, starting from the largest
+  for (let i = hierarchy.length - 1; i >= 0; i--) {
+    const testUnit = hierarchy[i];
+    const convertedAmount = convertUnits(amount, originalUnit, testUnit);
+    
+    // Use this unit if the amount is >= 0.125 (1/8) and the unit is not larger than input unit
+    const inputUnitIndex = hierarchy.indexOf(inputUnit);
+    const testUnitIndex = i;
+    
+    if (convertedAmount >= 0.125 && (inputUnitIndex === -1 || testUnitIndex <= inputUnitIndex)) {
+      return { amount: convertedAmount, unit: testUnit };
+    }
+  }
+  
+  // If nothing works, return original
+  return { amount, unit: originalUnit };
+}
+
 // Format amount based on whether it's imperial (use fractions) or metric (use decimals)
 function formatAmount(amount: number, unit: string): string {
   const isImperial = IMPERIAL_UNITS.includes(unit);
@@ -221,8 +262,8 @@ export function SubstitutionsDisplay() {
     (r) => r.name === selectedIngredient
   );
 
-  // Calculate scaled substitutes
-  const scaledSubstitutes: SubstituteItem[] = recipe
+  // Calculate scaled substitutes with intelligent unit selection
+  const scaledSubstitutes: Array<SubstituteItem & { displayAmount: number; displayUnit: string }> = recipe
     ? recipe.substitutes.map((sub) => {
         // Parse input amount (may be fraction like "1 1/2" or decimal)
         const inputAmountNum = isInputMetric ? parseFloat(inputAmount) : fractionToDecimal(inputAmount);
@@ -233,9 +274,17 @@ export function SubstitutionsDisplay() {
         // Calculate scale factor
         const scaleFactor = inputInBaseUnits / recipe.baseAmount;
         
+        // Calculate the scaled amount
+        const scaledAmount = sub.amount * scaleFactor;
+        
+        // Find the best unit to display this amount
+        const { amount: displayAmount, unit: displayUnit } = findBestDisplayUnit(scaledAmount, sub.unit, inputUnit);
+        
         return {
           ...sub,
-          amount: sub.amount * scaleFactor,
+          amount: scaledAmount,
+          displayAmount,
+          displayUnit,
         };
       })
     : [];
@@ -292,9 +341,9 @@ export function SubstitutionsDisplay() {
           {/* Substitutes List */}
           <div className="space-y-2">
             {scaledSubstitutes.map((sub, index) => {
-              const amountStr = formatAmount(sub.amount, sub.unit);
-              const unitStr = pluralizeUnit(sub.amount, sub.unit);
-              const ingredientStr = pluralizeIngredient(sub.amount, sub.ingredient);
+              const amountStr = formatAmount(sub.displayAmount, sub.displayUnit);
+              const unitStr = pluralizeUnit(sub.displayAmount, sub.displayUnit);
+              const ingredientStr = pluralizeIngredient(sub.displayAmount, sub.ingredient);
               
               return (
                 <div
