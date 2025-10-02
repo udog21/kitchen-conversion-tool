@@ -4,6 +4,7 @@ import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface ImperialFractionPickerProps {
   initialValue: string;
@@ -226,45 +227,53 @@ export function ImperialFractionPicker({ initialValue, onDone, onCancel }: Imper
         />
       </div>
 
-      {/* Row 2: Fraction Type Selector - only shown when fractions enabled */}
-      {useFraction && (
-        <div>
-          <h3 className="text-base font-semibold mb-2">Fraction Type</h3>
-          <div className="flex flex-wrap gap-2">
-            {fractionTypes.map((type) => (
-              <SelectableButton
-                key={type.value}
-                onClick={() => setFractionType(type.value)}
-                isActive={fractionType === type.value}
-                data-testid={`button-fraction-type-${type.value}`}
-                className="flex-shrink-0 text-xl"
-              >
-                {type.label}
-              </SelectableButton>
-            ))}
-          </div>
+      {/* Row 2: Fraction Type Selector - always shown but disabled when fractions off */}
+      <div>
+        <h3 className={cn(
+          "text-base font-semibold mb-2",
+          !useFraction && "text-gray-400 dark:text-gray-500"
+        )}>
+          Fraction Type
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {fractionTypes.map((type) => (
+            <SelectableButton
+              key={type.value}
+              onClick={() => setFractionType(type.value)}
+              isActive={fractionType === type.value && useFraction}
+              disabled={!useFraction}
+              data-testid={`button-fraction-type-${type.value}`}
+              className="flex-shrink-0 text-xl"
+            >
+              {type.label}
+            </SelectableButton>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* Row 3: Fraction Selector - only shown when fractions enabled */}
-      {useFraction && (
-        <div>
-          <h3 className="text-base font-semibold mb-2">Select Fraction</h3>
-          <div className="flex flex-wrap gap-2">
-            {fractions.map((frac) => (
-              <SelectableButton
-                key={frac}
-                onClick={() => setSelectedFraction(frac)}
-                isActive={selectedFraction === frac}
-                data-testid={`button-fraction-${frac.replace("/", "-")}`}
-                className="font-mono flex-shrink-0 text-xl"
-              >
-                {frac}
-              </SelectableButton>
-            ))}
-          </div>
+      {/* Row 3: Fraction Selector - always shown but disabled when fractions off */}
+      <div>
+        <h3 className={cn(
+          "text-base font-semibold mb-2",
+          !useFraction && "text-gray-400 dark:text-gray-500"
+        )}>
+          Select Fraction
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {fractions.map((frac) => (
+            <SelectableButton
+              key={frac}
+              onClick={() => setSelectedFraction(frac)}
+              isActive={selectedFraction === frac && useFraction}
+              disabled={!useFraction}
+              data-testid={`button-fraction-${frac.replace("/", "-")}`}
+              className="font-mono flex-shrink-0 text-xl"
+            >
+              {frac}
+            </SelectableButton>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Row 4: Amount Selected - with visual distinction */}
       <div className="bg-muted/50 p-4 rounded-lg space-y-3">

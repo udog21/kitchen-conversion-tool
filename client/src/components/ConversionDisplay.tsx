@@ -89,7 +89,7 @@ interface ConversionDisplayProps {
 }
 
 export function ConversionDisplay({ system }: ConversionDisplayProps) {
-  const [inputAmount, setInputAmount] = useState("2 1/4");
+  const [inputAmount, setInputAmount] = useState("1");
   const [inputUnit, setInputUnit] = useState("cup");
   const [outputUnit, setOutputUnit] = useState("tablespoon");
   const [selectedIngredient, setSelectedIngredient] = useState("anything");
