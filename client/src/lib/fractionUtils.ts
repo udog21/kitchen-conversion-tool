@@ -33,6 +33,15 @@ export function decimalToFraction(decimal: number): {
     };
   }
   
+  // If remainder is very close to 1.0, round up to next whole number
+  if (remainder > 0.99) {
+    return {
+      display: (whole + 1).toString(),
+      actual: whole + 1,
+      error: 0
+    };
+  }
+  
   // Define fraction options (sorted by precedence)
   const fractions = [
     // Halves
