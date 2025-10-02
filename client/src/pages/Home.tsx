@@ -16,7 +16,7 @@ import {
 } from "@/lib/systemDetection";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabType>("temperature");
+  const [activeTab, setActiveTab] = useState<TabType>("volume-weight");
   const [measurementSystem, setMeasurementSystem] = useState<MeasurementSystem>("US");
   const [showSystemPicker, setShowSystemPicker] = useState(false);
 
