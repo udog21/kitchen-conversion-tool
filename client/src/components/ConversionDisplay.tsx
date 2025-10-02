@@ -53,7 +53,7 @@ const isWeightUnit = (unit: string) => WEIGHT_UNITS.includes(unit);
 // Volume conversions to mL (base unit) - fallback values
 const VOLUME_TO_ML: { [key: string]: number } = {
   "teaspoon": 4.92892,
-  "tablespoon": 14.7868,
+  "tablespoon": 14.78675,  // Exactly 236.588 / 16 for perfect cup conversion
   "cup": 236.588,
   "pint": 473.176,
   "quart": 946.353,
