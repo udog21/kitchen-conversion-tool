@@ -26,10 +26,6 @@ export default function PrivacyPolicy() {
         </Link>
 
         <article className="prose dark:prose-invert max-w-none">
-          <h2 className="text-3xl font-bold text-foreground mb-8" data-testid="text-privacy-title">
-            Privacy Policy
-          </h2>
-
           <div className="space-y-6 text-foreground">
             <p className="leading-relaxed">
               Your privacy is important to us. This Privacy Policy explains what information we 
