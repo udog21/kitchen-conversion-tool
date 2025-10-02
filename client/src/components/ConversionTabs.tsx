@@ -26,11 +26,11 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
             min-h-12 relative border-t border-l border-r
             ${
               activeTab === tab.id
-                ? "bg-card text-foreground border-card-border border-b-0 -mb-px z-10"
+                ? "text-gray-900 border-card-border border-b-0 -mb-px z-10"
                 : "bg-muted/30 text-muted-foreground border-card-border border-b hover-elevate"
             }
           `}
-          style={{ fontSize: "13px" }}
+          style={activeTab === tab.id ? { backgroundColor: '#E9C46A', fontSize: "13px" } : { fontSize: "13px" }}
         >
           {tab.label}
           {activeTab === tab.id && (

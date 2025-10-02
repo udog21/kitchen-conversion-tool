@@ -40,7 +40,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
   const systemInfo = measurementSystem ? getSystemInfo(measurementSystem) : null;
 
   return (
-    <header className="flex justify-between items-center p-4 border-b border-border" style={{ backgroundColor: '#E9C46A' }}>
+    <header className="flex justify-between items-center p-4 border-b border-border bg-background">
       <Link href="/" data-testid="link-home-header">
         <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all flex items-center gap-3">
           <img 
@@ -49,8 +49,8 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             className="w-12 h-12"
           />
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Cup to Grams</h1>
-            <p className="text-sm text-gray-700 mt-1">
+            <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               Common kitchen conversions and substitutions for the busy chef
             </p>
           </div>
