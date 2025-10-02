@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import type { MeasurementSystem } from "@/lib/systemDetection";
 import { getSystemInfo } from "@/lib/systemDetection";
+import kitchenScaleIcon from "@assets/ChatGPT Image Oct 2, 2025, 12_02_37 PM_1759431939693.png";
 
 interface SiteHeaderProps {
   measurementSystem?: MeasurementSystem;
@@ -43,7 +44,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
       <Link href="/" data-testid="link-home-header">
         <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all flex items-center gap-3">
           <img 
-            src="/attached_assets/ChatGPT Image Oct 2, 2025, 12_02_37 PM_1759431939693.png" 
+            src={kitchenScaleIcon} 
             alt="Kitchen Scale Icon" 
             className="w-12 h-12"
           />
