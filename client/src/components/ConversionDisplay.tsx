@@ -343,7 +343,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
         ) : isCrossCategory && selectedIngredient === "anything" ? (
           "Select an ingredient to convert between volume and weight"
         ) : (
-          "Tap any button to change values and units"
+          "Tap a button to change values and units. To convert between volume and weight, specify an ingredient."
         )}
       </div>
 
