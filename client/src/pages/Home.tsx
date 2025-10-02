@@ -63,7 +63,12 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Header with system selector and theme toggle */}
       <header className="flex justify-between items-center p-4 border-b border-border">
-        <h1 className="text-xl font-semibold text-foreground">Kitchen Conversions</h1>
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Common kitchen conversions and substitutions for the busy chef
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowSystemPicker(true)}
