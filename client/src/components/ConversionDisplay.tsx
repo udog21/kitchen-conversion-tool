@@ -175,7 +175,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
   // Auto-select water when switching to cross-category conversion
   useEffect(() => {
     if (isCrossCategory && selectedIngredient === "anything" && ingredients && ingredients.length > 0) {
-      setSelectedIngredient("water");
+      setSelectedIngredient("Water");
     } else if (!isCrossCategory && selectedIngredient !== "anything") {
       // Optionally reset to "anything" when switching back to same-category
       // Commenting this out to preserve user's ingredient selection
