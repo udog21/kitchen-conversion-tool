@@ -4,15 +4,13 @@ import { TemperatureDisplay } from "@/components/TemperatureDisplay";
 import { ConversionDisplay } from "@/components/ConversionDisplay";
 import { SubstitutionsDisplay } from "@/components/SubstitutionsDisplay";
 import { AdBanner } from "@/components/AdBanner";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SystemPicker } from "@/components/SystemPicker";
-import { ClickableButton } from "@/components/ClickableButton";
 import {
   type MeasurementSystem,
   getStoredSystem,
   storeSystem,
   detectSystemFromLocation,
-  getSystemInfo,
 } from "@/lib/systemDetection";
 
 export default function Home() {
@@ -44,8 +42,6 @@ export default function Home() {
     storeSystem(system);
   };
 
-  const systemInfo = getSystemInfo(measurementSystem);
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "temperature":
@@ -61,25 +57,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with system selector and theme toggle */}
-      <header className="flex justify-between items-center p-4 border-b border-border">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Common kitchen conversions and substitutions for the busy chef
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowSystemPicker(true)}
-            data-testid="button-system-selector"
-            className="text-2xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
-          >
-            {systemInfo.icon || systemInfo.flag}
-          </button>
-          <ThemeToggle />
-        </div>
-      </header>
+      <SiteHeader
+        measurementSystem={measurementSystem}
+        onSystemPickerOpen={() => setShowSystemPicker(true)}
+      />
 
       <div className="max-w-4xl mx-auto">
         {/* Top Ad Banner */}
