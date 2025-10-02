@@ -41,11 +41,18 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
   return (
     <header className="flex justify-between items-center p-4 border-b border-border" style={{ backgroundColor: '#E9C46A' }}>
       <Link href="/" data-testid="link-home-header">
-        <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all">
-          <h1 className="text-xl font-semibold text-gray-900">Cup to Grams</h1>
-          <p className="text-sm text-gray-700 mt-1">
-            Common kitchen conversions and substitutions for the busy chef
-          </p>
+        <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all flex items-center gap-3">
+          <img 
+            src="/attached_assets/ChatGPT Image Oct 2, 2025, 12_02_37 PM_1759431939693.png" 
+            alt="Kitchen Scale Icon" 
+            className="w-12 h-12"
+          />
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Cup to Grams</h1>
+            <p className="text-sm text-gray-700 mt-1">
+              Common kitchen conversions and substitutions for the busy chef
+            </p>
+          </div>
         </div>
       </Link>
       
