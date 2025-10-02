@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
-import kitchenScaleIcon from "@assets/ChatGPT Image Oct 2, 2025, 12_04_24 PM_1759431939694.png";
+import kitchenScaleIcon from "@assets/Cuptograms icon_180x180_1759434142149.png";
 
 export default function PrivacyPolicy() {
   return (

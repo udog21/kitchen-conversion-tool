@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import type { MeasurementSystem } from "@/lib/systemDetection";
 import { getSystemInfo } from "@/lib/systemDetection";
-import kitchenScaleIcon from "@assets/ChatGPT Image Oct 2, 2025, 12_04_24 PM_1759431939694.png";
+import kitchenScaleIcon from "@assets/Cuptograms icon_180x180_1759434142149.png";
 
 interface SiteHeaderProps {
   measurementSystem?: MeasurementSystem;
