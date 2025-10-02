@@ -1,10 +1,20 @@
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import kitchenScaleIcon from "@assets/ChatGPT Image Oct 2, 2025, 12_04_24 PM_1759431939694.png";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-8">
+          <img 
+            src={kitchenScaleIcon} 
+            alt="Kitchen Scale Icon" 
+            className="w-10 h-10"
+          />
+          <h1 className="text-2xl font-bold text-foreground">Cup to Grams Privacy Policy</h1>
+        </div>
+        
         <Link href="/" data-testid="link-home">
           <button 
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 hover-elevate px-3 py-2 rounded-lg"
@@ -16,9 +26,9 @@ export default function PrivacyPolicy() {
         </Link>
 
         <article className="prose dark:prose-invert max-w-none">
-          <h1 className="text-3xl font-bold text-foreground mb-8" data-testid="text-privacy-title">
+          <h2 className="text-3xl font-bold text-foreground mb-8" data-testid="text-privacy-title">
             Privacy Policy
-          </h1>
+          </h2>
 
           <div className="space-y-6 text-foreground">
             <p className="leading-relaxed">
