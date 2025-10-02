@@ -39,11 +39,11 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
   const systemInfo = measurementSystem ? getSystemInfo(measurementSystem) : null;
 
   return (
-    <header className="flex justify-between items-center p-4 border-b border-border">
+    <header className="flex justify-between items-center p-4 border-b border-border" style={{ backgroundColor: '#E9C46A' }}>
       <Link href="/" data-testid="link-home-header">
         <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all">
-          <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-xl font-semibold text-gray-900">Cup to Grams</h1>
+          <p className="text-sm text-gray-700 mt-1">
             Common kitchen conversions and substitutions for the busy chef
           </p>
         </div>
@@ -56,35 +56,37 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             <Button
               variant="ghost"
               size="sm"
-              className={location === "/blog" ? "bg-accent" : ""}
+              className={`text-gray-900 hover:text-gray-900 ${location === "/blog" ? "bg-gray-900/10" : ""}`}
             >
               Blog
             </Button>
           </Link>
           
-          <span className="text-muted-foreground mx-1">|</span>
+          <span className="text-gray-700 mx-1">|</span>
           
           <Link href="/privacy" data-testid="link-privacy-desktop">
             <Button
               variant="ghost"
               size="sm"
-              className={location === "/privacy" ? "bg-accent" : ""}
+              className={`text-gray-900 hover:text-gray-900 ${location === "/privacy" ? "bg-gray-900/10" : ""}`}
             >
               Privacy
             </Button>
           </Link>
           
-          <span className="text-muted-foreground mx-1">|</span>
+          <span className="text-gray-700 mx-1">|</span>
           
           <Button
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
             data-testid="button-theme-toggle-desktop"
-            className="gap-2"
+            className="gap-2 text-gray-900 hover:text-gray-900"
           >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <div className="w-4 h-4 relative flex items-center justify-center">
+              <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-gray-900" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-gray-900" />
+            </div>
             <span>Mode</span>
           </Button>
         </nav>
@@ -126,9 +128,11 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
               data-testid="button-theme-toggle-mobile"
             >
               <div className="flex items-center gap-2 w-full">
-                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-4 w-4 ml-0 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="ml-6">
+                <div className="w-4 h-4 relative flex items-center justify-center">
+                  <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                </div>
+                <span>
                   {theme === "light" ? "Dark" : "Light"} Mode
                 </span>
               </div>
