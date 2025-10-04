@@ -165,25 +165,7 @@ export function UnitPicker({
                 className="w-full px-4 py-3 rounded-lg border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#F4A261] transition-colors"
               />
               
-              {/* "anything" option at the top */}
-              {filteredUnits.includes("anything") && (
-                <>
-                  <div className="grid grid-cols-2 gap-3">
-                    <ClickableButton
-                      showInnerBorder={currentUnit === "anything"}
-                      onClick={() => handleUnitSelect("anything")}
-                      data-testid="unit-option-anything"
-                      variant="modal"
-                    >
-                      any ingredient
-                    </ClickableButton>
-                  </div>
-                  {/* Separator line */}
-                  <div className="border-t border-border"></div>
-                </>
-              )}
-              
-              {/* Other ingredients */}
+              {/* Ingredients list (excluding "anything") */}
               <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
                 {filteredUnits.filter(unit => unit !== "anything").map((unit) => (
                   <ClickableButton
