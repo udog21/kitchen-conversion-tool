@@ -22,6 +22,7 @@ export const ingredients = pgTable("ingredients", {
   name: text("name").notNull().unique(),
   density: decimal("density", { precision: 8, scale: 4 }).notNull(), // grams per mL
   category: text("category").notNull(),
+  source: text("source"),
 });
 
 export const substitutions = pgTable("substitutions", {
