@@ -2,8 +2,20 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTabVisitSchema, insertConversionEventSchema } from "@shared/schema";
+import path from "path";
+import fs from "fs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve ads.txt from public directory
+  app.get("/ads.txt", (req, res) => {
+    const adsFilePath = path.resolve(import.meta.dirname, "..", "public", "ads.txt");
+    if (fs.existsSync(adsFilePath)) {
+      res.type("text/plain").sendFile(adsFilePath);
+    } else {
+      res.status(404).send("Not found");
+    }
+  });
+
   // Conversion ratios endpoints
   app.get("/api/conversions", async (req, res) => {
     try {
