@@ -158,7 +158,7 @@ export function UnitPicker({
                       data-testid="unit-option-anything"
                       variant="modal"
                     >
-                      anything
+                      any ingredient
                     </ClickableButton>
                   </div>
                   {/* Separator line */}
