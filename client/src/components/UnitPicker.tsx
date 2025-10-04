@@ -41,10 +41,14 @@ export function UnitPicker({
     isCurrentVolume ? "volume" : "weight"
   );
 
-  // Reset toggle when dialog opens based on current unit
+  // State for search query (for ingredient picker)
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Reset toggle and search when dialog opens
   useEffect(() => {
     if (isOpen) {
       setUnitCategory(isCurrentVolume ? "volume" : "weight");
+      setSearchQuery("");
     }
   }, [isOpen, currentUnit]);
 
@@ -54,11 +58,14 @@ export function UnitPicker({
   };
 
   // Filter units based on category toggle (only if this is a measurement picker)
+  // For ingredient picker, also filter by search query
   const filteredUnits = isMeasurementPicker 
     ? units.filter(unit => 
         unitCategory === "volume" ? volumeUnits.includes(unit) : weightUnits.includes(unit)
       )
-    : units; // Don't filter for ingredient picker
+    : units.filter(unit => 
+        unit.toLowerCase().includes(searchQuery.toLowerCase())
+      );
   
   const imperialOptions = isMeasurementPicker 
     ? filteredUnits.filter(unit => 
@@ -148,6 +155,16 @@ export function UnitPicker({
           {/* For non-measurement pickers (like ingredients), show as simple list */}
           {!isMeasurementPicker && (
             <div className="space-y-4">
+              {/* Search input for ingredients */}
+              <input
+                type="text"
+                placeholder="Search ingredients..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                data-testid="ingredient-search-input"
+                className="w-full px-4 py-3 rounded-lg border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#F4A261] transition-colors"
+              />
+              
               {/* "anything" option at the top */}
               {filteredUnits.includes("anything") && (
                 <>
@@ -167,7 +184,7 @@ export function UnitPicker({
               )}
               
               {/* Other ingredients */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
                 {filteredUnits.filter(unit => unit !== "anything").map((unit) => (
                   <ClickableButton
                     key={unit}
@@ -180,6 +197,13 @@ export function UnitPicker({
                   </ClickableButton>
                 ))}
               </div>
+              
+              {/* No results message */}
+              {filteredUnits.filter(unit => unit !== "anything").length === 0 && searchQuery && (
+                <div className="text-center text-muted-foreground py-4">
+                  No ingredients found matching "{searchQuery}"
+                </div>
+              )}
             </div>
           )}
         </div>
