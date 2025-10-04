@@ -38,6 +38,7 @@ export const tabVisits = pgTable("tab_visits", {
   tabName: varchar("tab_name", { length: 50 }).notNull(),
   visitedAt: timestamp("visited_at").defaultNow().notNull(),
   sessionId: varchar("session_id", { length: 100 }),
+  userContext: jsonb("user_context"),
 });
 
 export const conversionEvents = pgTable("conversion_events", {
@@ -48,6 +49,7 @@ export const conversionEvents = pgTable("conversion_events", {
   outputValue: jsonb("output_value"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   sessionId: varchar("session_id", { length: 100 }),
+  userContext: jsonb("user_context"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

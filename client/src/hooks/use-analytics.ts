@@ -15,6 +15,42 @@ function getOrCreateSessionId(): string {
   return sessionId;
 }
 
+function getUserContext() {
+  return {
+    viewport: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    },
+    screen: {
+      width: window.screen.width,
+      height: window.screen.height,
+      pixelRatio: window.devicePixelRatio || 1,
+    },
+    browser: {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      languages: navigator.languages,
+      cookieEnabled: navigator.cookieEnabled,
+      onLine: navigator.onLine,
+    },
+    device: {
+      isMobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+      isTablet: /iPad|Android/i.test(navigator.userAgent) && window.innerWidth >= 768,
+      touchEnabled: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+    },
+    timing: {
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezoneOffset: new Date().getTimezoneOffset(),
+      timestamp: new Date().toISOString(),
+    },
+    page: {
+      referrer: document.referrer,
+      url: window.location.href,
+      pathname: window.location.pathname,
+    },
+  };
+}
+
 export function useAnalytics() {
   const sessionId = useRef(getOrCreateSessionId());
   
@@ -22,6 +58,7 @@ export function useAnalytics() {
     apiRequest('POST', '/api/analytics/tab-visit', {
       tabName,
       sessionId: sessionId.current,
+      userContext: getUserContext(),
     }).catch(error => {
       console.error('Failed to track tab visit:', error);
     });
@@ -39,6 +76,7 @@ export function useAnalytics() {
       inputValue,
       outputValue,
       sessionId: sessionId.current,
+      userContext: getUserContext(),
     }).catch(error => {
       console.error('Failed to track conversion event:', error);
     });
