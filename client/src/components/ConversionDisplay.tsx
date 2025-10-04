@@ -332,7 +332,7 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
             data-testid="ingredient-button"
             className="min-w-[150px] text-xl lowercase"
           >
-            {selectedIngredient}
+            {selectedIngredient === "anything" ? "any ingredient" : selectedIngredient}
           </ClickableButton>
         </div>
       </div>
