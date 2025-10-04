@@ -70,8 +70,6 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             </Button>
           </Link>
           
-          <span className="text-muted-foreground mx-1">|</span>
-          
           <Link href="/privacy" data-testid="link-privacy-desktop">
             <Button
               variant="ghost"
@@ -81,8 +79,6 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
               Privacy
             </Button>
           </Link>
-          
-          <span className="text-muted-foreground mx-1">|</span>
           
           <Button
             variant="ghost"
