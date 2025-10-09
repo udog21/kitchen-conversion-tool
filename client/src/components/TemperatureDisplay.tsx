@@ -83,33 +83,31 @@ export function TemperatureDisplay() {
               </ClickableButton>
               
               {/* Input Unit Toggle */}
-              <div className="border-2 border-conversion-tertiary p-1 rounded-lg">
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => setInputUnit("C")}
-                    data-testid="input-unit-c"
-                    className={cn(
-                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
-                      inputUnit === "C"
-                        ? "bg-conversion-tertiary text-white"
-                        : "text-muted-foreground hover-elevate"
-                    )}
-                  >
-                    °C
-                  </button>
-                  <button
-                    onClick={() => setInputUnit("F")}
-                    data-testid="input-unit-f"
-                    className={cn(
-                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
-                      inputUnit === "F"
-                        ? "bg-conversion-tertiary text-white"
-                        : "text-muted-foreground hover-elevate"
-                    )}
-                  >
-                    °F
-                  </button>
-                </div>
+              <div className="border-2 border-[#F4A261] rounded-lg p-1.5 flex">
+                <button
+                  onClick={() => setInputUnit("C")}
+                  data-testid="input-unit-c"
+                  className={cn(
+                    "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
+                    inputUnit === "C"
+                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  °C
+                </button>
+                <button
+                  onClick={() => setInputUnit("F")}
+                  data-testid="input-unit-f"
+                  className={cn(
+                    "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
+                    inputUnit === "F"
+                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  °F
+                </button>
               </div>
             </div>
 
@@ -161,33 +159,31 @@ export function TemperatureDisplay() {
               </OutputDisplay>
               
               {/* Output Unit Toggle */}
-              <div className="border-2 border-conversion-tertiary p-1 rounded-lg">
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => setOutputUnit("C")}
-                    data-testid="output-unit-c"
-                    className={cn(
-                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
-                      outputUnit === "C"
-                        ? "bg-conversion-tertiary text-white"
-                        : "text-muted-foreground hover-elevate"
-                    )}
-                  >
-                    °C
-                  </button>
-                  <button
-                    onClick={() => setOutputUnit("F")}
-                    data-testid="output-unit-f"
-                    className={cn(
-                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
-                      outputUnit === "F"
-                        ? "bg-conversion-tertiary text-white"
-                        : "text-muted-foreground hover-elevate"
-                    )}
-                  >
-                    °F
-                  </button>
-                </div>
+              <div className="border-2 border-[#F4A261] rounded-lg p-1.5 flex">
+                <button
+                  onClick={() => setOutputUnit("C")}
+                  data-testid="output-unit-c"
+                  className={cn(
+                    "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
+                    outputUnit === "C"
+                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  °C
+                </button>
+                <button
+                  onClick={() => setOutputUnit("F")}
+                  data-testid="output-unit-f"
+                  className={cn(
+                    "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
+                    outputUnit === "F"
+                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  °F
+                </button>
               </div>
             </div>
 
