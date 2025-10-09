@@ -174,7 +174,7 @@ export function TemperatureDisplay() {
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        Fan/convection ovens cook hotter. When converting between oven types, the output adjusts by 20°C or 25°F.
+        Fan/convection ovens cook hotter than conventional ovens. When converting from conventional to fan, the output is lowered by 20°C or 25°F. When converting from fan to conventional, it's raised by the same amount.
       </div>
 
       {/* Temperature Input Keypad */}
