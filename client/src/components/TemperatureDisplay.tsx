@@ -20,9 +20,21 @@ export function TemperatureDisplay() {
   }, [trackTabVisit]);
 
   const calculateConversion = (): string => {
-    const temp = parseFloat(inputTemp) || 0;
+    let temp = parseFloat(inputTemp) || 0;
     
-    // Convert between units (no input modification)
+    // Step 1: Apply fan/convection adjustment in INPUT units (recipe-first approach)
+    // This respects the recipe's original measurement system
+    if (inputFan !== outputFan) {
+      if (inputFan && !outputFan) {
+        // Converting from fan to conventional: increase temperature
+        temp = inputUnit === "C" ? temp + 20 : temp + 25;
+      } else if (!inputFan && outputFan) {
+        // Converting from conventional to fan: decrease temperature
+        temp = inputUnit === "C" ? temp - 20 : temp - 25;
+      }
+    }
+    
+    // Step 2: Convert between units
     let result: number;
     if (inputUnit === "C" && outputUnit === "F") {
       result = (temp * 9/5) + 32;
@@ -31,19 +43,6 @@ export function TemperatureDisplay() {
     } else {
       result = temp;
     }
-
-    // Apply fan/convection adjustment based on oven type conversion
-    // Only adjust if switching between fan and conventional ovens
-    if (inputFan !== outputFan) {
-      if (inputFan && !outputFan) {
-        // Converting from fan to conventional: increase temperature
-        result = outputUnit === "C" ? result + 20 : result + 25;
-      } else if (!inputFan && outputFan) {
-        // Converting from conventional to fan: decrease temperature
-        result = outputUnit === "C" ? result - 20 : result - 25;
-      }
-    }
-    // If both are fan or both are conventional: no adjustment needed
 
     return Math.round(result).toString();
   };
@@ -221,7 +220,7 @@ export function TemperatureDisplay() {
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        <p>Fan/convection ovens cook hotter than conventional ovens. When converting from conventional to fan, the output is lowered by 20°C or 25°F. When converting from fan to conventional, it's raised by the same amount.</p>
+        <p>Fan/convection ovens cook hotter than conventional ovens. Adjustments follow your recipe's units: 20°C for Celsius recipes, 25°F for Fahrenheit recipes.</p>
         <p className="mt-3">Check your oven's manual as some ovens adjust automatically.</p>
       </div>
 
