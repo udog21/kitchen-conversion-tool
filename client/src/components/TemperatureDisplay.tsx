@@ -83,23 +83,33 @@ export function TemperatureDisplay() {
               </ClickableButton>
               
               {/* Input Unit Toggle */}
-              <div className="flex gap-2">
-                <ClickableButton
-                  onClick={() => setInputUnit("C")}
-                  data-testid="input-unit-c"
-                  className="w-16 text-xl"
-                  showInnerBorder={inputUnit === "C"}
-                >
-                  °C
-                </ClickableButton>
-                <ClickableButton
-                  onClick={() => setInputUnit("F")}
-                  data-testid="input-unit-f"
-                  className="w-16 text-xl"
-                  showInnerBorder={inputUnit === "F"}
-                >
-                  °F
-                </ClickableButton>
+              <div className="border-2 border-conversion-tertiary p-1 rounded-lg">
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setInputUnit("C")}
+                    data-testid="input-unit-c"
+                    className={cn(
+                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
+                      inputUnit === "C"
+                        ? "bg-conversion-tertiary text-white"
+                        : "text-muted-foreground hover-elevate"
+                    )}
+                  >
+                    °C
+                  </button>
+                  <button
+                    onClick={() => setInputUnit("F")}
+                    data-testid="input-unit-f"
+                    className={cn(
+                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
+                      inputUnit === "F"
+                        ? "bg-conversion-tertiary text-white"
+                        : "text-muted-foreground hover-elevate"
+                    )}
+                  >
+                    °F
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -151,23 +161,33 @@ export function TemperatureDisplay() {
               </OutputDisplay>
               
               {/* Output Unit Toggle */}
-              <div className="flex gap-2">
-                <ClickableButton
-                  onClick={() => setOutputUnit("C")}
-                  data-testid="output-unit-c"
-                  className="w-16 text-xl"
-                  showInnerBorder={outputUnit === "C"}
-                >
-                  °C
-                </ClickableButton>
-                <ClickableButton
-                  onClick={() => setOutputUnit("F")}
-                  data-testid="output-unit-f"
-                  className="w-16 text-xl"
-                  showInnerBorder={outputUnit === "F"}
-                >
-                  °F
-                </ClickableButton>
+              <div className="border-2 border-conversion-tertiary p-1 rounded-lg">
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setOutputUnit("C")}
+                    data-testid="output-unit-c"
+                    className={cn(
+                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
+                      outputUnit === "C"
+                        ? "bg-conversion-tertiary text-white"
+                        : "text-muted-foreground hover-elevate"
+                    )}
+                  >
+                    °C
+                  </button>
+                  <button
+                    onClick={() => setOutputUnit("F")}
+                    data-testid="output-unit-f"
+                    className={cn(
+                      "w-16 py-2 rounded-md text-xl font-semibold transition-all",
+                      outputUnit === "F"
+                        ? "bg-conversion-tertiary text-white"
+                        : "text-muted-foreground hover-elevate"
+                    )}
+                  >
+                    °F
+                  </button>
+                </div>
               </div>
             </div>
 
