@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { DecimalKeypad } from "./DecimalKeypad";
 import { useAnalytics, useDebouncedConversionTracking } from "@/hooks/use-analytics";
+import { cn } from "@/lib/utils";
 
 export function TemperatureDisplay() {
   const [inputTemp, setInputTemp] = useState("180");
@@ -104,18 +103,34 @@ export function TemperatureDisplay() {
               </div>
             </div>
 
-            {/* Fan Toggle */}
-            <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
-              <Label htmlFor="input-fan" className="text-sm font-semibold">
-                Fan / convection
-              </Label>
-              <Switch
-                id="input-fan"
-                checked={inputFan}
-                onCheckedChange={setInputFan}
-                data-testid="input-fan-toggle"
-                className="data-[state=checked]:bg-conversion-accent"
-              />
+            {/* Oven Type Segmented Toggle */}
+            <div className="bg-muted/30 p-1 rounded-lg">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setInputFan(false)}
+                  data-testid="input-oven-conventional"
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                    !inputFan 
+                      ? "bg-input text-foreground" 
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  Conventional
+                </button>
+                <button
+                  onClick={() => setInputFan(true)}
+                  data-testid="input-oven-fan"
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                    inputFan 
+                      ? "bg-conversion-accent text-white" 
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  Fan/convection
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -156,25 +171,41 @@ export function TemperatureDisplay() {
               </div>
             </div>
 
-            {/* Fan Toggle */}
-            <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
-              <Label htmlFor="output-fan" className="text-sm font-semibold">
-                Fan / convection
-              </Label>
-              <Switch
-                id="output-fan"
-                checked={outputFan}
-                onCheckedChange={setOutputFan}
-                data-testid="output-fan-toggle"
-                className="data-[state=checked]:bg-conversion-accent"
-              />
+            {/* Oven Type Segmented Toggle */}
+            <div className="bg-muted/30 p-1 rounded-lg">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setOutputFan(false)}
+                  data-testid="output-oven-conventional"
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                    !outputFan 
+                      ? "bg-input text-foreground" 
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  Conventional
+                </button>
+                <button
+                  onClick={() => setOutputFan(true)}
+                  data-testid="output-oven-fan"
+                  className={cn(
+                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                    outputFan 
+                      ? "bg-conversion-accent text-white" 
+                      : "text-muted-foreground hover-elevate"
+                  )}
+                >
+                  Fan/convection
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        Fan/convection ovens cook hotter than conventional ovens. When converting from conventional to fan, the output is lowered by 20°C or 25°F. When converting from fan to conventional, it's raised by the same amount.
+        Fan/convection ovens cook hotter than conventional ovens. When converting from conventional to fan, the output is lowered by 20°C or 25°F. When converting from fan to conventional, it's raised by the same amount. Check your oven's manual as some ovens adjust automatically.
       </div>
 
       {/* Temperature Input Keypad */}
