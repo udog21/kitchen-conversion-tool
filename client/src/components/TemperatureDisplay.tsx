@@ -111,33 +111,31 @@ export function TemperatureDisplay() {
             </div>
 
             {/* Oven Type Segmented Toggle */}
-            <div className="bg-muted/30 p-1 rounded-lg">
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setInputFan(false)}
-                  data-testid="input-oven-conventional"
-                  className={cn(
-                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
-                    !inputFan 
-                      ? "bg-input text-foreground" 
-                      : "text-muted-foreground hover-elevate"
-                  )}
-                >
-                  Conventional
-                </button>
-                <button
-                  onClick={() => setInputFan(true)}
-                  data-testid="input-oven-fan"
-                  className={cn(
-                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
-                    inputFan 
-                      ? "bg-conversion-accent text-white" 
-                      : "text-muted-foreground hover-elevate"
-                  )}
-                >
-                  Fan/convection
-                </button>
-              </div>
+            <div className="border-2 border-[#F4A261] rounded-lg p-1.5 flex">
+              <button
+                onClick={() => setInputFan(false)}
+                data-testid="input-oven-conventional"
+                className={cn(
+                  "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                  !inputFan 
+                    ? "border-2 border-[#F4A261] text-[#C34628]" 
+                    : "text-muted-foreground hover-elevate"
+                )}
+              >
+                Conventional
+              </button>
+              <button
+                onClick={() => setInputFan(true)}
+                data-testid="input-oven-fan"
+                className={cn(
+                  "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                  inputFan 
+                    ? "border-2 border-[#F4A261] text-[#C34628]" 
+                    : "text-muted-foreground hover-elevate"
+                )}
+              >
+                Fan/convection
+              </button>
             </div>
           </div>
         </div>
@@ -187,40 +185,38 @@ export function TemperatureDisplay() {
             </div>
 
             {/* Oven Type Segmented Toggle */}
-            <div className="bg-muted/30 p-1 rounded-lg">
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setOutputFan(false)}
-                  data-testid="output-oven-conventional"
-                  className={cn(
-                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
-                    !outputFan 
-                      ? "bg-input text-foreground" 
-                      : "text-muted-foreground hover-elevate"
-                  )}
-                >
-                  Conventional
-                </button>
-                <button
-                  onClick={() => setOutputFan(true)}
-                  data-testid="output-oven-fan"
-                  className={cn(
-                    "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
-                    outputFan 
-                      ? "bg-conversion-accent text-white" 
-                      : "text-muted-foreground hover-elevate"
-                  )}
-                >
-                  Fan/convection
-                </button>
-              </div>
+            <div className="border-2 border-[#F4A261] rounded-lg p-1.5 flex">
+              <button
+                onClick={() => setOutputFan(false)}
+                data-testid="output-oven-conventional"
+                className={cn(
+                  "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                  !outputFan 
+                    ? "border-2 border-[#F4A261] text-[#C34628]" 
+                    : "text-muted-foreground hover-elevate"
+                )}
+              >
+                Conventional
+              </button>
+              <button
+                onClick={() => setOutputFan(true)}
+                data-testid="output-oven-fan"
+                className={cn(
+                  "flex-1 px-3 py-2 rounded-md text-sm font-semibold transition-all",
+                  outputFan 
+                    ? "border-2 border-[#F4A261] text-[#C34628]" 
+                    : "text-muted-foreground hover-elevate"
+                )}
+              >
+                Fan/convection
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        <p>Fan/convection ovens cook hotter than conventional ovens. Adjustments follow your recipe's units: 20°C for Celsius recipes, 25°F for Fahrenheit recipes.</p>
+        <p>Fan/convection ovens cook hotter than conventional ovens. The above is based on the recipe's (input) units: 20°C for Celsius recipes, 25°F for Fahrenheit recipes.</p>
         <p className="mt-3">Check your oven's manual as some ovens adjust automatically.</p>
       </div>
 
