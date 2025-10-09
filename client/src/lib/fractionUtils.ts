@@ -145,13 +145,13 @@ export function decimalToFraction(decimal: number): {
   };
 }
 
-// Format imperial amount as fraction with optional tilde
-export function formatImperialAmount(value: number, showTilde: boolean = false): string {
+// Format imperial amount as fraction or decimal
+export function formatImperialAmount(value: number, showDecimalFallback: boolean = false): string {
   const result = decimalToFraction(value);
   
-  // Add tilde if error > 2%
-  if (showTilde && result.error > 2) {
-    return `~${result.display}`;
+  // If error > 2% and decimal fallback enabled, show decimal instead of approximate fraction
+  if (showDecimalFallback && result.error > 2) {
+    return value.toFixed(2);
   }
   
   return result.display;
