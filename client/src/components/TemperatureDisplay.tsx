@@ -216,7 +216,7 @@ export function TemperatureDisplay() {
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        <p>Fan/convection ovens cook hotter than conventional ovens. The above is based on the recipe's (input) units: 20°C for Celsius recipes, 25°F for Fahrenheit recipes.</p>
+        <p>Fan/convection ovens cook hotter than conventional ovens. When converting between conventional and fan/convection modes, a fixed adjustment is made 20°C for Celsius recipes, 25°F for Fahrenheit recipes.</p>
         <p className="mt-3">Check your oven's manual as some ovens adjust automatically.</p>
       </div>
 
