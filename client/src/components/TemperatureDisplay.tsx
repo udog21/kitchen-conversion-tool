@@ -105,7 +105,7 @@ export function TemperatureDisplay() {
             {/* Fan Toggle */}
             <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
               <Label htmlFor="input-fan" className="text-sm font-semibold">
-                Fan
+                Fan / convection
               </Label>
               <Switch
                 id="input-fan"
@@ -156,7 +156,7 @@ export function TemperatureDisplay() {
             {/* Fan Toggle */}
             <div className="flex items-center justify-between bg-muted/30 p-3 rounded-lg">
               <Label htmlFor="output-fan" className="text-sm font-semibold">
-                Fan
+                Fan / convection
               </Label>
               <Switch
                 id="output-fan"
