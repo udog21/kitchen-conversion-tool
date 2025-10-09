@@ -112,6 +112,7 @@ export function TemperatureDisplay() {
                 checked={inputFan}
                 onCheckedChange={setInputFan}
                 data-testid="input-fan-toggle"
+                className="data-[state=checked]:bg-conversion-accent"
               />
             </div>
           </div>
@@ -163,6 +164,7 @@ export function TemperatureDisplay() {
                 checked={outputFan}
                 onCheckedChange={setOutputFan}
                 data-testid="output-fan-toggle"
+                className="data-[state=checked]:bg-conversion-accent"
               />
             </div>
           </div>
