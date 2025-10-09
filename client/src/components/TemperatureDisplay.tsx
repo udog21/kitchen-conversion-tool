@@ -172,7 +172,7 @@ export function TemperatureDisplay() {
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        Fan setting subtracts 20°C or 25°F from the temperature
+        Turning the fan or convection setting on subtracts 20°C or 25°F from the temperature
       </div>
 
       {/* Temperature Input Keypad */}
