@@ -57,6 +57,15 @@ export function decimalToFraction(decimal: number): {
     { numerator: 3, denominator: 8, value: 0.375 },
     { numerator: 5, denominator: 8, value: 0.625 },
     { numerator: 7, denominator: 8, value: 0.875 },
+    // Sixteenths
+    { numerator: 1, denominator: 16, value: 0.0625 },
+    { numerator: 3, denominator: 16, value: 0.1875 },
+    { numerator: 5, denominator: 16, value: 0.3125 },
+    { numerator: 7, denominator: 16, value: 0.4375 },
+    { numerator: 9, denominator: 16, value: 0.5625 },
+    { numerator: 11, denominator: 16, value: 0.6875 },
+    { numerator: 13, denominator: 16, value: 0.8125 },
+    { numerator: 15, denominator: 16, value: 0.9375 },
   ];
   
   // Find the closest fraction
