@@ -23,26 +23,28 @@ export function TemperatureDisplay() {
   const calculateConversion = (): string => {
     const temp = parseFloat(inputTemp) || 0;
     
-    // Apply fan adjustment to input
-    let adjustedInput = temp;
-    if (inputFan) {
-      adjustedInput = inputUnit === "C" ? temp + 20 : temp + 25;
-    }
-
-    // Convert between units
+    // Convert between units (no input modification)
     let result: number;
     if (inputUnit === "C" && outputUnit === "F") {
-      result = (adjustedInput * 9/5) + 32;
+      result = (temp * 9/5) + 32;
     } else if (inputUnit === "F" && outputUnit === "C") {
-      result = (adjustedInput - 32) * 5/9;
+      result = (temp - 32) * 5/9;
     } else {
-      result = adjustedInput;
+      result = temp;
     }
 
-    // Apply fan adjustment to output
-    if (outputFan) {
-      result = outputUnit === "C" ? result - 20 : result - 25;
+    // Apply fan/convection adjustment based on oven type conversion
+    // Only adjust if switching between fan and conventional ovens
+    if (inputFan !== outputFan) {
+      if (inputFan && !outputFan) {
+        // Converting from fan to conventional: increase temperature
+        result = outputUnit === "C" ? result + 20 : result + 25;
+      } else if (!inputFan && outputFan) {
+        // Converting from conventional to fan: decrease temperature
+        result = outputUnit === "C" ? result - 20 : result - 25;
+      }
     }
+    // If both are fan or both are conventional: no adjustment needed
 
     return Math.round(result).toString();
   };
@@ -172,7 +174,7 @@ export function TemperatureDisplay() {
       </div>
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
-        Turning the fan or convection setting on subtracts 20°C or 25°F from the temperature
+        Fan/convection ovens cook hotter. When converting between oven types, the output adjusts by 20°C or 25°F.
       </div>
 
       {/* Temperature Input Keypad */}
