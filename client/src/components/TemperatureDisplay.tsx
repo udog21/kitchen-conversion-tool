@@ -90,7 +90,7 @@ export function TemperatureDisplay() {
                   className={cn(
                     "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
                     inputUnit === "C"
-                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      ? "border-2 border-[#F4A261] text-[#C34628]"
                       : "text-muted-foreground hover-elevate"
                   )}
                 >
@@ -102,7 +102,7 @@ export function TemperatureDisplay() {
                   className={cn(
                     "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
                     inputUnit === "F"
-                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      ? "border-2 border-[#F4A261] text-[#C34628]"
                       : "text-muted-foreground hover-elevate"
                   )}
                 >
@@ -166,7 +166,7 @@ export function TemperatureDisplay() {
                   className={cn(
                     "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
                     outputUnit === "C"
-                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      ? "border-2 border-[#F4A261] text-[#C34628]"
                       : "text-muted-foreground hover-elevate"
                   )}
                 >
@@ -178,7 +178,7 @@ export function TemperatureDisplay() {
                   className={cn(
                     "w-14 py-1.5 rounded-md text-xl font-semibold transition-all",
                     outputUnit === "F"
-                      ? "border-2 border-[#F4A261] bg-white text-[#F4A261]"
+                      ? "border-2 border-[#F4A261] text-[#C34628]"
                       : "text-muted-foreground hover-elevate"
                   )}
                 >

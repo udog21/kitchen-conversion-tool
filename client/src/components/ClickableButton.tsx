@@ -26,7 +26,7 @@ export function ClickableButton({
       className={cn(
         "relative px-4 py-5 rounded-lg transition-all duration-200",
         "border-2 border-[#F4A261]",
-        "font-semibold text-[#E76F51]",
+        "font-semibold text-[#C34628]",
         "cursor-pointer outline-none",
         "hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10",
         "min-h-[48px]",
