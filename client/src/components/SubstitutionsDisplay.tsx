@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ClickableButton } from "./ClickableButton";
 import { OutputDisplay } from "./OutputDisplay";
 import { AmountPicker } from "./AmountPicker";
@@ -6,7 +7,6 @@ import { UnitPicker } from "./UnitPicker";
 import { fractionToDecimal, formatImperialAmount } from "@/lib/fractionUtils";
 import { useAnalytics, useDebouncedConversionTracking } from "@/hooks/use-analytics";
 
-// High-fidelity substitutions that won't alter taste/texture significantly
 type SubstituteItem = {
   amount: number;
   unit: string;
@@ -14,85 +14,15 @@ type SubstituteItem = {
 };
 
 type SubstitutionRecipe = {
+  id: string;
   name: string;
-  baseAmount: number;
+  baseAmount: string;
   baseUnit: string;
   substitutes: SubstituteItem[];
   instructions: string;
   fidelity: "direct" | "near";
-  specialInstructions?: string;
+  specialInstructions: string | null;
 };
-
-const HIGH_FIDELITY_SUBSTITUTIONS: SubstitutionRecipe[] = [
-  {
-    name: "baking powder",
-    baseAmount: 1,
-    baseUnit: "teaspoon",
-    substitutes: [
-      { amount: 0.25, unit: "teaspoon", ingredient: "baking soda" },
-      { amount: 0.5, unit: "teaspoon", ingredient: "cream of tartar" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-  },
-  {
-    name: "buttermilk",
-    baseAmount: 1,
-    baseUnit: "cup",
-    substitutes: [
-      { amount: 1, unit: "cup", ingredient: "whole milk" },
-      { amount: 1, unit: "tablespoon", ingredient: "lemon juice" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-  },
-  {
-    name: "cake flour",
-    baseAmount: 1,
-    baseUnit: "cup",
-    substitutes: [
-      { amount: 0.875, unit: "cup", ingredient: "all-purpose flour" },
-      { amount: 2, unit: "tablespoon", ingredient: "cornstarch" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-  },
-  {
-    name: "light brown sugar",
-    baseAmount: 1,
-    baseUnit: "cup",
-    substitutes: [
-      { amount: 1, unit: "cup", ingredient: "white sugar" },
-      { amount: 1, unit: "tablespoon", ingredient: "molasses" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-  },
-  {
-    name: "powdered sugar",
-    baseAmount: 1,
-    baseUnit: "cup",
-    substitutes: [
-      { amount: 1, unit: "cup", ingredient: "granulated sugar" },
-      { amount: 1, unit: "tablespoon", ingredient: "cornstarch" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-    specialInstructions: "Blend until fine.",
-  },
-  {
-    name: "self-raising flour",
-    baseAmount: 1,
-    baseUnit: "cup",
-    substitutes: [
-      { amount: 1, unit: "cup", ingredient: "all-purpose flour" },
-      { amount: 1.5, unit: "teaspoon", ingredient: "baking powder" },
-      { amount: 0.25, unit: "teaspoon", ingredient: "salt" },
-    ],
-    instructions: "Mix ingredients thoroughly.",
-    fidelity: "direct",
-  },
-];
 
 const AVAILABLE_UNITS = [
   "teaspoon",
@@ -289,6 +219,10 @@ export function SubstitutionsDisplay() {
   
   const { trackTabVisit, trackConversionEvent } = useAnalytics();
 
+  const { data: recipes = [], isLoading } = useQuery<SubstitutionRecipe[]>({
+    queryKey: ['/api/substitution-recipes'],
+  });
+
   useEffect(() => {
     trackTabVisit("Substitutions");
   }, [trackTabVisit]);
@@ -297,7 +231,7 @@ export function SubstitutionsDisplay() {
   const isInputMetric = !IMPERIAL_UNITS.includes(inputUnit);
 
   // Find the selected substitution recipe
-  const recipe = HIGH_FIDELITY_SUBSTITUTIONS.find(
+  const recipe = recipes.find(
     (r) => r.name === selectedIngredient
   );
 
@@ -310,8 +244,8 @@ export function SubstitutionsDisplay() {
         // Convert input amount to the same unit as the base recipe
         const inputInBaseUnits = convertUnits(inputAmountNum, inputUnit, recipe.baseUnit);
         
-        // Calculate scale factor
-        const scaleFactor = inputInBaseUnits / recipe.baseAmount;
+        // Calculate scale factor (baseAmount is a string from DB, convert to number)
+        const scaleFactor = inputInBaseUnits / parseFloat(recipe.baseAmount);
         
         // Calculate the scaled amount
         const scaledAmount = sub.amount * scaleFactor;
@@ -453,7 +387,7 @@ export function SubstitutionsDisplay() {
         onClose={() => setShowIngredientPicker(false)}
         currentUnit={selectedIngredient}
         onUnitChange={handleIngredientSelect}
-        units={HIGH_FIDELITY_SUBSTITUTIONS.map((recipe) => recipe.name)}
+        units={recipes.map((recipe) => recipe.name)}
         title="Select Ingredient"
       />
     </div>
