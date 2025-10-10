@@ -86,25 +86,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Substitutions endpoints
-  app.get("/api/substitutions", async (req, res) => {
+  // Substitution recipes endpoints
+  app.get("/api/substitution-recipes", async (req, res) => {
     try {
-      const substitutions = await storage.getAllSubstitutions();
-      res.json(substitutions);
+      const recipes = await storage.getAllSubstitutionRecipes();
+      res.json(recipes);
     } catch (error) {
-      console.error("Error fetching substitutions:", error);
-      res.status(500).json({ error: "Failed to fetch substitutions" });
-    }
-  });
-
-  app.get("/api/substitutions/:ingredient", async (req, res) => {
-    try {
-      const { ingredient } = req.params;
-      const substitutions = await storage.getSubstitutionsFor(decodeURIComponent(ingredient));
-      res.json(substitutions);
-    } catch (error) {
-      console.error("Error fetching substitutions:", error);
-      res.status(500).json({ error: "Failed to fetch substitutions" });
+      console.error("Error fetching substitution recipes:", error);
+      res.status(500).json({ error: "Failed to fetch substitution recipes" });
     }
   });
 
