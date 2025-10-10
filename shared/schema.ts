@@ -25,13 +25,15 @@ export const ingredients = pgTable("ingredients", {
   source: text("source"),
 });
 
-export const substitutions = pgTable("substitutions", {
+export const substitutionRecipes = pgTable("substitution_recipes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  originalIngredient: text("original_ingredient").notNull(),
-  substituteIngredient: text("substitute_ingredient").notNull(),
-  ratio: text("ratio").notNull(), // e.g., "1:1", "3/4 cup", "1 tbsp + 1 tsp"
-  notes: text("notes"), // Optional additional guidance
-  category: text("category").notNull(), // e.g., "Baking", "Dairy", "Sweeteners"
+  name: text("name").notNull().unique(),
+  baseAmount: decimal("base_amount", { precision: 10, scale: 4 }).notNull(),
+  baseUnit: text("base_unit").notNull(),
+  substitutes: jsonb("substitutes").notNull(), // Array of {amount, unit, ingredient}
+  instructions: text("instructions").notNull(),
+  fidelity: text("fidelity").notNull(), // "direct" | "near"
+  specialInstructions: text("special_instructions"),
 });
 
 export const tabVisits = pgTable("tab_visits", {
@@ -66,7 +68,7 @@ export const insertIngredientSchema = createInsertSchema(ingredients).omit({
   id: true,
 });
 
-export const insertSubstitutionSchema = createInsertSchema(substitutions).omit({
+export const insertSubstitutionRecipeSchema = createInsertSchema(substitutionRecipes).omit({
   id: true,
 });
 
@@ -86,8 +88,8 @@ export type ConversionRatio = typeof conversionRatios.$inferSelect;
 export type InsertConversionRatio = z.infer<typeof insertConversionRatioSchema>;
 export type Ingredient = typeof ingredients.$inferSelect;
 export type InsertIngredient = z.infer<typeof insertIngredientSchema>;
-export type Substitution = typeof substitutions.$inferSelect;
-export type InsertSubstitution = z.infer<typeof insertSubstitutionSchema>;
+export type SubstitutionRecipe = typeof substitutionRecipes.$inferSelect;
+export type InsertSubstitutionRecipe = z.infer<typeof insertSubstitutionRecipeSchema>;
 export type TabVisit = typeof tabVisits.$inferSelect;
 export type InsertTabVisit = z.infer<typeof insertTabVisitSchema>;
 export type ConversionEvent = typeof conversionEvents.$inferSelect;
