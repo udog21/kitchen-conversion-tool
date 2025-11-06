@@ -1,7 +1,7 @@
 import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type SubstitutionRecipe, type InsertSubstitutionRecipe, type TabVisit, type InsertTabVisit, type ConversionEvent, type InsertConversionEvent, users, conversionRatios, ingredients, substitutionRecipes, tabVisits, conversionEvents } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { eq, and } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -14,14 +14,11 @@ export interface IStorage {
   getConversionRatio(fromUnit: string, toUnit: string, system?: string): Promise<ConversionRatio | undefined>;
   getAllConversionRatios(): Promise<ConversionRatio[]>;
   createConversionRatio(ratio: InsertConversionRatio): Promise<ConversionRatio>;
-  seedConversionRatios(): Promise<void>;
   getIngredient(name: string): Promise<Ingredient | undefined>;
   getAllIngredients(): Promise<Ingredient[]>;
   createIngredient(ingredient: InsertIngredient): Promise<Ingredient>;
-  seedIngredients(): Promise<void>;
   getAllSubstitutionRecipes(): Promise<SubstitutionRecipe[]>;
   createSubstitutionRecipe(recipe: InsertSubstitutionRecipe): Promise<SubstitutionRecipe>;
-  seedSubstitutionRecipes(): Promise<void>;
   trackTabVisit(visit: InsertTabVisit): Promise<TabVisit>;
   trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent>;
 }
@@ -174,7 +171,11 @@ export class MemStorage implements IStorage {
 
   async createIngredient(insertIngredient: InsertIngredient): Promise<Ingredient> {
     const id = randomUUID();
-    const ingredient: Ingredient = { ...insertIngredient, id };
+    const ingredient: Ingredient = { 
+      ...insertIngredient, 
+      id,
+      source: insertIngredient.source ?? null
+    };
     this.ingredients.set(ingredient.name.toLowerCase(), ingredient);
     return ingredient;
   }
@@ -303,6 +304,7 @@ export class MemStorage implements IStorage {
       id,
       visitedAt: new Date(),
       sessionId: visit.sessionId ?? null,
+      userContext: visit.userContext ?? null,
     };
     this.tabVisitsData.push(tabVisit);
     return tabVisit;
@@ -317,6 +319,7 @@ export class MemStorage implements IStorage {
       sessionId: event.sessionId ?? null,
       conversionType: event.conversionType ?? null,
       outputValue: event.outputValue ?? null,
+      userContext: event.userContext ?? null,
     };
     this.conversionEventsData.push(conversionEvent);
     return conversionEvent;
@@ -326,20 +329,24 @@ export class MemStorage implements IStorage {
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
   private db;
-  private initialized = false;
+  private sql;
 
   constructor() {
-    const sql = neon(process.env.DATABASE_URL!);
-    this.db = drizzle(sql);
-  }
-
-  private async ensureInitialized() {
-    if (!this.initialized) {
-      await this.seedConversionRatios();
-      await this.seedIngredients();
-      await this.seedSubstitutionRecipes();
-      this.initialized = true;
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is required");
     }
+    
+    // Create postgres connection with connection pooling
+    // max: 10 connections in the pool
+    // idle_timeout: 20 seconds
+    // connect_timeout: 10 seconds
+    this.sql = postgres(process.env.DATABASE_URL, {
+      max: 10,
+      idle_timeout: 20,
+      connect_timeout: 10,
+    });
+    
+    this.db = drizzle(this.sql);
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -358,7 +365,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getConversionRatio(fromUnit: string, toUnit: string, system: string = "US"): Promise<ConversionRatio | undefined> {
-    await this.ensureInitialized();
     const result = await this.db
       .select()
       .from(conversionRatios)
@@ -372,7 +378,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllConversionRatios(): Promise<ConversionRatio[]> {
-    await this.ensureInitialized();
     return await this.db.select().from(conversionRatios);
   }
 
@@ -481,7 +486,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getIngredient(name: string): Promise<Ingredient | undefined> {
-    await this.ensureInitialized();
     const result = await this.db
       .select()
       .from(ingredients)
@@ -491,7 +495,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllIngredients(): Promise<Ingredient[]> {
-    await this.ensureInitialized();
     return await this.db.select().from(ingredients);
   }
 
@@ -535,7 +538,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllSubstitutionRecipes(): Promise<SubstitutionRecipe[]> {
-    await this.ensureInitialized();
     return await this.db.select().from(substitutionRecipes);
   }
 

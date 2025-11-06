@@ -1,0 +1,66 @@
+-- Analytics Data Migration Script
+-- This is an EXAMPLE template. Use transform-analytics-data.ts to generate the actual SQL from your JSON exports.
+-- 
+-- Generated SQL will look similar to this, but with actual data from your export.
+
+-- ============================================
+-- IMPORTANT: Review before running!
+-- ============================================
+-- If you want to clear existing data first, uncomment these lines:
+-- TRUNCATE TABLE conversion_events CASCADE;
+-- TRUNCATE TABLE tab_visits CASCADE;
+
+-- ============================================
+-- CONVERSION EVENTS
+-- ============================================
+
+INSERT INTO conversion_events (
+  tab_name, 
+  conversion_type, 
+  input_value, 
+  output_value, 
+  created_at, 
+  session_id, 
+  user_context
+) VALUES
+  ('imperial-metric', 'volume', '{"amount": 2, "fromUnit": "cups", "toUnit": "mL"}'::jsonb, '{"amount": 473.2, "unit": "mL"}'::jsonb, '2024-01-15T10:30:00Z'::timestamp, 'session-123', NULL),
+  ('volume-weight', 'weight', '{"amount": 1, "fromUnit": "cup", "ingredient": "flour"}'::jsonb, '{"amount": 120, "unit": "g"}'::jsonb, '2024-01-15T11:00:00Z'::timestamp, 'session-123', NULL),
+  ('substitutions', 'substitution', '{"ingredient": "baking powder", "amount": 1}'::jsonb, '{"substitutes": [...]}'::jsonb, '2024-01-15T11:30:00Z'::timestamp, 'session-456', NULL);
+
+-- ============================================
+-- TAB VISITS
+-- ============================================
+
+INSERT INTO tab_visits (
+  tab_name, 
+  visited_at, 
+  session_id, 
+  user_context
+) VALUES
+  ('imperial-metric', '2024-01-15T10:25:00Z'::timestamp, 'session-123', NULL),
+  ('volume-weight', '2024-01-15T10:55:00Z'::timestamp, 'session-123', NULL),
+  ('substitutions', '2024-01-15T11:25:00Z'::timestamp, 'session-456', NULL);
+
+-- ============================================
+-- VERIFICATION QUERIES
+-- ============================================
+
+-- Check record counts
+SELECT COUNT(*) as conversion_events_count FROM conversion_events;
+SELECT COUNT(*) as tab_visits_count FROM tab_visits;
+
+-- Check date ranges
+SELECT 
+  MIN(created_at) as earliest_conversion,
+  MAX(created_at) as latest_conversion
+FROM conversion_events;
+
+SELECT 
+  MIN(visited_at) as earliest_visit,
+  MAX(visited_at) as latest_visit
+FROM tab_visits;
+
+-- Spot-check records
+SELECT * FROM conversion_events ORDER BY created_at DESC LIMIT 5;
+SELECT * FROM tab_visits ORDER BY visited_at DESC LIMIT 5;
+
