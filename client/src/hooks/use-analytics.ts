@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { apiRequest } from '@/lib/queryClient';
+import { supabase } from '@/lib/supabase';
 
 const DEBOUNCE_DELAY = 2500;
 
@@ -54,32 +54,48 @@ function getUserContext() {
 export function useAnalytics() {
   const sessionId = useRef(getOrCreateSessionId());
   
-  const trackTabVisit = useCallback((tabName: string) => {
-    apiRequest('POST', '/api/analytics/tab-visit', {
-      tabName,
-      sessionId: sessionId.current,
-      userContext: getUserContext(),
-    }).catch(error => {
+  const trackTabVisit = useCallback(async (tabName: string) => {
+    try {
+      const { error } = await supabase
+        .from('tab_visits')
+        .insert({
+          tab_name: tabName,
+          session_id: sessionId.current,
+          user_context: getUserContext(),
+        });
+      
+      if (error) {
+        console.error('Failed to track tab visit:', error);
+      }
+    } catch (error) {
       console.error('Failed to track tab visit:', error);
-    });
+    }
   }, []);
 
-  const trackConversionEvent = useCallback((
+  const trackConversionEvent = useCallback(async (
     tabName: string,
     conversionType: string | null,
     inputValue: any,
     outputValue: any = null
   ) => {
-    apiRequest('POST', '/api/analytics/conversion-event', {
-      tabName,
-      conversionType,
-      inputValue,
-      outputValue,
-      sessionId: sessionId.current,
-      userContext: getUserContext(),
-    }).catch(error => {
+    try {
+      const { error } = await supabase
+        .from('conversion_events')
+        .insert({
+          tab_name: tabName,
+          conversion_type: conversionType,
+          input_value: inputValue,
+          output_value: outputValue,
+          session_id: sessionId.current,
+          user_context: getUserContext(),
+        });
+      
+      if (error) {
+        console.error('Failed to track conversion event:', error);
+      }
+    } catch (error) {
       console.error('Failed to track conversion event:', error);
-    });
+    }
   }, []);
 
   return {
