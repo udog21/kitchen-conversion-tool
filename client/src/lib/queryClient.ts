@@ -32,63 +32,65 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     const path = queryKey.join("/") as string;
     
-    // Use Supabase for database queries
-    if (path.startsWith("/api/conversions")) {
-      const system = queryKey[1] as string | undefined;
-      let query = supabase.from('conversion_ratios').select('*');
-      
-      if (system) {
-        query = query.eq('system', system);
+    // Use Supabase for database queries (if available)
+    if (supabase) {
+      if (path.startsWith("/api/conversions")) {
+        const system = queryKey[1] as string | undefined;
+        let query = supabase.from('conversion_ratios').select('*');
+        
+        if (system) {
+          query = query.eq('system', system);
+        }
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        // Transform to match API format (camelCase)
+        return data?.map((r: any) => ({
+          id: r.id,
+          fromUnit: r.from_unit,
+          toUnit: r.to_unit,
+          ratio: r.ratio,
+          system: r.system,
+        })) || [];
       }
       
-      const { data, error } = await query;
-      if (error) throw error;
+      if (path === "/api/ingredients") {
+        const { data, error } = await supabase
+          .from('ingredients')
+          .select('*');
+        
+        if (error) throw error;
+        
+        // Transform to match API format
+        return data?.map((i: any) => ({
+          id: i.id,
+          name: i.name,
+          density: i.density,
+          category: i.category,
+          source: i.source,
+        })) || [];
+      }
       
-      // Transform to match API format (camelCase)
-      return data?.map((r: any) => ({
-        id: r.id,
-        fromUnit: r.from_unit,
-        toUnit: r.to_unit,
-        ratio: r.ratio,
-        system: r.system,
-      })) || [];
-    }
-    
-    if (path === "/api/ingredients") {
-      const { data, error } = await supabase
-        .from('ingredients')
-        .select('*');
-      
-      if (error) throw error;
-      
-      // Transform to match API format
-      return data?.map((i: any) => ({
-        id: i.id,
-        name: i.name,
-        density: i.density,
-        category: i.category,
-        source: i.source,
-      })) || [];
-    }
-    
-    if (path === "/api/substitution-recipes") {
-      const { data, error } = await supabase
-        .from('substitution_recipes')
-        .select('*');
-      
-      if (error) throw error;
-      
-      // Transform to match API format
-      return data?.map((s: any) => ({
-        id: s.id,
-        name: s.name,
-        baseAmount: s.base_amount,
-        baseUnit: s.base_unit,
-        substitutes: s.substitutes,
-        instructions: s.instructions,
-        fidelity: s.fidelity,
-        specialInstructions: s.special_instructions,
-      })) || [];
+      if (path === "/api/substitution-recipes") {
+        const { data, error } = await supabase
+          .from('substitution_recipes')
+          .select('*');
+        
+        if (error) throw error;
+        
+        // Transform to match API format
+        return data?.map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          baseAmount: s.base_amount,
+          baseUnit: s.base_unit,
+          substitutes: s.substitutes,
+          instructions: s.instructions,
+          fidelity: s.fidelity,
+          specialInstructions: s.special_instructions,
+        })) || [];
+      }
     }
     
     // Fallback to fetch for other endpoints (if any remain)

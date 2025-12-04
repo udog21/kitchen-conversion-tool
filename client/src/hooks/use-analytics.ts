@@ -55,6 +55,10 @@ export function useAnalytics() {
   const sessionId = useRef(getOrCreateSessionId());
   
   const trackTabVisit = useCallback(async (tabName: string) => {
+    if (!supabase) {
+      return; // Silently skip if Supabase is not configured
+    }
+    
     try {
       const { error } = await supabase
         .from('tab_visits')
@@ -78,6 +82,10 @@ export function useAnalytics() {
     inputValue: any,
     outputValue: any = null
   ) => {
+    if (!supabase) {
+      return; // Silently skip if Supabase is not configured
+    }
+    
     try {
       const { error } = await supabase
         .from('conversion_events')
