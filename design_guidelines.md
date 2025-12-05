@@ -86,3 +86,24 @@
 - Smooth transitions between metric and imperial input modes
 
 This design prioritizes clarity, speed, and mobile usability while maintaining a clean, professional appearance suitable for a kitchen environment where hands may be messy or occupied.
+
+## Content Style Guide
+
+### Legal Document Pages (Privacy Policy, Terms of Service)
+
+**Section Title Formatting:**
+- No numbers or prefixes (e.g., "1.", "2.", etc.)
+- Only capitalize the first letter of the title
+- Use lowercase for all other words (e.g., "Use of the website", not "Use of The Website")
+- Keep titles concise and descriptive
+
+**Examples:**
+✅ "Information we collect"
+✅ "Cookies and advertising"
+✅ "Use of the website"
+❌ "1. Information We Collect"
+❌ "2. Cookies And Advertising"
+
+**Page Title Hierarchy:**
+- Page titles (h1): `text-3xl` or `text-4xl` for clear visual hierarchy
+- Section titles (h2): `text-2xl` to maintain proper hierarchy below page titles

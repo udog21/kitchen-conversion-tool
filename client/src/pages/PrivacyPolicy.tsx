@@ -1,26 +1,38 @@
 import { Link } from "wouter";
-import { ArrowLeft } from "lucide-react";
-import kitchenScaleIcon from "@assets/Cuptograms icon_180x180_1759434142149.png";
+import { ArrowLeft, Copy, Check } from "lucide-react";
+import { SiteHeader } from "@/components/SiteHeader";
+import { useState } from "react";
 
+/**
+ * Content style guide: See design_guidelines.md "Content Style Guide" section
+ * for section title formatting rules and page title hierarchy guidelines.
+ */
 export default function PrivacyPolicy() {
+  const [copied, setCopied] = useState(false);
+  const email = "contact@cuptograms.com";
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy email:", err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <SiteHeader />
+      <div className="max-w-3xl mx-auto px-4 pt-4 pb-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <img 
-              src={kitchenScaleIcon} 
-              alt="Kitchen Scale Icon" 
-              className="w-10 h-10"
-            />
-            <h1 className="text-2xl font-bold text-foreground">Cup to Grams Privacy Policy</h1>
-          </div>
-          <p className="text-sm text-muted-foreground ml-[52px]">Effective date: 3 December 2025</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Privacy Policy</h1>
+          <p className="text-sm text-muted-foreground">Effective 3 Dec 2025</p>
         </div>
         
         <Link href="/" data-testid="link-home">
           <button 
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 hover-elevate px-3 py-2 rounded-lg"
+            className="relative flex items-center gap-2 text-[#C34628] mb-6 px-4 py-3 rounded-lg border-2 border-[#F4A261] font-semibold hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10 transition-all clickable-button-with-inner-border"
             data-testid="button-back-home"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -84,7 +96,7 @@ export default function PrivacyPolicy() {
                   href="https://www.google.com/settings/ads" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-link hover:underline"
                   data-testid="link-google-ads-settings"
                 >
                   Google Ads Settings
@@ -97,7 +109,7 @@ export default function PrivacyPolicy() {
                   href="https://youradchoices.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-link hover:underline"
                   data-testid="link-google-ads-settings"
                 >
                   YourAdChoices
@@ -110,7 +122,7 @@ export default function PrivacyPolicy() {
                   href="https://policies.google.com/technologies/partner-sites" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-link hover:underline"
                   data-testid="link-google-ads-settings"
                 >
                   https://policies.google.com/technologies/partner-sites
@@ -165,7 +177,7 @@ export default function PrivacyPolicy() {
                   href="https://www.google.com/settings/ads" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-link hover:underline"
                   data-testid="link-google-ads-settings"
                 >
                   https://www.google.com/settings/ads
@@ -177,7 +189,7 @@ export default function PrivacyPolicy() {
                   href="https://www.aboutads.info/choices/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-link hover:underline"
                   data-testid="link-google-ads-settings"
                 >
                   https://www.aboutads.info/choices/
@@ -202,16 +214,37 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">
                 Contact
               </h2>
-              <p className="leading-relaxed">
-                If you have questions about this Privacy Policy, please contact us at:{" "}
+              <p className="leading-relaxed mb-4">
+                If you have questions about this Privacy Policy, please contact us at:
+              </p>
+              <div>
                 <a 
-                  href="mailto:helmut.edissy@gmail.com" 
-                  className="text-primary hover:underline"
+                  href={`mailto:${email}`}
+                  className="text-link hover:underline"
                   data-testid="link-contact-email"
                 >
-                  contact@cuptograms.com
+                  {email}
                 </a>
-              </p>
+                <div className="mt-3">
+                  <button
+                    onClick={handleCopyEmail}
+                    className="relative flex items-center gap-2 text-[#C34628] px-4 py-3 rounded-lg border-2 border-[#F4A261] font-semibold hover:bg-[#F4A261]/5 active:bg-[#F4A261]/10 transition-all clickable-button-with-inner-border"
+                    data-testid="button-copy-email"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4" />
+                        Copy email address
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
             </section>
           </div>
         </article>

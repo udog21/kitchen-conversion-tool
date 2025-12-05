@@ -1,4 +1,4 @@
-import { Moon, Sun, Menu, Newspaper, Shield } from "lucide-react";
+import { Moon, Sun, Menu, Newspaper, Shield, FileText, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,7 +40,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
   const systemInfo = measurementSystem ? getSystemInfo(measurementSystem) : null;
 
   return (
-    <header className="flex justify-between items-center p-4 border-b border-border bg-background">
+    <header className="sticky top-0 z-50 flex justify-between items-center p-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <Link href="/" data-testid="link-home-header">
         <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all flex items-center gap-3">
           <img 
@@ -58,8 +58,33 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
       </Link>
       
       <div className="flex items-center gap-2">
+        {/* System selector - always visible if provided, appears before menu */}
+        {systemInfo && onSystemPickerOpen && (
+          <button
+            onClick={onSystemPickerOpen}
+            data-testid="button-system-selector"
+            className="text-2xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
+          >
+            {systemInfo.icon || systemInfo.flag}
+          </button>
+        )}
+
         {/* Desktop navigation - visible on md and up */}
         <nav className="hidden md:flex items-center gap-1 mr-2" data-testid="nav-desktop">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            data-testid="button-theme-toggle-desktop"
+            className="gap-2 text-foreground"
+          >
+            <div className="w-4 h-4 relative flex items-center justify-center">
+              <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            </div>
+            <span>{theme === "light" ? "Dark" : "Light"} Mode</span>
+          </Button>
+          
           <Link href="/blog" data-testid="link-blog-desktop">
             <Button
               variant="ghost"
@@ -67,6 +92,16 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
               className={`text-foreground ${location === "/blog" ? "bg-accent" : ""}`}
             >
               Blog
+            </Button>
+          </Link>
+          
+          <Link href="/terms" data-testid="link-terms-desktop">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-foreground ${location === "/terms" ? "bg-accent" : ""}`}
+            >
+              Terms
             </Button>
           </Link>
           
@@ -80,19 +115,15 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             </Button>
           </Link>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleTheme}
-            data-testid="button-theme-toggle-desktop"
-            className="gap-2 text-foreground"
-          >
-            <div className="w-4 h-4 relative flex items-center justify-center">
-              <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </div>
-            <span>Mode</span>
-          </Button>
+          <Link href="/about" data-testid="link-about-desktop">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-foreground ${location === "/about" ? "bg-accent" : ""}`}
+            >
+              About
+            </Button>
+          </Link>
         </nav>
 
         {/* Mobile navigation - visible below md */}
@@ -109,24 +140,6 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem asChild>
-              <Link href="/blog" data-testid="link-blog-mobile">
-                <div className="flex items-center gap-2 w-full cursor-pointer">
-                  <Newspaper className="h-4 w-4" />
-                  <span>Blog</span>
-                </div>
-              </Link>
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem asChild>
-              <Link href="/privacy" data-testid="link-privacy-mobile">
-                <div className="flex items-center gap-2 w-full cursor-pointer">
-                  <Shield className="h-4 w-4" />
-                  <span>Privacy Policy</span>
-                </div>
-              </Link>
-            </DropdownMenuItem>
-            
             <DropdownMenuItem 
               onClick={toggleTheme}
               data-testid="button-theme-toggle-mobile"
@@ -141,19 +154,44 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
                 </span>
               </div>
             </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link href="/blog" data-testid="link-blog-mobile">
+                <div className="flex items-center gap-2 w-full cursor-pointer">
+                  <Newspaper className="h-4 w-4" />
+                  <span>Blog</span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link href="/terms" data-testid="link-terms-mobile">
+                <div className="flex items-center gap-2 w-full cursor-pointer">
+                  <FileText className="h-4 w-4" />
+                  <span>Terms of Service</span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link href="/privacy" data-testid="link-privacy-mobile">
+                <div className="flex items-center gap-2 w-full cursor-pointer">
+                  <Shield className="h-4 w-4" />
+                  <span>Privacy Policy</span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link href="/about" data-testid="link-about-mobile">
+                <div className="flex items-center gap-2 w-full cursor-pointer">
+                  <Info className="h-4 w-4" />
+                  <span>About</span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* System selector - always visible if provided */}
-        {systemInfo && onSystemPickerOpen && (
-          <button
-            onClick={onSystemPickerOpen}
-            data-testid="button-system-selector"
-            className="text-2xl p-2 rounded-lg hover-elevate active-elevate-2 transition-all cursor-pointer"
-          >
-            {systemInfo.icon || systemInfo.flag}
-          </button>
-        )}
       </div>
     </header>
   );

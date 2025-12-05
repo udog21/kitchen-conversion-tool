@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
+import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -14,6 +16,8 @@ function Router() {
       <Route path="/" component={Home}/>
       <Route path="/blog" component={Blog}/>
       <Route path="/privacy" component={PrivacyPolicy}/>
+      <Route path="/terms" component={TermsOfService}/>
+      <Route path="/about" component={About}/>
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

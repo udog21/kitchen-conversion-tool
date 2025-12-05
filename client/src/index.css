@@ -52,6 +52,8 @@
 
   --primary-foreground: 0 0% 98%;
 
+  --link: 220 15% 25%;
+
   --secondary: 0 0% 94%;
 
   --secondary-foreground: 220 15% 25%;
@@ -178,6 +180,8 @@
   --primary: 220 15% 25%;
 
   --primary-foreground: 220 15% 90%;
+
+  --link: 220 15% 75%;
 
   --secondary: 220 15% 16%;
 
