@@ -177,18 +177,6 @@ export function FeedbackForm({ isOpen, onClose }: FeedbackFormProps) {
             </div>
           </div>
 
-          {submitStatus === "success" && (
-            <div className="p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 text-sm">
-              Thank you! Your feedback has been submitted.
-            </div>
-          )}
-
-          {submitStatus === "error" && (
-            <div className="p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 text-sm">
-              Something went wrong. Please try again later.
-            </div>
-          )}
-
           <DialogFooter className="sm:justify-end">
             <button
               type="submit"
@@ -207,6 +195,18 @@ export function FeedbackForm({ isOpen, onClose }: FeedbackFormProps) {
               {isSubmitting ? "Sending..." : "Send Feedback"}
             </button>
           </DialogFooter>
+
+          {submitStatus === "success" && (
+            <div className="p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 text-sm">
+              Thank you! Your feedback has been submitted.
+            </div>
+          )}
+
+          {submitStatus === "error" && (
+            <div className="p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 text-sm">
+              Something went wrong. Please try again later.
+            </div>
+          )}
         </form>
       </DialogContent>
     </Dialog>
