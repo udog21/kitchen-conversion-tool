@@ -95,7 +95,15 @@ export function useAnalytics() {
     }
     
     try {
-      if (!sessionCreated.current) {
+      // Check if session exists in database (don't rely on local ref)
+      const { data: existingSession, error: checkError } = await supabase
+        .from('sessions')
+        .select('id, unique_tabs_visited, tab_visit_count')
+        .eq('session_id', sessionId.current)
+        .maybeSingle();
+      
+      if (!existingSession) {
+        // Session doesn't exist, create it
         // Check if device is returning by querying existing sessions
         const { data: existingSessions } = await supabase
           .from('sessions')
@@ -121,20 +129,44 @@ export function useAnalytics() {
           });
         
         if (sessionError) {
-          console.error('Failed to create session:', sessionError);
+          // If it's a conflict error (409), session was created by another function
+          // Fall back to update instead
+          if (sessionError.code === '23505') { // PostgreSQL unique violation
+            // Fetch the existing session and update it
+            const { data: currentSession } = await supabase
+              .from('sessions')
+              .select('unique_tabs_visited, tab_visit_count')
+              .eq('session_id', sessionId.current)
+              .single();
+            
+            if (currentSession) {
+              const uniqueTabs = currentSession.unique_tabs_visited || [];
+              const updatedTabs = uniqueTabs.includes(tabName) 
+                ? uniqueTabs 
+                : [...uniqueTabs, tabName];
+              
+              await supabase
+                .from('sessions')
+                .update({
+                  last_tab: tabName,
+                  tab_visit_count: (currentSession.tab_visit_count || 0) + 1,
+                  unique_tabs_visited: updatedTabs,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq('session_id', sessionId.current);
+            }
+          } else {
+            console.error('Failed to create session:', sessionError);
+          }
           return;
         }
         
         sessionCreated.current = true;
       } else {
-        // Update existing session
-        const { data: currentSession } = await supabase
-          .from('sessions')
-          .select('unique_tabs_visited, tab_visit_count')
-          .eq('session_id', sessionId.current)
-          .single();
+        // Session exists, update it
+        sessionCreated.current = true;
         
-        const uniqueTabs = currentSession?.unique_tabs_visited || [];
+        const uniqueTabs = existingSession.unique_tabs_visited || [];
         const updatedTabs = uniqueTabs.includes(tabName) 
           ? uniqueTabs 
           : [...uniqueTabs, tabName];
@@ -143,7 +175,7 @@ export function useAnalytics() {
           .from('sessions')
           .update({
             last_tab: tabName,
-            tab_visit_count: (currentSession?.tab_visit_count || 0) + 1,
+            tab_visit_count: (existingSession.tab_visit_count || 0) + 1,
             unique_tabs_visited: updatedTabs,
             updated_at: new Date().toISOString(),
           })
