@@ -372,4 +372,36 @@
     border-radius: 4px;
     pointer-events: none;
   }
+
+  /* Floating feedback widget button */
+  .feedback-widget-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #F4A261;
+    background-color: hsl(var(--card));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    transition: all 0.2s ease;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .feedback-widget-button:hover {
+    background-color: hsl(var(--accent));
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .feedback-widget-button:active {
+    transform: translateY(0px);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  }
 }

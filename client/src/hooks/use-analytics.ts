@@ -314,6 +314,8 @@ export function useAnalytics() {
   }, []);
 
   return {
+    sessionId: sessionId.current,
+    deviceId: deviceId.current,
     trackTabVisit,
     trackConversionEvent,
     trackPreferenceChange,

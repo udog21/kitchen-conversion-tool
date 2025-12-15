@@ -321,6 +321,7 @@ export class MemStorage implements IStorage {
       displayModeChanges: session.displayModeChanges ?? null,
       measureSysSetTo: session.measureSysSetTo ?? null,
       measureSysChanges: session.measureSysChanges ?? null,
+      feedback: session.feedback ?? null,
     };
     this.sessionsData.push(newSession);
     return newSession;

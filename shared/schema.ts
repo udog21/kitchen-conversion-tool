@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, decimal, timestamptz, jsonb, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, decimal, timestamp, jsonb, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -40,7 +40,7 @@ export const sessions = pgTable("sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sessionId: varchar("session_id", { length: 100 }).notNull().unique(),
   deviceId: varchar("device_id", { length: 100 }),
-  startedAt: timestamptz("started_at").defaultNow().notNull(),
+  startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
   tabVisitCount: integer("tab_visit_count").default(0),
   uniqueTabsVisited: text("unique_tabs_visited").array(),
   conversionEventCount: integer("conversion_event_count").default(0),
@@ -53,8 +53,9 @@ export const sessions = pgTable("sessions", {
   displayModeChanges: jsonb("display_mode_changes"), // Array of {value, changed_at}
   measureSysSetTo: varchar("measure_sys_set_to", { length: 20 }),
   measureSysChanges: jsonb("measure_sys_changes"), // Array of {value, changed_at}
-  createdAt: timestamptz("created_at").defaultNow().notNull(),
-  updatedAt: timestamptz("updated_at").defaultNow().notNull(),
+  feedback: jsonb("feedback"), // Feedback submission: {submitted_at, message, page, rating?, contact_email?}
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const conversionEvents = pgTable("conversion_events", {
@@ -63,7 +64,7 @@ export const conversionEvents = pgTable("conversion_events", {
   conversionType: varchar("conversion_type", { length: 50 }),
   inputValue: jsonb("input_value").notNull(),
   outputValue: jsonb("output_value"),
-  createdAt: timestamptz("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   sessionId: varchar("session_id", { length: 100 }),
   deviceId: varchar("device_id", { length: 100 }),
   timezone: varchar("timezone", { length: 50 }),

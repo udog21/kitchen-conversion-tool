@@ -137,6 +137,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Feedback endpoint
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { message, email, rating, page, sessionId, deviceId } = req.body;
+
+      if (!message || typeof message !== "string" || message.trim().length === 0) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Prepare feedback data
+      const feedbackData = {
+        submitted_at: new Date().toISOString(),
+        message: message.trim(),
+        page: page || null,
+        rating: rating || null,
+        contact_email: email?.trim() || null,
+      };
+
+      // Store feedback in session if sessionId provided
+      if (sessionId) {
+        try {
+          await storage.updateSession(sessionId, {
+            feedback: feedbackData,
+          });
+        } catch (error) {
+          console.error("Error storing feedback in session:", error);
+          // Continue even if session update fails
+        }
+      }
+
+      // Send email via Resend
+      if (process.env.RESEND_API_KEY && process.env.FEEDBACK_EMAIL) {
+        try {
+          const { Resend } = await import("resend");
+          const resend = new Resend(process.env.RESEND_API_KEY);
+
+          const emailSubject = `Feedback for Cup to Grams${rating ? ` (${rating}/5)` : ""}`;
+          const emailBody = `
+Feedback submitted from Cup to Grams
+
+Page: ${page || "Unknown"}
+${rating ? `Rating: ${rating}/5` : ""}
+${email ? `Contact Email: ${email}` : "No contact email provided"}
+
+Message:
+${message}
+
+---
+Session ID: ${sessionId || "N/A"}
+Device ID: ${deviceId || "N/A"}
+Submitted at: ${feedbackData.submitted_at}
+          `.trim();
+
+          await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+            to: process.env.FEEDBACK_EMAIL,
+            subject: emailSubject,
+            text: emailBody,
+          });
+        } catch (error) {
+          console.error("Error sending feedback email:", error);
+          // Continue even if email fails
+        }
+      }
+
+      res.json({ success: true, message: "Feedback submitted successfully" });
+    } catch (error) {
+      console.error("Error processing feedback:", error);
+      res.status(500).json({ error: "Failed to process feedback" });
+    }
+  });
+
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
