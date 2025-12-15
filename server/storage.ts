@@ -318,7 +318,9 @@ export class MemStorage implements IStorage {
       deviceContext: session.deviceContext ?? null,
       timezone: session.timezone ?? null,
       displayModeSetTo: session.displayModeSetTo ?? null,
+      displayModeChanges: session.displayModeChanges ?? null,
       measureSysSetTo: session.measureSysSetTo ?? null,
+      measureSysChanges: session.measureSysChanges ?? null,
     };
     this.sessionsData.push(newSession);
     return newSession;

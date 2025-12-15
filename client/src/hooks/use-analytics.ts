@@ -266,20 +266,43 @@ export function useAnalytics() {
         sessionCreated.current = true;
       }
       
-      // Update the session with preference change
-      const updateData: Record<string, string> = {};
+      // Fetch current session to get existing changes
+      const { data: currentSession } = await supabase
+        .from('sessions')
+        .select('display_mode_changes, measure_sys_changes')
+        .eq('session_id', sessionId.current)
+        .single();
+      
+      // Get existing changes array or initialize empty array
+      const existingChanges = preferenceType === 'display_mode'
+        ? (currentSession?.display_mode_changes || [])
+        : (currentSession?.measure_sys_changes || []);
+      
+      // Create new change entry
+      const newChange = {
+        value: value,
+        changed_at: new Date().toISOString()
+      };
+      
+      // Append to existing changes
+      const updatedChanges = [...existingChanges, newChange];
+      
+      // Update both the final value and the changes array
+      const updateData: Record<string, any> = {
+        updated_at: new Date().toISOString(),
+      };
+      
       if (preferenceType === 'display_mode') {
         updateData.display_mode_set_to = value;
+        updateData.display_mode_changes = updatedChanges;
       } else if (preferenceType === 'measure_sys') {
         updateData.measure_sys_set_to = value;
+        updateData.measure_sys_changes = updatedChanges;
       }
       
       const { error } = await supabase
         .from('sessions')
-        .update({
-          ...updateData,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('session_id', sessionId.current);
       
       if (error) {

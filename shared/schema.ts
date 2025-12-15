@@ -50,7 +50,9 @@ export const sessions = pgTable("sessions", {
   deviceContext: jsonb("device_context"),
   timezone: varchar("timezone", { length: 50 }),
   displayModeSetTo: varchar("display_mode_set_to", { length: 10 }),
+  displayModeChanges: jsonb("display_mode_changes"), // Array of {value, changed_at}
   measureSysSetTo: varchar("measure_sys_set_to", { length: 20 }),
+  measureSysChanges: jsonb("measure_sys_changes"), // Array of {value, changed_at}
   createdAt: timestamptz("created_at").defaultNow().notNull(),
   updatedAt: timestamptz("updated_at").defaultNow().notNull(),
 });
