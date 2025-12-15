@@ -7,6 +7,7 @@ import { SubstitutionsDisplay } from "@/components/SubstitutionsDisplay";
 import { AdBanner } from "@/components/AdBanner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SystemPicker } from "@/components/SystemPicker";
+import { useAnalytics } from "@/hooks/use-analytics";
 import {
   type MeasurementSystem,
   getStoredSystem,
@@ -44,6 +45,7 @@ const tabToPath = (tab: TabType): string => {
 
 export default function Home() {
   const [location, setLocation] = useLocation();
+  const { trackPreferenceChange } = useAnalytics();
 
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     // 1) Prefer tab derived from the current URL
@@ -90,6 +92,8 @@ export default function Home() {
   const handleSystemChange = (system: MeasurementSystem) => {
     setMeasurementSystem(system);
     storeSystem(system);
+    // Track preference change
+    trackPreferenceChange('measure_sys', system);
   };
 
   // Keep active tab in sync when the URL changes (back/forward navigation, deep links)

@@ -112,7 +112,7 @@ export default function TermsOfService() {
 
             <section>
               <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">
-                Advertising & cookies
+                Advertising, cookies, and analytics
               </h2>
               <p className="leading-relaxed mb-4">
                 CupToGrams displays third-party advertisements, including Google AdSense. Advertisers may use cookies and tracking technologies to deliver personalized ads.
@@ -123,6 +123,8 @@ export default function TermsOfService() {
               <ul className="list-disc pl-6 space-y-2 text-foreground">
                 <li>Third-party vendors may place and read cookies in your browser</li>
                 <li>Google may use cookies (including the DoubleClick cookie) to serve ads based on your visits to this and other websites</li>
+                <li>CupToGrams may store a device identifier in your browser's local storage for analytics purposes</li>
+                <li>We may collect and analyze usage data, including session information and conversion events, to improve our service</li>
               </ul>
               <p className="leading-relaxed mt-4">
                 For more information about how Google uses data, visit:{" "}
@@ -140,7 +142,7 @@ export default function TermsOfService() {
                 <Link href="/privacy" className="text-link hover:underline">
                   Privacy Policy
                 </Link>
-                {" "}for full details.
+                {" "}for full details about data collection and your rights.
               </p>
             </section>
 

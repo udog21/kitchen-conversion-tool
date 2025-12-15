@@ -7,10 +7,11 @@
 
 -- Enable RLS on all tables
 ALTER TABLE conversion_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tab_visits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE conversion_ratios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ingredients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE substitution_recipes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
 -- ANALYTICS TABLES (Allow public writes for analytics data)
@@ -19,8 +20,9 @@ ALTER TABLE substitution_recipes ENABLE ROW LEVEL SECURITY;
 -- Drop existing policies if they exist (to allow re-running this script)
 DROP POLICY IF EXISTS "Allow public inserts to conversion_events" ON conversion_events;
 DROP POLICY IF EXISTS "Allow public reads from conversion_events" ON conversion_events;
-DROP POLICY IF EXISTS "Allow public inserts to tab_visits" ON tab_visits;
-DROP POLICY IF EXISTS "Allow public reads from tab_visits" ON tab_visits;
+DROP POLICY IF EXISTS "Allow public inserts to sessions" ON sessions;
+DROP POLICY IF EXISTS "Allow public reads from sessions" ON sessions;
+DROP POLICY IF EXISTS "Allow public updates to sessions" ON sessions;
 
 -- Conversion Events: Allow public INSERT and SELECT
 CREATE POLICY "Allow public inserts to conversion_events" 
@@ -35,18 +37,25 @@ FOR SELECT
 TO anon, authenticated 
 USING (true);
 
--- Tab Visits: Allow public INSERT and SELECT
-CREATE POLICY "Allow public inserts to tab_visits" 
-ON tab_visits 
+-- Sessions: Allow public INSERT, SELECT, and UPDATE
+CREATE POLICY "Allow public inserts to sessions" 
+ON sessions 
 FOR INSERT 
 TO anon, authenticated 
 WITH CHECK (true);
 
-CREATE POLICY "Allow public reads from tab_visits" 
-ON tab_visits 
+CREATE POLICY "Allow public reads from sessions" 
+ON sessions 
 FOR SELECT 
 TO anon, authenticated 
 USING (true);
+
+CREATE POLICY "Allow public updates to sessions" 
+ON sessions 
+FOR UPDATE 
+TO anon, authenticated 
+USING (true)
+WITH CHECK (true);
 
 -- ============================================================================
 -- PUBLIC DATA TABLES (Allow public reads only)
@@ -79,10 +88,11 @@ TO anon, authenticated
 USING (true);
 
 -- ============================================================================
--- USERS TABLE (Optional - only if you need user authentication later)
+-- USERS TABLE (Restricted - for future authentication)
 -- ============================================================================
--- Note: If you add user authentication later, you'll want to restrict this table
--- ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+-- Users table is restricted - no public access
+-- When authentication is added, create policies for authenticated users only
+-- Example:
 -- CREATE POLICY "Users can read own profile" 
 -- ON users 
 -- FOR SELECT 

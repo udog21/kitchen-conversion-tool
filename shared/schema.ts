@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, decimal, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, decimal, timestamptz, jsonb, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -36,12 +36,23 @@ export const substitutionRecipes = pgTable("substitution_recipes", {
   specialInstructions: text("special_instructions"),
 });
 
-export const tabVisits = pgTable("tab_visits", {
+export const sessions = pgTable("sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  tabName: varchar("tab_name", { length: 50 }).notNull(),
-  visitedAt: timestamp("visited_at").defaultNow().notNull(),
-  sessionId: varchar("session_id", { length: 100 }),
-  userContext: jsonb("user_context"),
+  sessionId: varchar("session_id", { length: 100 }).notNull().unique(),
+  deviceId: varchar("device_id", { length: 100 }),
+  startedAt: timestamptz("started_at").defaultNow().notNull(),
+  tabVisitCount: integer("tab_visit_count").default(0),
+  uniqueTabsVisited: text("unique_tabs_visited").array(),
+  conversionEventCount: integer("conversion_event_count").default(0),
+  firstTab: varchar("first_tab", { length: 50 }),
+  lastTab: varchar("last_tab", { length: 50 }),
+  isReturningDevice: boolean("is_returning_device").default(false),
+  deviceContext: jsonb("device_context"),
+  timezone: varchar("timezone", { length: 50 }),
+  displayModeSetTo: varchar("display_mode_set_to", { length: 10 }),
+  measureSysSetTo: varchar("measure_sys_set_to", { length: 20 }),
+  createdAt: timestamptz("created_at").defaultNow().notNull(),
+  updatedAt: timestamptz("updated_at").defaultNow().notNull(),
 });
 
 export const conversionEvents = pgTable("conversion_events", {
@@ -50,8 +61,10 @@ export const conversionEvents = pgTable("conversion_events", {
   conversionType: varchar("conversion_type", { length: 50 }),
   inputValue: jsonb("input_value").notNull(),
   outputValue: jsonb("output_value"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamptz("created_at").defaultNow().notNull(),
   sessionId: varchar("session_id", { length: 100 }),
+  deviceId: varchar("device_id", { length: 100 }),
+  timezone: varchar("timezone", { length: 50 }),
   userContext: jsonb("user_context"),
 });
 
@@ -72,9 +85,11 @@ export const insertSubstitutionRecipeSchema = createInsertSchema(substitutionRec
   id: true,
 });
 
-export const insertTabVisitSchema = createInsertSchema(tabVisits).omit({
+export const insertSessionSchema = createInsertSchema(sessions).omit({
   id: true,
-  visitedAt: true,
+  startedAt: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertConversionEventSchema = createInsertSchema(conversionEvents).omit({
@@ -90,7 +105,7 @@ export type Ingredient = typeof ingredients.$inferSelect;
 export type InsertIngredient = z.infer<typeof insertIngredientSchema>;
 export type SubstitutionRecipe = typeof substitutionRecipes.$inferSelect;
 export type InsertSubstitutionRecipe = z.infer<typeof insertSubstitutionRecipeSchema>;
-export type TabVisit = typeof tabVisits.$inferSelect;
-export type InsertTabVisit = z.infer<typeof insertTabVisitSchema>;
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type ConversionEvent = typeof conversionEvents.$inferSelect;
 export type InsertConversionEvent = z.infer<typeof insertConversionEventSchema>;

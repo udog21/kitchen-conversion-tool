@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import type { MeasurementSystem } from "@/lib/systemDetection";
 import { getSystemInfo } from "@/lib/systemDetection";
+import { useAnalytics } from "@/hooks/use-analytics";
 import kitchenScaleIcon from "@assets/Cuptograms icon_180x180_1759434142149.png";
 
 interface SiteHeaderProps {
@@ -20,6 +21,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeaderProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [location] = useLocation();
+  const { trackPreferenceChange } = useAnalytics();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -35,6 +37,8 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+    // Track preference change
+    trackPreferenceChange('display_mode', newTheme);
   };
 
   const systemInfo = measurementSystem ? getSystemInfo(measurementSystem) : null;

@@ -63,9 +63,32 @@ export default function PrivacyPolicy() {
                 <li>Your device type and operating system</li>
                 <li>Pages you visited and time spent on the site</li>
                 <li>Referring URLs</li>
+                <li>Device identifier stored in your browser's local storage</li>
+                <li>Session information (browser tabs you visit, conversions you perform)</li>
               </ul>
               <p className="leading-relaxed mt-4">
                 This data helps us understand how visitors use the site and how we can improve the service.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">
+                Device tracking and local storage
+              </h2>
+              <p className="leading-relaxed mb-4">
+                To help us understand usage patterns and distinguish between new and returning visitors, 
+                CupToGrams stores a unique device identifier in your browser's local storage. This identifier:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-foreground">
+                <li>Is stored locally on your device (not shared with third parties)</li>
+                <li>Helps us identify if you've visited the site before</li>
+                <li>Is not linked to your personal identity</li>
+                <li>Can be cleared by clearing your browser's local storage</li>
+              </ul>
+              <p className="leading-relaxed mt-4">
+                This identifier is used solely for analytics purposes to understand how visitors use 
+                our service. We do not use browser fingerprinting or other invasive tracking techniques. 
+                You can clear this identifier at any time by clearing your browser's local storage data.
               </p>
             </section>
 

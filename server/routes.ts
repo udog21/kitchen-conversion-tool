@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTabVisitSchema, insertConversionEventSchema } from "@shared/schema";
+import { insertSessionSchema, insertConversionEventSchema } from "@shared/schema";
 import path from "path";
 import fs from "fs";
 
@@ -98,14 +98,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Analytics endpoints
-  app.post("/api/analytics/tab-visit", async (req, res) => {
+  app.post("/api/analytics/session/create", async (req, res) => {
     try {
-      const validatedData = insertTabVisitSchema.parse(req.body);
-      const tabVisit = await storage.trackTabVisit(validatedData);
-      res.json(tabVisit);
+      const validatedData = insertSessionSchema.parse(req.body);
+      const session = await storage.createSession(validatedData);
+      res.json(session);
     } catch (error) {
-      console.error("Error tracking tab visit:", error);
-      res.status(400).json({ error: "Failed to track tab visit" });
+      console.error("Error creating session:", error);
+      res.status(400).json({ error: "Failed to create session" });
+    }
+  });
+
+  app.post("/api/analytics/session/update", async (req, res) => {
+    try {
+      const { sessionId, ...updates } = req.body;
+      if (!sessionId) {
+        return res.status(400).json({ error: "sessionId is required" });
+      }
+      const session = await storage.updateSession(sessionId, updates);
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+      res.json(session);
+    } catch (error) {
+      console.error("Error updating session:", error);
+      res.status(400).json({ error: "Failed to update session" });
     }
   });
 

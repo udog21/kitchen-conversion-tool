@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type SubstitutionRecipe, type InsertSubstitutionRecipe, type TabVisit, type InsertTabVisit, type ConversionEvent, type InsertConversionEvent, users, conversionRatios, ingredients, substitutionRecipes, tabVisits, conversionEvents } from "@shared/schema";
+import { type User, type InsertUser, type ConversionRatio, type InsertConversionRatio, type Ingredient, type InsertIngredient, type SubstitutionRecipe, type InsertSubstitutionRecipe, type Session, type InsertSession, type ConversionEvent, type InsertConversionEvent, users, conversionRatios, ingredients, substitutionRecipes, sessions, conversionEvents } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -19,7 +19,9 @@ export interface IStorage {
   createIngredient(ingredient: InsertIngredient): Promise<Ingredient>;
   getAllSubstitutionRecipes(): Promise<SubstitutionRecipe[]>;
   createSubstitutionRecipe(recipe: InsertSubstitutionRecipe): Promise<SubstitutionRecipe>;
-  trackTabVisit(visit: InsertTabVisit): Promise<TabVisit>;
+  createSession(session: InsertSession): Promise<Session>;
+  updateSession(sessionId: string, updates: Partial<InsertSession>): Promise<Session | undefined>;
+  checkReturningDevice(deviceId: string): Promise<boolean>;
   trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent>;
 }
 
@@ -28,7 +30,7 @@ export class MemStorage implements IStorage {
   private conversionRatios: Map<string, ConversionRatio>;
   private ingredients: Map<string, Ingredient>;
   private substitutionRecipes: Map<string, SubstitutionRecipe>;
-  private tabVisitsData: TabVisit[];
+  private sessionsData: Session[];
   private conversionEventsData: ConversionEvent[];
 
   constructor() {
@@ -36,7 +38,7 @@ export class MemStorage implements IStorage {
     this.conversionRatios = new Map();
     this.ingredients = new Map();
     this.substitutionRecipes = new Map();
-    this.tabVisitsData = [];
+    this.sessionsData = [];
     this.conversionEventsData = [];
     this.seedConversionRatios();
     this.seedIngredients();
@@ -297,17 +299,42 @@ export class MemStorage implements IStorage {
     }
   }
 
-  async trackTabVisit(visit: InsertTabVisit): Promise<TabVisit> {
+  async createSession(session: InsertSession): Promise<Session> {
     const id = randomUUID();
-    const tabVisit: TabVisit = {
-      ...visit,
+    const newSession: Session = {
+      ...session,
       id,
-      visitedAt: new Date(),
-      sessionId: visit.sessionId ?? null,
-      userContext: visit.userContext ?? null,
+      startedAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      sessionId: session.sessionId,
+      deviceId: session.deviceId ?? null,
+      tabVisitCount: session.tabVisitCount ?? 0,
+      uniqueTabsVisited: session.uniqueTabsVisited ?? [],
+      conversionEventCount: session.conversionEventCount ?? 0,
+      firstTab: session.firstTab ?? null,
+      lastTab: session.lastTab ?? null,
+      isReturningDevice: session.isReturningDevice ?? false,
+      deviceContext: session.deviceContext ?? null,
+      timezone: session.timezone ?? null,
+      displayModeSetTo: session.displayModeSetTo ?? null,
+      measureSysSetTo: session.measureSysSetTo ?? null,
     };
-    this.tabVisitsData.push(tabVisit);
-    return tabVisit;
+    this.sessionsData.push(newSession);
+    return newSession;
+  }
+
+  async updateSession(sessionId: string, updates: Partial<InsertSession>): Promise<Session | undefined> {
+    const session = this.sessionsData.find(s => s.sessionId === sessionId);
+    if (!session) {
+      return undefined;
+    }
+    Object.assign(session, updates, { updatedAt: new Date() });
+    return session;
+  }
+
+  async checkReturningDevice(deviceId: string): Promise<boolean> {
+    return this.sessionsData.some(s => s.deviceId === deviceId);
   }
 
   async trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent> {
@@ -317,6 +344,8 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       sessionId: event.sessionId ?? null,
+      deviceId: event.deviceId ?? null,
+      timezone: event.timezone ?? null,
       conversionType: event.conversionType ?? null,
       outputValue: event.outputValue ?? null,
       userContext: event.userContext ?? null,
@@ -632,9 +661,27 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async trackTabVisit(visit: InsertTabVisit): Promise<TabVisit> {
-    const result = await this.db.insert(tabVisits).values(visit).returning();
+  async createSession(session: InsertSession): Promise<Session> {
+    const result = await this.db.insert(sessions).values(session).returning();
     return result[0];
+  }
+
+  async updateSession(sessionId: string, updates: Partial<InsertSession>): Promise<Session | undefined> {
+    const result = await this.db
+      .update(sessions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(sessions.sessionId, sessionId))
+      .returning();
+    return result[0];
+  }
+
+  async checkReturningDevice(deviceId: string): Promise<boolean> {
+    const result = await this.db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.deviceId, deviceId))
+      .limit(1);
+    return result.length > 0;
   }
 
   async trackConversionEvent(event: InsertConversionEvent): Promise<ConversionEvent> {

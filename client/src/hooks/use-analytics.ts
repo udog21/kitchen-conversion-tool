@@ -2,9 +2,21 @@ import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
 const DEBOUNCE_DELAY = 2500;
+const DEVICE_ID_KEY = 'kitchen_conversion_device_id';
+const SESSION_KEY = 'kitchen_conversion_session';
+
+function getOrCreateDeviceId(): string {
+  let deviceId = localStorage.getItem(DEVICE_ID_KEY);
+  
+  if (!deviceId) {
+    deviceId = `device_${Date.now()}_${crypto.randomUUID()}`;
+    localStorage.setItem(DEVICE_ID_KEY, deviceId);
+  }
+  
+  return deviceId;
+}
 
 function getOrCreateSessionId(): string {
-  const SESSION_KEY = 'kitchen_conversion_session';
   let sessionId = sessionStorage.getItem(SESSION_KEY);
   
   if (!sessionId) {
@@ -13,6 +25,26 @@ function getOrCreateSessionId(): string {
   }
   
   return sessionId;
+}
+
+function getDeviceContext() {
+  const userContext = getUserContext();
+  return {
+    browser: userContext.browser,
+    device: userContext.device,
+    timing: {
+      timezone: userContext.timing.timezone,
+      timezoneOffset: userContext.timing.timezoneOffset,
+    },
+  };
+}
+
+function getTimezone(): string | null {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return null;
+  }
 }
 
 function getUserContext() {
@@ -53,23 +85,73 @@ function getUserContext() {
 
 export function useAnalytics() {
   const sessionId = useRef(getOrCreateSessionId());
+  const deviceId = useRef(getOrCreateDeviceId());
+  const sessionCreated = useRef(false);
   
+  // Create or update session when tab changes
   const trackTabVisit = useCallback(async (tabName: string) => {
     if (!supabase) {
       return; // Silently skip if Supabase is not configured
     }
     
     try {
-      const { error } = await supabase
-        .from('tab_visits')
-        .insert({
-          tab_name: tabName,
-          session_id: sessionId.current,
-          user_context: getUserContext(),
-        });
-      
-      if (error) {
-        console.error('Failed to track tab visit:', error);
+      if (!sessionCreated.current) {
+        // Check if device is returning by querying existing sessions
+        const { data: existingSessions } = await supabase
+          .from('sessions')
+          .select('id')
+          .eq('device_id', deviceId.current)
+          .limit(1);
+        
+        const isReturningDevice = existingSessions && existingSessions.length > 0;
+        
+        // Create new session
+        const { error: sessionError } = await supabase
+          .from('sessions')
+          .insert({
+            session_id: sessionId.current,
+            device_id: deviceId.current,
+            first_tab: tabName,
+            last_tab: tabName,
+            tab_visit_count: 1,
+            unique_tabs_visited: [tabName],
+            is_returning_device: isReturningDevice,
+            device_context: getDeviceContext(),
+            timezone: getTimezone(),
+          });
+        
+        if (sessionError) {
+          console.error('Failed to create session:', sessionError);
+          return;
+        }
+        
+        sessionCreated.current = true;
+      } else {
+        // Update existing session
+        const { data: currentSession } = await supabase
+          .from('sessions')
+          .select('unique_tabs_visited, tab_visit_count')
+          .eq('session_id', sessionId.current)
+          .single();
+        
+        const uniqueTabs = currentSession?.unique_tabs_visited || [];
+        const updatedTabs = uniqueTabs.includes(tabName) 
+          ? uniqueTabs 
+          : [...uniqueTabs, tabName];
+        
+        const { error: updateError } = await supabase
+          .from('sessions')
+          .update({
+            last_tab: tabName,
+            tab_visit_count: (currentSession?.tab_visit_count || 0) + 1,
+            unique_tabs_visited: updatedTabs,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('session_id', sessionId.current);
+        
+        if (updateError) {
+          console.error('Failed to update session:', updateError);
+        }
       }
     } catch (error) {
       console.error('Failed to track tab visit:', error);
@@ -87,7 +169,8 @@ export function useAnalytics() {
     }
     
     try {
-      const { error } = await supabase
+      // Track conversion event
+      const { error: eventError } = await supabase
         .from('conversion_events')
         .insert({
           tab_name: tabName,
@@ -95,20 +178,77 @@ export function useAnalytics() {
           input_value: inputValue,
           output_value: outputValue,
           session_id: sessionId.current,
+          device_id: deviceId.current,
+          timezone: getTimezone(),
           user_context: getUserContext(),
         });
       
-      if (error) {
-        console.error('Failed to track conversion event:', error);
+      if (eventError) {
+        console.error('Failed to track conversion event:', eventError);
+        return;
+      }
+      
+      // Update session conversion count
+      if (sessionCreated.current) {
+        const { data: currentSession } = await supabase
+          .from('sessions')
+          .select('conversion_event_count')
+          .eq('session_id', sessionId.current)
+          .single();
+        
+        const { error: updateError } = await supabase
+          .from('sessions')
+          .update({
+            conversion_event_count: (currentSession?.conversion_event_count || 0) + 1,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('session_id', sessionId.current);
+        
+        if (updateError) {
+          console.error('Failed to update session conversion count:', updateError);
+        }
       }
     } catch (error) {
       console.error('Failed to track conversion event:', error);
     }
   }, []);
 
+  const trackPreferenceChange = useCallback(async (
+    preferenceType: 'display_mode' | 'measure_sys',
+    value: string
+  ) => {
+    if (!supabase || !sessionCreated.current) {
+      return; // Silently skip if Supabase is not configured or session not created
+    }
+    
+    try {
+      const updateData: Record<string, string> = {};
+      if (preferenceType === 'display_mode') {
+        updateData.display_mode_set_to = value;
+      } else if (preferenceType === 'measure_sys') {
+        updateData.measure_sys_set_to = value;
+      }
+      
+      const { error } = await supabase
+        .from('sessions')
+        .update({
+          ...updateData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('session_id', sessionId.current);
+      
+      if (error) {
+        console.error('Failed to track preference change:', error);
+      }
+    } catch (error) {
+      console.error('Failed to track preference change:', error);
+    }
+  }, []);
+
   return {
     trackTabVisit,
     trackConversionEvent,
+    trackPreferenceChange,
   };
 }
 
