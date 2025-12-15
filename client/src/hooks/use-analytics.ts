@@ -217,11 +217,56 @@ export function useAnalytics() {
     preferenceType: 'display_mode' | 'measure_sys',
     value: string
   ) => {
-    if (!supabase || !sessionCreated.current) {
-      return; // Silently skip if Supabase is not configured or session not created
+    if (!supabase) {
+      return; // Silently skip if Supabase is not configured
     }
     
     try {
+      // Check if session exists in database (don't rely on local ref)
+      const { data: existingSession, error: checkError } = await supabase
+        .from('sessions')
+        .select('id')
+        .eq('session_id', sessionId.current)
+        .single();
+      
+      // If session doesn't exist, create it
+      if (!existingSession || checkError) {
+        // Check if device is returning
+        const { data: existingSessions } = await supabase
+          .from('sessions')
+          .select('id')
+          .eq('device_id', deviceId.current)
+          .limit(1);
+        
+        const isReturningDevice = existingSessions && existingSessions.length > 0;
+        
+        // Create session
+        const { error: sessionError } = await supabase
+          .from('sessions')
+          .insert({
+            session_id: sessionId.current,
+            device_id: deviceId.current,
+            first_tab: 'Volume & Weight', // Default
+            last_tab: 'Volume & Weight',
+            tab_visit_count: 0,
+            unique_tabs_visited: [],
+            is_returning_device: isReturningDevice,
+            device_context: getDeviceContext(),
+            timezone: getTimezone(),
+          });
+        
+        if (sessionError) {
+          console.error('Failed to create session:', sessionError);
+          return;
+        }
+        
+        sessionCreated.current = true;
+      } else {
+        // Session exists, update our local ref
+        sessionCreated.current = true;
+      }
+      
+      // Update the session with preference change
       const updateData: Record<string, string> = {};
       if (preferenceType === 'display_mode') {
         updateData.display_mode_set_to = value;

@@ -55,7 +55,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
           <div>
             <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
             <p className="text-xs text-muted-foreground mt-1">
-              Tips & tools for the home baker aspiring to be more precise
+              Tips & tools for the home baker
             </p>
           </div>
         </div>
