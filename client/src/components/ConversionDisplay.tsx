@@ -275,8 +275,8 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
       {/* Conversion Display with Separate Cards */}
       <div className="flex flex-col items-center justify-center gap-4">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 w-full">
-          {/* Input Card */}
-          <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
+          {/* Input Section */}
+          <div className="w-full lg:w-auto lg:min-w-[280px]">
             <div className="flex flex-row gap-2 flex-wrap">
               {/* Input Amount Button */}
               <ClickableButton
@@ -301,8 +301,8 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
           {/* Equals Sign */}
           <div className="text-2xl sm:text-3xl text-muted-foreground font-light">=</div>
           
-          {/* Output Card */}
-          <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
+          {/* Output Section */}
+          <div className="w-full lg:w-auto lg:min-w-[280px]">
             <div className="flex flex-row gap-2 flex-wrap">
               {/* Output Amount Display */}
               <OutputDisplay
@@ -335,16 +335,6 @@ export function ConversionDisplay({ system }: ConversionDisplayProps) {
             {selectedIngredient === "anything" ? "any ingredient" : selectedIngredient}
           </ClickableButton>
         </div>
-      </div>
-
-      <div className="mt-4 text-center text-sm text-muted-foreground">
-        {conversionLoading ? (
-          "Loading conversion data..."
-        ) : isCrossCategory && selectedIngredient === "anything" ? (
-          "Select an ingredient to convert between volume and weight"
-        ) : (
-          "Tap a button to change values and units. To convert between volume and weight, specify an ingredient."
-        )}
       </div>
 
       {/* Amount Picker Modal */}

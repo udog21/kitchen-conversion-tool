@@ -294,7 +294,7 @@ export function SubstitutionsDisplay() {
   return (
     <div className="space-y-6">
       {/* Input Section */}
-      <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border">
+      <div>
         <div className="space-y-4">
           {/* Replace text */}
           <div className="text-base font-semibold text-muted-foreground">Replace</div>

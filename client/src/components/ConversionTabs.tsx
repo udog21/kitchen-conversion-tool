@@ -33,7 +33,6 @@ export function ConversionTabs({ activeTab, onTabChange }: ConversionTabsProps) 
           style={activeTab === tab.id ? { backgroundColor: '#E9C46A', fontSize: "13px" } : { fontSize: "13px" }}
         >
           {tab.label}
-          <div className="absolute inset-x-0 bottom-0 h-[3px] rounded-t-full" style={{ backgroundColor: '#E9C46A' }} />
         </button>
       ))}
     </div>

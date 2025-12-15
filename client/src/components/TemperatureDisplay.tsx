@@ -68,8 +68,8 @@ export function TemperatureDisplay() {
     <div className="space-y-6">
       {/* Conversion Display */}
       <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8">
-        {/* Input Card */}
-        <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
+        {/* Input Section */}
+        <div className="w-full lg:w-auto lg:min-w-[280px]">
           <div className="space-y-4">
             <div className="flex flex-row gap-2 flex-wrap">
               {/* Input Temperature */}
@@ -143,8 +143,8 @@ export function TemperatureDisplay() {
         {/* Equals Sign */}
         <div className="text-2xl sm:text-3xl text-muted-foreground font-light">=</div>
         
-        {/* Output Card */}
-        <div className="bg-card p-4 sm:p-6 rounded-lg border border-card-border w-full lg:w-auto lg:min-w-[280px]">
+        {/* Output Section */}
+        <div className="w-full lg:w-auto lg:min-w-[280px]">
           <div className="space-y-4">
             <div className="flex flex-row gap-2 flex-wrap">
               {/* Output Temperature */}
@@ -213,11 +213,6 @@ export function TemperatureDisplay() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-4 text-center text-sm text-muted-foreground">
-        <p>When converting between conventional and fan/convection modes, a fixed adjustment is first made to the input (recipe) temperature before it is converted to Celsius/Fahrenheit: 20°C for Celsius recipes, 25°F for Fahrenheit recipes. Check your oven's manual as some ovens do this adjustment automatically.</p>
-        <p className="mt-3"></p>
       </div>
 
       {/* Temperature Input Keypad */}

@@ -13,11 +13,18 @@ import NotFound from "@/pages/not-found";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home}/>
-      <Route path="/blog" component={Blog}/>
-      <Route path="/privacy" component={PrivacyPolicy}/>
-      <Route path="/terms" component={TermsOfService}/>
-      <Route path="/about" component={About}/>
+      {/* Main converter "pages" - all share the same Home component */}
+      <Route path="/" component={Home} />
+      <Route path="/temperature" component={Home} />
+      <Route path="/volume-weight" component={Home} />
+      <Route path="/substitutions" component={Home} />
+
+      {/* Static content */}
+      <Route path="/blog" component={Blog} />
+      <Route path="/privacy" component={PrivacyPolicy} />
+      <Route path="/terms" component={TermsOfService} />
+      <Route path="/about" component={About} />
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

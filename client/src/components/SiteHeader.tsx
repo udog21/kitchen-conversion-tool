@@ -40,7 +40,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
   const systemInfo = measurementSystem ? getSystemInfo(measurementSystem) : null;
 
   return (
-    <header className="sticky top-0 z-50 flex justify-between items-center p-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 flex justify-between items-center p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <Link href="/" data-testid="link-home-header">
         <div className="cursor-pointer hover-elevate px-3 py-2 -mx-3 -my-2 rounded-lg transition-all flex items-center gap-3">
           <img 
@@ -51,7 +51,7 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
           <div>
             <h1 className="text-xl font-semibold text-foreground">Cup to Grams</h1>
             <p className="text-xs text-muted-foreground mt-1">
-              Measurement conversions and ingredient substitutions for the baker on the go
+              Tips & tools for the home baker aspiring to be more precise
             </p>
           </div>
         </div>
@@ -79,8 +79,8 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             className="gap-2 text-foreground"
           >
             <div className="w-4 h-4 relative flex items-center justify-center">
-              <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <Sun className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <Moon className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             </div>
             <span>{theme === "light" ? "Dark" : "Light"} Mode</span>
           </Button>
@@ -146,8 +146,8 @@ export function SiteHeader({ measurementSystem, onSystemPickerOpen }: SiteHeader
             >
               <div className="flex items-center gap-2 w-full">
                 <div className="w-4 h-4 relative flex items-center justify-center">
-                  <Sun className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <Sun className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <Moon className="absolute h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                 </div>
                 <span>
                   {theme === "light" ? "Dark" : "Light"} Mode
